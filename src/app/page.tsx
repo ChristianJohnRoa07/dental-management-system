@@ -1,17 +1,15 @@
 import Image from "next/image";
 
 export default async function Home() {
-  let apiData = { message: "Failed to connect to backend", timestamp: "" };
+  let apiData = null;
 
   try {
-    // Fetch data from our newly created backend API route
-    // Using an absolute URL works best across both server and client environments
     const res = await fetch("http://localhost:3000/api/test", { cache: "no-store" });
     if (res.ok) {
       apiData = await res.json();
     }
   } catch (error) {
-    console.error("Error fetching from API:", error);
+    console.error("Failed to connect to backend server during boot:", error);
   }
 
   return (

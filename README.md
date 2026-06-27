@@ -20,6 +20,20 @@ You can start editing the page by modifying `app/page.tsx`. The page auto-update
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
+## Create Migrations
+
+To create a migration:
+
+- npx prisma migrate dev --name `<Migration Name>`
+
+To open database via Prisma studio
+
+- npm prisma studio
+
+To open database via docker
+
+- psql -U postgres -d dentalmanagementsystem_db
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:
