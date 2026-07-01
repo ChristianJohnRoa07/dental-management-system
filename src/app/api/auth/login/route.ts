@@ -30,7 +30,6 @@ export async function POST(request: Request) {
     }
 
     if (errorMessage.includes(ERROR_CODES.AUTH_ERROR)) {
-      // 401 Unauthorized prevents security leaks for bad passwords or usernames
       return NextResponse.json({ status: 'error', message: errorMessage }, { status: 401 });
     }
 

@@ -76,14 +76,23 @@ export class UserService {
       return userWithoutPassword;
 
     } catch (error: any) {
-      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${error}`);
+      const errorMessage = error.message || String(error);
+
+      if (
+        errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) ||
+        errorMessage.startsWith(ERROR_CODES.CONFLICT_ERROR)
+      ) {
+        throw error;
+      }
+
+      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
     }
   }
 
   static async login(data: { username: string; password: string }) {
     try {
       if (!data.username || !data.password) {
-        throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_CODES.VALIDATION_ERROR}`);
+        throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
       }
 
       const user = await db.user.findUnique({
@@ -91,19 +100,20 @@ export class UserService {
       });
 
       if (!user) {
-        throw new Error(`${ERROR_CODES.AUTH_ERROR}: ${ERROR_CODES.AUTH_ERROR}`);
+        throw new Error(`${ERROR_CODES.AUTH_ERROR}: ${ERROR_MESSAGES.AUTH_ERROR}`);
       }
 
       const isPasswordValid = await bcrypt.compare(data.password, user.password);
+
       if (!isPasswordValid) {
-        throw new Error(`${ERROR_CODES.AUTH_ERROR}: ${ERROR_CODES.AUTH_ERROR}`);
+        throw new Error(`${ERROR_CODES.AUTH_ERROR}: ${ERROR_MESSAGES.AUTH_ERROR}`);
       }
 
-      const token = await new jose.SignJWT({ 
-          id: user.id, 
-          role: user.role,
-          username: user.username 
-        })
+      const token = await new jose.SignJWT({
+        id: user.id,
+        role: user.role,
+        username: user.username
+      })
         .setProtectedHeader({ alg: 'HS256' })
         .setIssuedAt()
         .setExpirationTime(JWT_EXPIRES_IN)
@@ -117,7 +127,10 @@ export class UserService {
       };
 
     } catch (error: any) {
-      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${error}`);
+      if (Object.values(ERROR_CODES).some(code => error.message?.includes(code))) {
+        throw error;
+      }
+      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${error.message || error}`);
     }
   }
 }
