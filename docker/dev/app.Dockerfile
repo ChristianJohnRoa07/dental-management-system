@@ -27,4 +27,4 @@ WORKDIR ${APP_HOME}
 RUN chown -R dev:devgroup ${USER_HOME}
 USER dev
 
-CMD ["sleep", "infinity"]
+CMD npx prisma studio --port 5555 --browser none & npm run dev
