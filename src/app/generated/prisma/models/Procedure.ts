@@ -471,10 +471,6 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type BoolFieldUpdateOperationsInput = {
-  set?: boolean
-}
-
 export type ProcedureCreateWithoutAppointmentsInput = {
   id?: string
   name: string
