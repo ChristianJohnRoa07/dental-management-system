@@ -1,7 +1,10 @@
 import db from "@/lib/db";
 import bcrypt from "bcryptjs";
-import { ERROR_CODES, ERROR_MESSAGES } from "@/lib/constants";
+import crypto from 'crypto';
 import * as jose from 'jose';
+
+import { ERROR_CODES, ERROR_MESSAGES } from "@/lib/constants";
+import { sendVerificationEmail } from '@/utils/sendEmail';
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET
@@ -72,6 +75,23 @@ export class UserService {
         },
       });
 
+      const token = crypto.randomBytes(32).toString('hex');
+
+      const expiresAt = new Date();
+      expiresAt.setHours(expiresAt.getHours() + 24);
+
+      await db.verificationToken.create({
+        data: {
+          token,
+          userId: newUser.id,
+          expiresAt
+        }
+      });
+
+      const verificationUrl = `http://localhost:3000/api/auth/verifyEmail?token=${token}`;
+
+      await sendVerificationEmail(newUser.email, verificationUrl);
+
       const { password, ...userWithoutPassword } = newUser;
       return userWithoutPassword;
 
@@ -82,6 +102,54 @@ export class UserService {
         errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) ||
         errorMessage.startsWith(ERROR_CODES.CONFLICT_ERROR)
       ) {
+        throw error;
+      }
+
+      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
+    }
+  }
+
+  static async verifyUser(data: {
+    token: string;
+  }) {
+    try {
+
+      const { token } = data;
+
+      const tokenRecord = await db.verificationToken.findUnique({
+        where: { token },
+        include: { user: true }
+      });
+
+      if (!tokenRecord) {
+        throw new Error(`${ERROR_CODES.VERIFICATION_TOKEN_ERROR}: ${ERROR_MESSAGES.VERIFICATION_TOKEN_NOT_FOUND}`);
+      }
+
+      if (new Date() > tokenRecord.expiresAt) {
+        await db.verificationToken.delete({ where: { id: tokenRecord.id } });
+        throw new Error(`${ERROR_CODES.VERIFICATION_TOKEN_ERROR}: ${ERROR_MESSAGES.VERIFICATION_TOKEN_NOT_EXPIRED}`);
+      }
+
+      const updatedUser = await db.user.update({
+        where: { id: tokenRecord.userId },
+        data: {
+          isVerified: true,
+          verifiedAt: new Date()
+        }
+      });
+
+      await db.verificationToken.delete({
+        where: { id: tokenRecord.id }
+      });
+
+      const { password, ...userWithoutPassword } = updatedUser;
+      return userWithoutPassword;
+
+    } catch (error: any) {
+      const errorMessage = error.message || String(error);
+
+      // Forward verification errors cleanly without wrapping them into server errors
+      if (errorMessage.startsWith(ERROR_CODES.VERIFICATION_TOKEN_ERROR)) {
         throw error;
       }
 

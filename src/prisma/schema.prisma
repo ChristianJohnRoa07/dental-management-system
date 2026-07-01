@@ -4,8 +4,8 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  provider      = "prisma-client"
+  output        = "../app/generated/prisma"
   compilerBuild = "fast"
 }
 
@@ -26,74 +26,87 @@ enum Role {
 }
 
 model User {
-  id             String   @id @default(uuid())
-  email          String   @unique
-  username       String   @unique
-  password       String
-  firstName      String
-  lastName       String
-  role           Role     @default(USER)
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
+  id         String    @id @default(uuid())
+  email      String    @unique
+  username   String    @unique
+  password   String
+  firstName  String
+  lastName   String
+  role       Role      @default(USER)
+  isVerified Boolean   @default(false)
+  verifiedAt DateTime?
+  createdAt  DateTime? @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  verificationTokens VerificationToken[]
+}
+
+model VerificationToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Appointment {
   id                     String            @id @default(uuid())
   appointmentDateTime    DateTime
   appointmentStatus      AppointmentStatus
-  amount                 Decimal           
+  amount                 Decimal
   amountReceivedById     String?
   amountReceivedDateTime DateTime?
-  
+
   // Audit Fields
-  createdAt              DateTime          @default(now())
-  createdBy              String            
-  updatedAt              DateTime          @updatedAt
-  updatedBy              String            
+  createdAt DateTime @default(now())
+  createdBy String
+  updatedAt DateTime @updatedAt
+  updatedBy String
 
   // Foreign Keys
-  patientId              String
-  procedureId            String
+  patientId   String
+  procedureId String
 
   // Relations (Navigation Properties)
-  patient                Patient           @relation(fields: [patientId], references: [id], onDelete: Cascade)
-  procedure              Procedure         @relation(fields: [procedureId], references: [id])
+  patient   Patient   @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  procedure Procedure @relation(fields: [procedureId], references: [id])
 }
 
 model Patient {
-  id                     String         @id @default(uuid())
-  firstName              String
-  lastName               String
-  email                  String         @unique
-  mobileNumber           String
-  createdAt              DateTime          @default(now())
-  createdBy              String            
-  updatedAt              DateTime          @updatedAt
-  updatedBy              String
+  id           String   @id @default(uuid())
+  firstName    String
+  lastName     String
+  email        String   @unique
+  mobileNumber String
+  createdAt    DateTime @default(now())
+  createdBy    String
+  updatedAt    DateTime @updatedAt
+  updatedBy    String
 
   // Relations
-  appointments           Appointment[]
-  images                 PatientImage[] 
+  appointments Appointment[]
+  images       PatientImage[]
 }
 
 model Procedure {
-  id                     String        @id @default(uuid())
-  name                   String
-  description            String?
-  price                  Float?        // Maps to C# float
-  isActive               Boolean       @default(true)
-  createdAt              DateTime          @default(now())
-  createdBy              String            
-  updatedAt              DateTime          @updatedAt
-  updatedBy              String
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  createdBy   String
+  updatedAt   DateTime @updatedAt
+  updatedBy   String
 
   // Relations
-  appointments           Appointment[]
+  appointments Appointment[]
 }
 
 model PatientImage {
-  id                     String   @id @default(uuid())
-  url                    String
-  patientId              String
-  patient                Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  id        String  @id @default(uuid())
+  url       String
+  patientId String
+  patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
