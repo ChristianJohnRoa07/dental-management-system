@@ -122,12 +122,12 @@ export class UserService {
       });
 
       if (!tokenRecord) {
-        throw new Error(`${ERROR_CODES.VERIFICATION_TOKEN_ERROR}: ${ERROR_MESSAGES.VERIFICATION_TOKEN_NOT_FOUND}`);
+        throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
       }
 
       if (new Date() > tokenRecord.expiresAt) {
         await db.verificationToken.delete({ where: { id: tokenRecord.id } });
-        throw new Error(`${ERROR_CODES.VERIFICATION_TOKEN_ERROR}: ${ERROR_MESSAGES.VERIFICATION_TOKEN_NOT_EXPIRED}`);
+        throw new Error(`${ERROR_CODES.VERIFICATION_TOKEN_EXPIRED}: ${ERROR_MESSAGES.VERIFICATION_TOKEN_EXPIRED}`);
       }
 
       const updatedUser = await db.user.update({
@@ -149,7 +149,7 @@ export class UserService {
       const errorMessage = error.message || String(error);
 
       // Forward verification errors cleanly without wrapping them into server errors
-      if (errorMessage.startsWith(ERROR_CODES.VERIFICATION_TOKEN_ERROR)) {
+      if (errorMessage.startsWith(ERROR_CODES.VERIFICATION_TOKEN_EXPIRED) || errorMessage.startsWith(ERROR_CODES.TOKEN_NOT_FOUND)) {
         throw error;
       }
 
