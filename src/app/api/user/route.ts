@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 import { UserService } from '@/app/services/users/user.services';
-import { ERROR_CODES } from '@/lib/constants';
 
 // GET /api/user - Fetch all users
 export async function GET() {
