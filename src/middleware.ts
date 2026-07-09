@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import db from "@/lib/db";
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { ERROR_CODES, ERROR_MESSAGES } from '@/lib/constants';
@@ -24,15 +25,26 @@ export async function middleware(request: NextRequest) {
       const encodedSecret = new TextEncoder().encode(secret);
 
       const { payload } = await jwtVerify(token, encodedSecret);
-      
+
+      // const isBlacklisted = await db.tokenBlacklist.findUnique({
+      //   where: { token: token },
+      // });
+
+      // if (isBlacklisted) {
+      //   return NextResponse.json(
+      //     { status: ERROR_CODES.INVALID_TOKEN, message: ERROR_MESSAGES.INVALID_TOKEN },
+      //     { status: 401 }
+      //   );
+      // }
+
       const userId = (payload.id) as string;
-      const userRole = (payload.role) as string; 
+      const userRole = (payload.role) as string;
 
       if (!userId) {
-        return NextResponse.json({ 
-          status: ERROR_CODES.INVALID_TOKEN, 
-          message: "Could not find a user ID in your token layout.",
-          debugTokenPayloadContent: payload 
+        return NextResponse.json({
+          status: ERROR_CODES.INVALID_TOKEN,
+          message: ERROR_MESSAGES.INVALID_TOKEN,
+          debugTokenPayloadContent: payload
         }, { status: 401 });
       }
 
@@ -65,7 +77,7 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/api/procedures',        
+    '/api/procedures',
     '/api/procedures/:path*'
   ],
 };

@@ -47,3 +47,8 @@ export type Procedure = Prisma.ProcedureModel
  * 
  */
 export type PatientImage = Prisma.PatientImageModel
+/**
+ * Model TokenBlacklist
+ * 
+ */
+export type TokenBlacklist = Prisma.TokenBlacklistModel

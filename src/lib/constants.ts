@@ -25,7 +25,7 @@ const staticErrorRegistry = {
   },
   INVALID_TOKEN: {
     code: 'INVALID_TOKEN',
-    message: 'Invalid token payload.',
+    message: 'Invalid token payload or expired.',
   },
   VERIFICATION_TOKEN_EXPIRED: {
     code: 'VERIFICATION_TOKEN_EXPIRED',

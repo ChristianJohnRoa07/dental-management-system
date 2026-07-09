@@ -56,7 +56,8 @@ export const ModelName = {
   Appointment: 'Appointment',
   Patient: 'Patient',
   Procedure: 'Procedure',
-  PatientImage: 'PatientImage'
+  PatientImage: 'PatientImage',
+  TokenBlacklist: 'TokenBlacklist'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -158,6 +159,16 @@ export const PatientImageScalarFieldEnum = {
 } as const
 
 export type PatientImageScalarFieldEnum = (typeof PatientImageScalarFieldEnum)[keyof typeof PatientImageScalarFieldEnum]
+
+
+export const TokenBlacklistScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TokenBlacklistScalarFieldEnum = (typeof TokenBlacklistScalarFieldEnum)[keyof typeof TokenBlacklistScalarFieldEnum]
 
 
 export const SortOrder = {

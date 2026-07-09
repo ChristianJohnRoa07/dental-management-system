@@ -6,6 +6,8 @@ import * as jose from 'jose';
 import { ERROR_CODES, ERROR_MESSAGES } from "@/lib/constants";
 import { sendVerificationEmail } from '@/utils/sendEmail';
 
+const { jwtVerify, decodeJwt } = jose;
+
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET
 );
@@ -201,6 +203,40 @@ export class UserService {
       throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${error.message || error}`);
     }
   }
+
+  static async logout(data: { token: string }) {
+  try {
+    if (!data.token) {
+      throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+    }
+
+    const payload = decodeJwt(data.token);
+    
+    if (!payload.exp) {
+      throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: Invalid token structure.`);
+    }
+
+    const expiresAt = new Date(payload.exp * 1000);
+
+    await db.tokenBlacklist.upsert({
+      where: { token: data.token },
+      update: {},
+      create: {
+        token: data.token,
+        expiresAt: expiresAt,
+      },
+    });
+
+    return { status: 'success', message: 'Logged out successfully.' };
+
+  } catch (error: any) {
+    if (Object.values(ERROR_CODES).some(code => error.message?.includes(code))) {
+      throw error;
+    }
+    throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${error.message || error}`);
+  }
+  }
+
 }
 
 type RequestPassword = string;

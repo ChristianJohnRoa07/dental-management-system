@@ -110,3 +110,12 @@ model PatientImage {
   patientId String
   patient   Patient @relation(fields: [patientId], references: [id], onDelete: Cascade)
 }
+
+model TokenBlacklist {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  expiresAt DateTime 
+  createdAt DateTime @default(now())
+
+  @@index([token])
+}
