@@ -29,6 +29,10 @@ To create a migration:
 
 - `npx prisma migrate dev --name <Migration Name>`
 
+To update a database changes through migrations:
+
+- `npx prisma generate`
+
 To open database via Prisma studio
 
 - `npx prisma studio`

@@ -389,7 +389,8 @@ export const ModelName = {
   Appointment: 'Appointment',
   Patient: 'Patient',
   Procedure: 'Procedure',
-  PatientImage: 'PatientImage'
+  PatientImage: 'PatientImage',
+  TokenBlacklist: 'TokenBlacklist'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -405,7 +406,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "user" | "verificationToken" | "appointment" | "patient" | "procedure" | "patientImage"
+    modelProps: "user" | "verificationToken" | "appointment" | "patient" | "procedure" | "patientImage" | "tokenBlacklist"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -853,6 +854,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    TokenBlacklist: {
+      payload: Prisma.$TokenBlacklistPayload<ExtArgs>
+      fields: Prisma.TokenBlacklistFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.TokenBlacklistFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.TokenBlacklistFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>
+        }
+        findFirst: {
+          args: Prisma.TokenBlacklistFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.TokenBlacklistFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>
+        }
+        findMany: {
+          args: Prisma.TokenBlacklistFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>[]
+        }
+        create: {
+          args: Prisma.TokenBlacklistCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>
+        }
+        createMany: {
+          args: Prisma.TokenBlacklistCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.TokenBlacklistCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>[]
+        }
+        delete: {
+          args: Prisma.TokenBlacklistDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>
+        }
+        update: {
+          args: Prisma.TokenBlacklistUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>
+        }
+        deleteMany: {
+          args: Prisma.TokenBlacklistDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.TokenBlacklistUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.TokenBlacklistUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>[]
+        }
+        upsert: {
+          args: Prisma.TokenBlacklistUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$TokenBlacklistPayload>
+        }
+        aggregate: {
+          args: Prisma.TokenBlacklistAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateTokenBlacklist>
+        }
+        groupBy: {
+          args: Prisma.TokenBlacklistGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TokenBlacklistGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.TokenBlacklistCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.TokenBlacklistCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -975,6 +1050,16 @@ export const PatientImageScalarFieldEnum = {
 } as const
 
 export type PatientImageScalarFieldEnum = (typeof PatientImageScalarFieldEnum)[keyof typeof PatientImageScalarFieldEnum]
+
+
+export const TokenBlacklistScalarFieldEnum = {
+  id: 'id',
+  token: 'token',
+  expiresAt: 'expiresAt',
+  createdAt: 'createdAt'
+} as const
+
+export type TokenBlacklistScalarFieldEnum = (typeof TokenBlacklistScalarFieldEnum)[keyof typeof TokenBlacklistScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -1227,6 +1312,7 @@ export type GlobalOmitConfig = {
   patient?: Prisma.PatientOmit
   procedure?: Prisma.ProcedureOmit
   patientImage?: Prisma.PatientImageOmit
+  tokenBlacklist?: Prisma.TokenBlacklistOmit
 }
 
 /* Types for Logging */
