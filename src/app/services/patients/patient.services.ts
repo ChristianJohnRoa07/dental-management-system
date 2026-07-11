@@ -103,42 +103,50 @@ export class PatientService {
     }
   }
 
-  // static async toggleActiveStatus(data: {
-  //   id: string;
-  //   userId: string
-  // }) {
-  //   try {
-  //     const { id, userId } = data;
+  static async uploadImage(data: {
+    patientId: string;
+    url: string;
+    userId: string;
+  }) {
+    try {
+      const { patientId, url, userId } = data;
 
-  //     if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+      if (!userId) {
+        throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+      }
 
-  //     if (!id) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+      if (!patientId || patientId.trim() === '' || !url || url.trim() === '') {
+        throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+      }
 
-  //     const currentProcedure = await db.procedure.findUnique({
-  //       where: { id: id }
-  //     });
+      const targetPatient = await db.patient.findUnique({
+        where: { id: patientId }
+      });
 
-  //     if (!currentProcedure) {
-  //       const err = DYNAMIC_ERRORS.NOT_FOUND('Procedure');
-  //       throw new Error(`${err.code}: ${err.message}`);
-  //     }
+      if (!targetPatient) {
+        const err = DYNAMIC_ERRORS.NOT_FOUND('Patient');
+        throw new Error(`${err.code}: ${err.message}`);
+      }
 
-  //     return await db.procedure.update({
-  //       where: { id: id },
-  //       data: {
-  //         isActive: !currentProcedure.isActive,
-  //         updatedBy: userId
-  //       },
-  //     });
-  //   }
-  //   catch (error: any) {
-  //     const errorMessage = error.message || String(error);
+      return await db.patientImage.create({
+        data: {
+          url: url,
+          patientId: patientId,
+        },
+      });
 
-  //     if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR)) {
-  //       throw error;
-  //     }
+    } catch (error: any) {
+      const errorMessage = error.message || String(error);
 
-  //     throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
-  //   }
-  // }
+      if (
+        errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) || 
+        errorMessage.includes('NOT_FOUND')
+      ) {
+        throw error;
+      }
+
+      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
+    }
+  }
+
 }
