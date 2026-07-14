@@ -56,7 +56,7 @@ export class PatientService {
     userId: string
   }) {
     try {
-      
+
       const { id, firstName, lastName, email, mobileNumber, userId } = data;
 
       if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
@@ -128,18 +128,31 @@ export class PatientService {
         throw new Error(`${err.code}: ${err.message}`);
       }
 
-      return await db.patientImage.create({
-        data: {
-          url: url,
-          patientId: patientId,
-        },
-      });
+      const [_, createdImage] = await db.$transaction([
+        
+        db.patient.update({
+          where: { id: patientId },
+          data: {
+            updatedAt: new Date(), 
+            updatedBy: userId,
+          },
+        }),
+
+        db.patientImage.create({
+          data: {
+            url: url,
+            patientId: patientId,
+          },
+        })
+      ]);
+
+      return createdImage;
 
     } catch (error: any) {
       const errorMessage = error.message || String(error);
 
       if (
-        errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) || 
+        errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) ||
         errorMessage.includes('NOT_FOUND')
       ) {
         throw error;
