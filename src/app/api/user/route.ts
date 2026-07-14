@@ -7,8 +7,10 @@ export async function GET() {
     const users = await UserService.getAll();
     return NextResponse.json({ status: 'success', data: users });
   } catch (error: any) {
+    const errorMessage = error.message || '';
+
     return NextResponse.json(
-      { status: 'error', message: 'Internal Server Error' },
+      { status: 'error', message: `${errorMessage}` },
       { status: 500 }
     );
   }

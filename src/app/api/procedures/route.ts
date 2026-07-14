@@ -15,9 +15,9 @@ export async function GET(request: Request) {
 
   if (token && await isTokenBlacklisted(token)) {
     return NextResponse.json(
-      {
-        status: ERROR_CODES.INVALID_TOKEN,
-        message: ERROR_MESSAGES.INVALID_TOKEN
+      { 
+        status: ERROR_CODES.INVALID_TOKEN, 
+        message: ERROR_MESSAGES.INVALID_TOKEN 
       },
       { status: 401 }
     );
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { status: 'error', message: 'Failed to complete registration.' },
+      { status: 'error', message: `${errorMessage}` },
       { status: 500 }
     );
   }
@@ -114,7 +114,7 @@ export async function PUT(request: Request) {
     }
 
     return NextResponse.json(
-      { status: 'error', message: 'Failed to complete registration.' },
+      { status: 'error', message: `${errorMessage}` },
       { status: 500 }
     );
   }
@@ -163,7 +163,7 @@ export async function PATCH(request: Request) {
     }
 
     return NextResponse.json(
-      { status: 'error', message: `Failed to complete registration due to: ${errorMessage}` },
+      { status: 'error', message: `${errorMessage}` },
       { status: 500 }
     );
   }
