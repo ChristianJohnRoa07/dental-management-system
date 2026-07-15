@@ -15,6 +15,55 @@ export class PatientService {
     });
   }
 
+  static async getPatientDetails(data: {
+    userId: string,
+    patientId: string,
+  }) {
+
+    const { patientId, userId } = data;
+
+    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+
+    if (!patientId || patientId.trim() === '') {
+      throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+    }
+
+    try {
+
+      const patientWithImage = await db.patient.findUnique({
+        where: { id: patientId },
+        include: {
+          images: true,
+        },
+      });
+
+      if (!patientWithImage) {
+        const err = DYNAMIC_ERRORS.NOT_FOUND('Patient');
+        throw new Error(`${err.code}: ${err.message}`);
+      }
+
+      const { images, ...patientData } = patientWithImage;
+
+      return {
+        patient: patientData,
+        images: images || [],
+      };
+
+    } catch (error: any) {
+      const errorMessage = error.message || String(error);
+
+      if (
+        errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) ||
+        errorMessage.includes('NOT_FOUND')
+      ) {
+        throw error;
+      }
+
+      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
+    }
+
+  }
+
   static async create(data: {
     firstName: string;
     lastName: string;
@@ -129,11 +178,11 @@ export class PatientService {
       }
 
       const [_, createdImage] = await db.$transaction([
-        
+
         db.patient.update({
           where: { id: patientId },
           data: {
-            updatedAt: new Date(), 
+            updatedAt: new Date(),
             updatedBy: userId,
           },
         }),
