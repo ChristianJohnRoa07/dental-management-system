@@ -6,13 +6,24 @@ export class ProcedureService {
   static async getAll(data: {
     userId: string
   }) {
-    const { userId } = data;
+    try {
+      const { userId } = data;
 
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+      if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
-    return await db.procedure.findMany({
-      orderBy: { name: 'asc' },
-    });
+      return await db.procedure.findMany({
+        orderBy: { name: 'asc' },
+      });
+    }
+    catch (error: any) {
+      const errorMessage = error.message || String(error);
+
+      if (errorMessage.startsWith(ERROR_CODES.TOKEN_NOT_FOUND)) {
+        throw error;
+      }
+
+      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
+    }
   }
 
   static async create(data: {
@@ -21,21 +32,32 @@ export class ProcedureService {
     price?: number;
     userId: string
   }) {
-    const { name, userId, description, price } = data;
+    try {
+      const { name, userId, description, price } = data;
 
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+      if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
-    if (!name || name.trim() === '') throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+      if (!name || name.trim() === '') throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
 
-    return await db.procedure.create({
-      data: {
-        name: name,
-        description: description,
-        price: price,
-        createdBy: userId,
-        updatedBy: userId,
-      },
-    });
+      return await db.procedure.create({
+        data: {
+          name: name,
+          description: description,
+          price: price,
+          createdBy: userId,
+          updatedBy: userId,
+        },
+      });
+    }
+    catch (error: any) {
+      const errorMessage = error.message || String(error);
+
+      if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR)) {
+        throw error;
+      }
+
+      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
+    }
   }
 
   static async update(data: {
@@ -76,7 +98,8 @@ export class ProcedureService {
     catch (error: any) {
       const errorMessage = error.message || String(error);
 
-      if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR)) {
+      if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) ||
+        errorMessage.includes('NOT_FOUND')) {
         throw error;
       }
 
@@ -115,7 +138,8 @@ export class ProcedureService {
     catch (error: any) {
       const errorMessage = error.message || String(error);
 
-      if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR)) {
+      if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR) ||
+        errorMessage.includes('NOT_FOUND')) {
         throw error;
       }
 

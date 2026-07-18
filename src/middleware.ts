@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server';
-import db from "@/lib/db";
 import type { NextRequest } from 'next/server';
 import { jwtVerify } from 'jose';
 import { ERROR_CODES, ERROR_MESSAGES } from '@/lib/constants';
@@ -13,6 +12,19 @@ const encodedSecret = process.env.JWT_SECRET
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Check API Resource
+  if (pathname.startsWith('/api/')) {
+    const isRecognizedRoute = PROTECTED_ROUTES.test(pathname);
+    
+    if (!isRecognizedRoute) {
+      return NextResponse.json(
+        { status: ERROR_CODES.RESOURCE_NOT_FOUND, message: ERROR_MESSAGES.RESOURCE_NOT_FOUND },
+        { status: 404 }
+      );
+    }
+  }
+
+  // Check User authorization access rights
   if (PROTECTED_ROUTES.test(pathname)) {
     const authHeader = request.headers.get('authorization');
 
@@ -63,9 +75,6 @@ export async function middleware(request: NextRequest) {
 
 export const config = {
   matcher: [
-    '/api/procedures',
-    '/api/procedures/:path*',
-    '/api/patients',
-    '/api/patients/:path*',
+    '/api/:path*'
   ],
 };

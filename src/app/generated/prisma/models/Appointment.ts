@@ -225,7 +225,7 @@ export type AppointmentGroupByOutputType = {
   id: string
   appointmentDateTime: Date
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal
+  amount: runtime.Decimal | null
   amountReceivedById: string | null
   amountReceivedDateTime: Date | null
   createdAt: Date
@@ -263,7 +263,7 @@ export type AppointmentWhereInput = {
   id?: Prisma.StringFilter<"Appointment"> | string
   appointmentDateTime?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
@@ -280,7 +280,7 @@ export type AppointmentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   appointmentDateTime?: Prisma.SortOrder
   appointmentStatus?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedById?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedDateTime?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -300,7 +300,7 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AppointmentWhereInput | Prisma.AppointmentWhereInput[]
   appointmentDateTime?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
@@ -317,7 +317,7 @@ export type AppointmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   appointmentDateTime?: Prisma.SortOrder
   appointmentStatus?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  amount?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedById?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedDateTime?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -340,7 +340,7 @@ export type AppointmentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   appointmentDateTime?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusWithAggregatesFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalWithAggregatesFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.DecimalNullableWithAggregatesFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
@@ -355,7 +355,7 @@ export type AppointmentCreateInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -370,7 +370,7 @@ export type AppointmentUncheckedCreateInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -385,7 +385,7 @@ export type AppointmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -400,7 +400,7 @@ export type AppointmentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -415,7 +415,7 @@ export type AppointmentCreateManyInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -430,7 +430,7 @@ export type AppointmentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -443,7 +443,7 @@ export type AppointmentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -521,8 +521,8 @@ export type EnumAppointmentStatusFieldUpdateOperationsInput = {
   set?: $Enums.AppointmentStatus
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -621,7 +621,7 @@ export type AppointmentCreateWithoutPatientInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -635,7 +635,7 @@ export type AppointmentUncheckedCreateWithoutPatientInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -678,7 +678,7 @@ export type AppointmentScalarWhereInput = {
   id?: Prisma.StringFilter<"Appointment"> | string
   appointmentDateTime?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
@@ -693,7 +693,7 @@ export type AppointmentCreateWithoutProcedureInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -707,7 +707,7 @@ export type AppointmentUncheckedCreateWithoutProcedureInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -747,7 +747,7 @@ export type AppointmentCreateManyPatientInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -761,7 +761,7 @@ export type AppointmentUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -775,7 +775,7 @@ export type AppointmentUncheckedUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -789,7 +789,7 @@ export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -803,7 +803,7 @@ export type AppointmentCreateManyProcedureInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -817,7 +817,7 @@ export type AppointmentUpdateWithoutProcedureInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -831,7 +831,7 @@ export type AppointmentUncheckedUpdateWithoutProcedureInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -845,7 +845,7 @@ export type AppointmentUncheckedUpdateManyWithoutProcedureInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  amount?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -947,7 +947,7 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: string
     appointmentDateTime: Date
     appointmentStatus: $Enums.AppointmentStatus
-    amount: runtime.Decimal
+    amount: runtime.Decimal | null
     amountReceivedById: string | null
     amountReceivedDateTime: Date | null
     createdAt: Date

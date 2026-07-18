@@ -54,7 +54,7 @@ model Appointment {
   id                     String            @id @default(uuid())
   appointmentDateTime    DateTime
   appointmentStatus      AppointmentStatus
-  amount                 Decimal
+  amount                 Decimal?
   amountReceivedById     String?
   amountReceivedDateTime DateTime?
 
