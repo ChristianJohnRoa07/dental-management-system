@@ -1046,7 +1046,9 @@ export type ProcedureScalarFieldEnum = (typeof ProcedureScalarFieldEnum)[keyof t
 export const PatientImageScalarFieldEnum = {
   id: 'id',
   url: 'url',
-  patientId: 'patientId'
+  patientId: 'patientId',
+  createdAt: 'createdAt',
+  createdBy: 'createdBy'
 } as const
 
 export type PatientImageScalarFieldEnum = (typeof PatientImageScalarFieldEnum)[keyof typeof PatientImageScalarFieldEnum]

@@ -28,18 +28,24 @@ export type PatientImageMinAggregateOutputType = {
   id: string | null
   url: string | null
   patientId: string | null
+  createdAt: Date | null
+  createdBy: string | null
 }
 
 export type PatientImageMaxAggregateOutputType = {
   id: string | null
   url: string | null
   patientId: string | null
+  createdAt: Date | null
+  createdBy: string | null
 }
 
 export type PatientImageCountAggregateOutputType = {
   id: number
   url: number
   patientId: number
+  createdAt: number
+  createdBy: number
   _all: number
 }
 
@@ -48,18 +54,24 @@ export type PatientImageMinAggregateInputType = {
   id?: true
   url?: true
   patientId?: true
+  createdAt?: true
+  createdBy?: true
 }
 
 export type PatientImageMaxAggregateInputType = {
   id?: true
   url?: true
   patientId?: true
+  createdAt?: true
+  createdBy?: true
 }
 
 export type PatientImageCountAggregateInputType = {
   id?: true
   url?: true
   patientId?: true
+  createdAt?: true
+  createdBy?: true
   _all?: true
 }
 
@@ -139,6 +151,8 @@ export type PatientImageGroupByOutputType = {
   id: string
   url: string
   patientId: string
+  createdAt: Date
+  createdBy: string
   _count: PatientImageCountAggregateOutputType | null
   _min: PatientImageMinAggregateOutputType | null
   _max: PatientImageMaxAggregateOutputType | null
@@ -166,6 +180,8 @@ export type PatientImageWhereInput = {
   id?: Prisma.StringFilter<"PatientImage"> | string
   url?: Prisma.StringFilter<"PatientImage"> | string
   patientId?: Prisma.StringFilter<"PatientImage"> | string
+  createdAt?: Prisma.DateTimeFilter<"PatientImage"> | Date | string
+  createdBy?: Prisma.StringFilter<"PatientImage"> | string
   patient?: Prisma.XOR<Prisma.PatientScalarRelationFilter, Prisma.PatientWhereInput>
 }
 
@@ -173,6 +189,8 @@ export type PatientImageOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   patientId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
   patient?: Prisma.PatientOrderByWithRelationInput
 }
 
@@ -183,6 +201,8 @@ export type PatientImageWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.PatientImageWhereInput | Prisma.PatientImageWhereInput[]
   url?: Prisma.StringFilter<"PatientImage"> | string
   patientId?: Prisma.StringFilter<"PatientImage"> | string
+  createdAt?: Prisma.DateTimeFilter<"PatientImage"> | Date | string
+  createdBy?: Prisma.StringFilter<"PatientImage"> | string
   patient?: Prisma.XOR<Prisma.PatientScalarRelationFilter, Prisma.PatientWhereInput>
 }, "id">
 
@@ -190,6 +210,8 @@ export type PatientImageOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   patientId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
   _count?: Prisma.PatientImageCountOrderByAggregateInput
   _max?: Prisma.PatientImageMaxOrderByAggregateInput
   _min?: Prisma.PatientImageMinOrderByAggregateInput
@@ -202,11 +224,15 @@ export type PatientImageScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"PatientImage"> | string
   url?: Prisma.StringWithAggregatesFilter<"PatientImage"> | string
   patientId?: Prisma.StringWithAggregatesFilter<"PatientImage"> | string
+  createdAt?: Prisma.DateTimeWithAggregatesFilter<"PatientImage"> | Date | string
+  createdBy?: Prisma.StringWithAggregatesFilter<"PatientImage"> | string
 }
 
 export type PatientImageCreateInput = {
   id?: string
   url: string
+  createdAt?: Date | string
+  createdBy: string
   patient: Prisma.PatientCreateNestedOneWithoutImagesInput
 }
 
@@ -214,11 +240,15 @@ export type PatientImageUncheckedCreateInput = {
   id?: string
   url: string
   patientId: string
+  createdAt?: Date | string
+  createdBy: string
 }
 
 export type PatientImageUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   patient?: Prisma.PatientUpdateOneRequiredWithoutImagesNestedInput
 }
 
@@ -226,23 +256,31 @@ export type PatientImageUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   patientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PatientImageCreateManyInput = {
   id?: string
   url: string
   patientId: string
+  createdAt?: Date | string
+  createdBy: string
 }
 
 export type PatientImageUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PatientImageUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
   patientId?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PatientImageListRelationFilter = {
@@ -259,18 +297,24 @@ export type PatientImageCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   patientId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
 }
 
 export type PatientImageMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   patientId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
 }
 
 export type PatientImageMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   url?: Prisma.SortOrder
   patientId?: Prisma.SortOrder
+  createdAt?: Prisma.SortOrder
+  createdBy?: Prisma.SortOrder
 }
 
 export type PatientImageCreateNestedManyWithoutPatientInput = {
@@ -318,11 +362,15 @@ export type PatientImageUncheckedUpdateManyWithoutPatientNestedInput = {
 export type PatientImageCreateWithoutPatientInput = {
   id?: string
   url: string
+  createdAt?: Date | string
+  createdBy: string
 }
 
 export type PatientImageUncheckedCreateWithoutPatientInput = {
   id?: string
   url: string
+  createdAt?: Date | string
+  createdBy: string
 }
 
 export type PatientImageCreateOrConnectWithoutPatientInput = {
@@ -358,26 +406,36 @@ export type PatientImageScalarWhereInput = {
   id?: Prisma.StringFilter<"PatientImage"> | string
   url?: Prisma.StringFilter<"PatientImage"> | string
   patientId?: Prisma.StringFilter<"PatientImage"> | string
+  createdAt?: Prisma.DateTimeFilter<"PatientImage"> | Date | string
+  createdBy?: Prisma.StringFilter<"PatientImage"> | string
 }
 
 export type PatientImageCreateManyPatientInput = {
   id?: string
   url: string
+  createdAt?: Date | string
+  createdBy: string
 }
 
 export type PatientImageUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PatientImageUncheckedUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type PatientImageUncheckedUpdateManyWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   url?: Prisma.StringFieldUpdateOperationsInput | string
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -386,6 +444,8 @@ export type PatientImageSelect<ExtArgs extends runtime.Types.Extensions.Internal
   id?: boolean
   url?: boolean
   patientId?: boolean
+  createdAt?: boolean
+  createdBy?: boolean
   patient?: boolean | Prisma.PatientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["patientImage"]>
 
@@ -393,6 +453,8 @@ export type PatientImageSelectCreateManyAndReturn<ExtArgs extends runtime.Types.
   id?: boolean
   url?: boolean
   patientId?: boolean
+  createdAt?: boolean
+  createdBy?: boolean
   patient?: boolean | Prisma.PatientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["patientImage"]>
 
@@ -400,6 +462,8 @@ export type PatientImageSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.
   id?: boolean
   url?: boolean
   patientId?: boolean
+  createdAt?: boolean
+  createdBy?: boolean
   patient?: boolean | Prisma.PatientDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["patientImage"]>
 
@@ -407,9 +471,11 @@ export type PatientImageSelectScalar = {
   id?: boolean
   url?: boolean
   patientId?: boolean
+  createdAt?: boolean
+  createdBy?: boolean
 }
 
-export type PatientImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "url" | "patientId", ExtArgs["result"]["patientImage"]>
+export type PatientImageOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "url" | "patientId" | "createdAt" | "createdBy", ExtArgs["result"]["patientImage"]>
 export type PatientImageInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.PatientDefaultArgs<ExtArgs>
 }
@@ -429,6 +495,8 @@ export type $PatientImagePayload<ExtArgs extends runtime.Types.Extensions.Intern
     id: string
     url: string
     patientId: string
+    createdAt: Date
+    createdBy: string
   }, ExtArgs["result"]["patientImage"]>
   composites: {}
 }
@@ -856,6 +924,8 @@ export interface PatientImageFieldRefs {
   readonly id: Prisma.FieldRef<"PatientImage", 'String'>
   readonly url: Prisma.FieldRef<"PatientImage", 'String'>
   readonly patientId: Prisma.FieldRef<"PatientImage", 'String'>
+  readonly createdAt: Prisma.FieldRef<"PatientImage", 'DateTime'>
+  readonly createdBy: Prisma.FieldRef<"PatientImage", 'String'>
 }
     
 

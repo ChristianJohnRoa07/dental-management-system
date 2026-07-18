@@ -6,7 +6,7 @@ import * as jose from 'jose';
 import { ERROR_CODES, ERROR_MESSAGES } from "@/lib/constants";
 import { sendVerificationEmail } from '@/utils/sendEmail';
 
-const { jwtVerify, decodeJwt } = jose;
+const { decodeJwt } = jose;
 
 const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET

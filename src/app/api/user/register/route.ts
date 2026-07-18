@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     }
 
     return NextResponse.json(
-      { status: 'error', message: 'Failed to complete registration.' },
+      { status: 'error', message: `${errorMessage}` },
       { status: 500 }
     );
   }

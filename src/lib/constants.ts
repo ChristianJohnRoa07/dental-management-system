@@ -41,8 +41,16 @@ export const ERROR_MESSAGES = Object.fromEntries(
   Object.entries(staticErrorRegistry).map(([key, value]) => [key, value.message])
 ) as { [K in keyof typeof staticErrorRegistry]: typeof staticErrorRegistry[K]['message'] };
 
-
 export type EntityType = 'Patient' | 'Appointment' | 'Procedure' | 'User';
+
+export const MIME_TYPES = {
+  '.png':  'image/png',
+  '.jpg':  'image/jpeg',
+  '.jpeg': 'image/jpeg',
+  '.svg':  'image/svg+xml',
+  '.gif':  'image/gif',
+  '.pdf':  'application/pdf',
+} as const;
 
 export const DYNAMIC_ERRORS = {
   NOT_FOUND: (entity: EntityType) => ({
