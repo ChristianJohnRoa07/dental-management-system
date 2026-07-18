@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import path from 'path';
 import { PatientService } from '@/app/services/patients/patient.services';
 import { ERROR_CODES, ERROR_MESSAGES } from '@/lib/constants';
 import { isTokenBlacklisted } from '@/utils/validateToken';
@@ -83,9 +84,11 @@ export async function POST(
         // const uploadedUrl = `https://your-storage-bucket.com/patients/${patientId}/images/${file.name}`; 
 
         // For development purposes
-        const relativePath = await generateRelativePath(file, patientId);
+        const absoluteTmpPath = await generateRelativePath(file, patientId);
 
-        const uploadedUrl = relativePath;
+        const fileName = path.basename(absoluteTmpPath);
+
+        const uploadedUrl = `/api/patients/images/${fileName}`;
 
         const record = await PatientService.uploadImage({
             patientId,

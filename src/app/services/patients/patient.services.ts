@@ -177,25 +177,14 @@ export class PatientService {
         throw new Error(`${err.code}: ${err.message}`);
       }
 
-      const [_, createdImage] = await db.$transaction([
-
-        db.patient.update({
-          where: { id: patientId },
-          data: {
-            updatedAt: new Date(),
-            updatedBy: userId,
-          },
-        }),
-
-        db.patientImage.create({
+      return await db.patientImage.create({
           data: {
             url: url,
             patientId: patientId,
+            createdBy: userId,
+            createdAt: new Date()
           },
-        })
-      ]);
-
-      return createdImage;
+        });
 
     } catch (error: any) {
       const errorMessage = error.message || String(error);
