@@ -119,7 +119,7 @@ export async function PATCH(
         const appointmentId = resolvedParams.id;
         
         const body = await request.json();
-        const { action, actualAmount } = body;
+        const { action, procedurePrice, amountReceived, } = body;
 
         if (!action) {
             return NextResponse.json(
@@ -137,8 +137,11 @@ export async function PATCH(
             case 'cancel':
                 result = await AppointmentService.cancelAppointment({ appointmentId, userId });
                 break;
+            case 'assignProcedurePrice':
+                result = await AppointmentService.assignProcedurePrice({ appointmentId, procedurePrice, userId });
+                break;
             case 'complete':
-                result = await AppointmentService.completeAppointment({ appointmentId, actualAmount, userId });
+                result = await AppointmentService.completeAppointment({ appointmentId, amountReceived, userId });
                 break;
             default:
                 return NextResponse.json(

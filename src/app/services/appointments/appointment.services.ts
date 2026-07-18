@@ -220,7 +220,10 @@ export class AppointmentService {
         if (!appointmentId) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
 
         const currentAppointment = await db.appointment.findUnique({
-            where: { id: appointmentId }
+            where: {
+                id: appointmentId,
+                appointmentStatus: "SCHEDULED",
+            }
         });
 
         if (!currentAppointment) {
@@ -272,17 +275,26 @@ export class AppointmentService {
 
     }
 
-    static async completeAppointment(data: {
+    static async assignProcedurePrice(data: {
         appointmentId: string;
-        actualAmount: Decimal;
+        procedurePrice: Decimal;
         userId: string
     }) {
 
-        const { appointmentId, actualAmount, userId, } = data;
+        const { appointmentId, procedurePrice, userId, } = data;
 
         if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
-        if (!appointmentId || !actualAmount) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+        if (!appointmentId || !procedurePrice) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+
+        const requestingUser = await db.user.findUnique({
+            where: { id: userId },
+            select: { role: true }
+        });
+
+        if (!requestingUser || requestingUser.role !== 'ADMIN') {
+            throw new Error(`${ERROR_CODES.FORBIDDEN_ERROR}: ${ERROR_MESSAGES.FORBIDDEN_ERROR}`);
+        }
 
         const currentAppointment = await db.appointment.findUnique({
             where: { id: appointmentId }
@@ -293,13 +305,55 @@ export class AppointmentService {
             throw new Error(`${err.code}: ${err.message}`);
         }
 
+        if (currentAppointment.appointmentStatus === "SCHEDULED") {
+            throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: Cannot assign a procedure price to a scheduled appointment. Please confirm the appointment first.`);
+        }
+
+        return await db.appointment.update({
+            where: {
+                id: appointmentId
+            },
+            data: {
+                procedurePrice: procedurePrice,
+                procedurePriceAssignBy: userId,
+                procedurePriceAssignDateTime: new Date(),
+                updatedBy: userId,
+            },
+        });
+    }
+
+    static async completeAppointment(data: {
+        appointmentId: string;
+        amountReceived: Decimal;
+        userId: string
+    }) {
+
+        const { appointmentId, amountReceived, userId, } = data;
+
+        if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+
+        if (!appointmentId || !amountReceived) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+
+        const currentAppointment = await db.appointment.findUnique({
+            where: { id: appointmentId }
+        });
+
+        if (!currentAppointment) {
+            const err = DYNAMIC_ERRORS.NOT_FOUND('Appointment');
+            throw new Error(`${err.code}: ${err.message}`);
+        }
+
+        if (currentAppointment.appointmentStatus === "SCHEDULED") {
+            throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: Cannot complete a scheduled appointment. Please confirm the appointment first.`);
+        }
+
         return await db.appointment.update({
             where: {
                 id: appointmentId
             },
             data: {
                 appointmentStatus: "COMPLETED",
-                amount: actualAmount,
+                amountReceived: amountReceived,
                 amountReceivedById: userId,
                 amountReceivedDateTime: new Date(),
                 updatedBy: userId,

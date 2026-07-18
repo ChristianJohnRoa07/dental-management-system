@@ -1,2 +1,2 @@
 
-export const PROTECTED_ROUTES = /^\/api\/(procedures|patients|appointments)/;
+export const PROTECTED_ROUTES = /^\/api\/(auth|procedures|patients|appointments)/;
