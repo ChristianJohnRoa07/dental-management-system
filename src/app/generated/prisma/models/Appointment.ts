@@ -27,18 +27,23 @@ export type AggregateAppointment = {
 }
 
 export type AppointmentAvgAggregateOutputType = {
-  amount: runtime.Decimal | null
+  procedurePrice: runtime.Decimal | null
+  amountReceived: runtime.Decimal | null
 }
 
 export type AppointmentSumAggregateOutputType = {
-  amount: runtime.Decimal | null
+  procedurePrice: runtime.Decimal | null
+  amountReceived: runtime.Decimal | null
 }
 
 export type AppointmentMinAggregateOutputType = {
   id: string | null
   appointmentDateTime: Date | null
   appointmentStatus: $Enums.AppointmentStatus | null
-  amount: runtime.Decimal | null
+  procedurePrice: runtime.Decimal | null
+  procedurePriceAssignBy: string | null
+  procedurePriceAssignDateTime: Date | null
+  amountReceived: runtime.Decimal | null
   amountReceivedById: string | null
   amountReceivedDateTime: Date | null
   createdAt: Date | null
@@ -53,7 +58,10 @@ export type AppointmentMaxAggregateOutputType = {
   id: string | null
   appointmentDateTime: Date | null
   appointmentStatus: $Enums.AppointmentStatus | null
-  amount: runtime.Decimal | null
+  procedurePrice: runtime.Decimal | null
+  procedurePriceAssignBy: string | null
+  procedurePriceAssignDateTime: Date | null
+  amountReceived: runtime.Decimal | null
   amountReceivedById: string | null
   amountReceivedDateTime: Date | null
   createdAt: Date | null
@@ -68,7 +76,10 @@ export type AppointmentCountAggregateOutputType = {
   id: number
   appointmentDateTime: number
   appointmentStatus: number
-  amount: number
+  procedurePrice: number
+  procedurePriceAssignBy: number
+  procedurePriceAssignDateTime: number
+  amountReceived: number
   amountReceivedById: number
   amountReceivedDateTime: number
   createdAt: number
@@ -82,18 +93,23 @@ export type AppointmentCountAggregateOutputType = {
 
 
 export type AppointmentAvgAggregateInputType = {
-  amount?: true
+  procedurePrice?: true
+  amountReceived?: true
 }
 
 export type AppointmentSumAggregateInputType = {
-  amount?: true
+  procedurePrice?: true
+  amountReceived?: true
 }
 
 export type AppointmentMinAggregateInputType = {
   id?: true
   appointmentDateTime?: true
   appointmentStatus?: true
-  amount?: true
+  procedurePrice?: true
+  procedurePriceAssignBy?: true
+  procedurePriceAssignDateTime?: true
+  amountReceived?: true
   amountReceivedById?: true
   amountReceivedDateTime?: true
   createdAt?: true
@@ -108,7 +124,10 @@ export type AppointmentMaxAggregateInputType = {
   id?: true
   appointmentDateTime?: true
   appointmentStatus?: true
-  amount?: true
+  procedurePrice?: true
+  procedurePriceAssignBy?: true
+  procedurePriceAssignDateTime?: true
+  amountReceived?: true
   amountReceivedById?: true
   amountReceivedDateTime?: true
   createdAt?: true
@@ -123,7 +142,10 @@ export type AppointmentCountAggregateInputType = {
   id?: true
   appointmentDateTime?: true
   appointmentStatus?: true
-  amount?: true
+  procedurePrice?: true
+  procedurePriceAssignBy?: true
+  procedurePriceAssignDateTime?: true
+  amountReceived?: true
   amountReceivedById?: true
   amountReceivedDateTime?: true
   createdAt?: true
@@ -225,7 +247,10 @@ export type AppointmentGroupByOutputType = {
   id: string
   appointmentDateTime: Date
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal
+  procedurePrice: runtime.Decimal | null
+  procedurePriceAssignBy: string | null
+  procedurePriceAssignDateTime: Date | null
+  amountReceived: runtime.Decimal | null
   amountReceivedById: string | null
   amountReceivedDateTime: Date | null
   createdAt: Date
@@ -263,7 +288,10 @@ export type AppointmentWhereInput = {
   id?: Prisma.StringFilter<"Appointment"> | string
   appointmentDateTime?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  procedurePriceAssignDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
+  amountReceived?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
@@ -280,7 +308,10 @@ export type AppointmentOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   appointmentDateTime?: Prisma.SortOrder
   appointmentStatus?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  procedurePrice?: Prisma.SortOrderInput | Prisma.SortOrder
+  procedurePriceAssignBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  procedurePriceAssignDateTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  amountReceived?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedById?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedDateTime?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -300,7 +331,10 @@ export type AppointmentWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.AppointmentWhereInput | Prisma.AppointmentWhereInput[]
   appointmentDateTime?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  procedurePriceAssignDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
+  amountReceived?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
@@ -317,7 +351,10 @@ export type AppointmentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   appointmentDateTime?: Prisma.SortOrder
   appointmentStatus?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  procedurePrice?: Prisma.SortOrderInput | Prisma.SortOrder
+  procedurePriceAssignBy?: Prisma.SortOrderInput | Prisma.SortOrder
+  procedurePriceAssignDateTime?: Prisma.SortOrderInput | Prisma.SortOrder
+  amountReceived?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedById?: Prisma.SortOrderInput | Prisma.SortOrder
   amountReceivedDateTime?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -340,7 +377,10 @@ export type AppointmentScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Appointment"> | string
   appointmentDateTime?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusWithAggregatesFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalWithAggregatesFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.DecimalNullableWithAggregatesFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
+  procedurePriceAssignDateTime?: Prisma.DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null
+  amountReceived?: Prisma.DecimalNullableWithAggregatesFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableWithAggregatesFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableWithAggregatesFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Appointment"> | Date | string
@@ -355,7 +395,10 @@ export type AppointmentCreateInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -370,7 +413,10 @@ export type AppointmentUncheckedCreateInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -385,7 +431,10 @@ export type AppointmentUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -400,7 +449,10 @@ export type AppointmentUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -415,7 +467,10 @@ export type AppointmentCreateManyInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -430,7 +485,10 @@ export type AppointmentUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -443,7 +501,10 @@ export type AppointmentUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -458,7 +519,10 @@ export type AppointmentCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   appointmentDateTime?: Prisma.SortOrder
   appointmentStatus?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  procedurePrice?: Prisma.SortOrder
+  procedurePriceAssignBy?: Prisma.SortOrder
+  procedurePriceAssignDateTime?: Prisma.SortOrder
+  amountReceived?: Prisma.SortOrder
   amountReceivedById?: Prisma.SortOrder
   amountReceivedDateTime?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -470,14 +534,18 @@ export type AppointmentCountOrderByAggregateInput = {
 }
 
 export type AppointmentAvgOrderByAggregateInput = {
-  amount?: Prisma.SortOrder
+  procedurePrice?: Prisma.SortOrder
+  amountReceived?: Prisma.SortOrder
 }
 
 export type AppointmentMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   appointmentDateTime?: Prisma.SortOrder
   appointmentStatus?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  procedurePrice?: Prisma.SortOrder
+  procedurePriceAssignBy?: Prisma.SortOrder
+  procedurePriceAssignDateTime?: Prisma.SortOrder
+  amountReceived?: Prisma.SortOrder
   amountReceivedById?: Prisma.SortOrder
   amountReceivedDateTime?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -492,7 +560,10 @@ export type AppointmentMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   appointmentDateTime?: Prisma.SortOrder
   appointmentStatus?: Prisma.SortOrder
-  amount?: Prisma.SortOrder
+  procedurePrice?: Prisma.SortOrder
+  procedurePriceAssignBy?: Prisma.SortOrder
+  procedurePriceAssignDateTime?: Prisma.SortOrder
+  amountReceived?: Prisma.SortOrder
   amountReceivedById?: Prisma.SortOrder
   amountReceivedDateTime?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -504,7 +575,8 @@ export type AppointmentMinOrderByAggregateInput = {
 }
 
 export type AppointmentSumOrderByAggregateInput = {
-  amount?: Prisma.SortOrder
+  procedurePrice?: Prisma.SortOrder
+  amountReceived?: Prisma.SortOrder
 }
 
 export type AppointmentListRelationFilter = {
@@ -521,8 +593,8 @@ export type EnumAppointmentStatusFieldUpdateOperationsInput = {
   set?: $Enums.AppointmentStatus
 }
 
-export type DecimalFieldUpdateOperationsInput = {
-  set?: runtime.Decimal | runtime.DecimalJsLike | number | string
+export type NullableDecimalFieldUpdateOperationsInput = {
+  set?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   increment?: runtime.Decimal | runtime.DecimalJsLike | number | string
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -621,7 +693,10 @@ export type AppointmentCreateWithoutPatientInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -635,7 +710,10 @@ export type AppointmentUncheckedCreateWithoutPatientInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -678,7 +756,10 @@ export type AppointmentScalarWhereInput = {
   id?: Prisma.StringFilter<"Appointment"> | string
   appointmentDateTime?: Prisma.DateTimeFilter<"Appointment"> | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFilter<"Appointment"> | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.StringNullableFilter<"Appointment"> | string | null
+  procedurePriceAssignDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
+  amountReceived?: Prisma.DecimalNullableFilter<"Appointment"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.StringNullableFilter<"Appointment"> | string | null
   amountReceivedDateTime?: Prisma.DateTimeNullableFilter<"Appointment"> | Date | string | null
   createdAt?: Prisma.DateTimeFilter<"Appointment"> | Date | string
@@ -693,7 +774,10 @@ export type AppointmentCreateWithoutProcedureInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -707,7 +791,10 @@ export type AppointmentUncheckedCreateWithoutProcedureInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -747,7 +834,10 @@ export type AppointmentCreateManyPatientInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -761,7 +851,10 @@ export type AppointmentUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -775,7 +868,10 @@ export type AppointmentUncheckedUpdateWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -789,7 +885,10 @@ export type AppointmentUncheckedUpdateManyWithoutPatientInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -803,7 +902,10 @@ export type AppointmentCreateManyProcedureInput = {
   id?: string
   appointmentDateTime: Date | string
   appointmentStatus: $Enums.AppointmentStatus
-  amount: runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: string | null
+  procedurePriceAssignDateTime?: Date | string | null
+  amountReceived?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: string | null
   amountReceivedDateTime?: Date | string | null
   createdAt?: Date | string
@@ -817,7 +919,10 @@ export type AppointmentUpdateWithoutProcedureInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -831,7 +936,10 @@ export type AppointmentUncheckedUpdateWithoutProcedureInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -845,7 +953,10 @@ export type AppointmentUncheckedUpdateManyWithoutProcedureInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   appointmentDateTime?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   appointmentStatus?: Prisma.EnumAppointmentStatusFieldUpdateOperationsInput | $Enums.AppointmentStatus
-  amount?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  procedurePrice?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  procedurePriceAssignBy?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  procedurePriceAssignDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  amountReceived?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   amountReceivedById?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   amountReceivedDateTime?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -861,7 +972,10 @@ export type AppointmentSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   id?: boolean
   appointmentDateTime?: boolean
   appointmentStatus?: boolean
-  amount?: boolean
+  procedurePrice?: boolean
+  procedurePriceAssignBy?: boolean
+  procedurePriceAssignDateTime?: boolean
+  amountReceived?: boolean
   amountReceivedById?: boolean
   amountReceivedDateTime?: boolean
   createdAt?: boolean
@@ -878,7 +992,10 @@ export type AppointmentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   appointmentDateTime?: boolean
   appointmentStatus?: boolean
-  amount?: boolean
+  procedurePrice?: boolean
+  procedurePriceAssignBy?: boolean
+  procedurePriceAssignDateTime?: boolean
+  amountReceived?: boolean
   amountReceivedById?: boolean
   amountReceivedDateTime?: boolean
   createdAt?: boolean
@@ -895,7 +1012,10 @@ export type AppointmentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   id?: boolean
   appointmentDateTime?: boolean
   appointmentStatus?: boolean
-  amount?: boolean
+  procedurePrice?: boolean
+  procedurePriceAssignBy?: boolean
+  procedurePriceAssignDateTime?: boolean
+  amountReceived?: boolean
   amountReceivedById?: boolean
   amountReceivedDateTime?: boolean
   createdAt?: boolean
@@ -912,7 +1032,10 @@ export type AppointmentSelectScalar = {
   id?: boolean
   appointmentDateTime?: boolean
   appointmentStatus?: boolean
-  amount?: boolean
+  procedurePrice?: boolean
+  procedurePriceAssignBy?: boolean
+  procedurePriceAssignDateTime?: boolean
+  amountReceived?: boolean
   amountReceivedById?: boolean
   amountReceivedDateTime?: boolean
   createdAt?: boolean
@@ -923,7 +1046,7 @@ export type AppointmentSelectScalar = {
   procedureId?: boolean
 }
 
-export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "appointmentDateTime" | "appointmentStatus" | "amount" | "amountReceivedById" | "amountReceivedDateTime" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy" | "patientId" | "procedureId", ExtArgs["result"]["appointment"]>
+export type AppointmentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "appointmentDateTime" | "appointmentStatus" | "procedurePrice" | "procedurePriceAssignBy" | "procedurePriceAssignDateTime" | "amountReceived" | "amountReceivedById" | "amountReceivedDateTime" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy" | "patientId" | "procedureId", ExtArgs["result"]["appointment"]>
 export type AppointmentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   patient?: boolean | Prisma.PatientDefaultArgs<ExtArgs>
   procedure?: boolean | Prisma.ProcedureDefaultArgs<ExtArgs>
@@ -947,7 +1070,10 @@ export type $AppointmentPayload<ExtArgs extends runtime.Types.Extensions.Interna
     id: string
     appointmentDateTime: Date
     appointmentStatus: $Enums.AppointmentStatus
-    amount: runtime.Decimal
+    procedurePrice: runtime.Decimal | null
+    procedurePriceAssignBy: string | null
+    procedurePriceAssignDateTime: Date | null
+    amountReceived: runtime.Decimal | null
     amountReceivedById: string | null
     amountReceivedDateTime: Date | null
     createdAt: Date
@@ -1384,7 +1510,10 @@ export interface AppointmentFieldRefs {
   readonly id: Prisma.FieldRef<"Appointment", 'String'>
   readonly appointmentDateTime: Prisma.FieldRef<"Appointment", 'DateTime'>
   readonly appointmentStatus: Prisma.FieldRef<"Appointment", 'AppointmentStatus'>
-  readonly amount: Prisma.FieldRef<"Appointment", 'Decimal'>
+  readonly procedurePrice: Prisma.FieldRef<"Appointment", 'Decimal'>
+  readonly procedurePriceAssignBy: Prisma.FieldRef<"Appointment", 'String'>
+  readonly procedurePriceAssignDateTime: Prisma.FieldRef<"Appointment", 'DateTime'>
+  readonly amountReceived: Prisma.FieldRef<"Appointment", 'Decimal'>
   readonly amountReceivedById: Prisma.FieldRef<"Appointment", 'String'>
   readonly amountReceivedDateTime: Prisma.FieldRef<"Appointment", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"Appointment", 'DateTime'>

@@ -45,81 +45,59 @@ export class ProcedureService {
     price?: number;
     userId: string
   }) {
-    try {
-      const { id, name, userId, description, price } = data;
+    const { id, name, userId, description, price } = data;
 
-      if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
-      if (!name || name.trim() === '') throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+    if (!name || name.trim() === '') throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
 
-      const currentProcedure = await db.procedure.findUnique({
-        where: { id: id }
-      });
+    const currentProcedure = await db.procedure.findUnique({
+      where: { id: id }
+    });
 
-      if (!currentProcedure) {
-        const err = DYNAMIC_ERRORS.NOT_FOUND('Procedure');
-        throw new Error(`${err.code}: ${err.message}`);
-      }
-
-      return await db.procedure.update({
-        where: {
-          id: id
-        },
-        data: {
-          name: name,
-          description: description,
-          price: price,
-          updatedBy: userId,
-        },
-      });
+    if (!currentProcedure) {
+      const err = DYNAMIC_ERRORS.NOT_FOUND('Procedure');
+      throw new Error(`${err.code}: ${err.message}`);
     }
-    catch (error: any) {
-      const errorMessage = error.message || String(error);
 
-      if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR)) {
-        throw error;
-      }
-
-      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
-    }
+    return await db.procedure.update({
+      where: {
+        id: id
+      },
+      data: {
+        name: name,
+        description: description,
+        price: price,
+        updatedBy: userId,
+      },
+    });
   }
 
   static async toggleActiveStatus(data: {
     id: string;
     userId: string
   }) {
-    try {
-      const { id, userId } = data;
+    const { id, userId } = data;
 
-      if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
-      if (!id) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
+    if (!id) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
 
-      const currentProcedure = await db.procedure.findUnique({
-        where: { id: id }
-      });
+    const currentProcedure = await db.procedure.findUnique({
+      where: { id: id }
+    });
 
-      if (!currentProcedure) {
-        const err = DYNAMIC_ERRORS.NOT_FOUND('Procedure');
-        throw new Error(`${err.code}: ${err.message}`);
-      }
-
-      return await db.procedure.update({
-        where: { id: id },
-        data: {
-          isActive: !currentProcedure.isActive,
-          updatedBy: userId
-        },
-      });
+    if (!currentProcedure) {
+      const err = DYNAMIC_ERRORS.NOT_FOUND('Procedure');
+      throw new Error(`${err.code}: ${err.message}`);
     }
-    catch (error: any) {
-      const errorMessage = error.message || String(error);
 
-      if (errorMessage.startsWith(ERROR_CODES.VALIDATION_ERROR)) {
-        throw error;
-      }
-
-      throw new Error(`${ERROR_CODES.SERVER_ERROR}: ${errorMessage}`);
-    }
+    return await db.procedure.update({
+      where: { id: id },
+      data: {
+        isActive: !currentProcedure.isActive,
+        updatedBy: userId
+      },
+    });
   }
 }

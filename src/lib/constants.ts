@@ -31,6 +31,14 @@ const staticErrorRegistry = {
     code: 'VERIFICATION_TOKEN_EXPIRED',
     message: 'Verification link has expired. Please request a new one.',
   },
+  RESOURCE_NOT_FOUND: {
+    code: 'RESOURCE_NOT_FOUND',
+    message: 'The requested endpoint does not exist.',
+  },
+  APPOINTMENT_EXISTS_ERROR: {
+    code: 'APPOINTMENT_EXISTS_ERROR',
+    message: 'Patient already has an appointment scheduled for the selected day',
+  },
 } as const;
 
 export const ERROR_CODES = Object.fromEntries(

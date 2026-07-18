@@ -51,12 +51,15 @@ model VerificationToken {
 }
 
 model Appointment {
-  id                     String            @id @default(uuid())
-  appointmentDateTime    DateTime
-  appointmentStatus      AppointmentStatus
-  amount                 Decimal
-  amountReceivedById     String?
-  amountReceivedDateTime DateTime?
+  id                              String            @id @default(uuid())
+  appointmentDateTime             DateTime
+  appointmentStatus               AppointmentStatus
+  procedurePrice                  Decimal?
+  procedurePriceAssignBy          String?
+  procedurePriceAssignDateTime    DateTime?
+  amountReceived                  Decimal?
+  amountReceivedById              String?
+  amountReceivedDateTime          DateTime?
 
   // Audit Fields
   createdAt DateTime @default(now())
