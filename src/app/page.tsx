@@ -17,16 +17,6 @@ export default async function Home() {
       <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
         <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex flex-col gap-6 text-center">
           <h1 className="text-4xl font-bold text-blue-400">Next.js Full-Stack App</h1>
-
-          <div className="p-6 bg-slate-800 rounded-lg border border-slate-750 shadow-xl max-w-md w-full">
-            <h2 className="text-xl font-semibold mb-2 text-green-400">Frontend Connected!</h2>
-            <p className="text-slate-400 text-xs mb-4">Response from Backend API:</p>
-
-            <div className="bg-slate-950 p-4 rounded font-mono text-left text-sm text-amber-300 overflow-x-auto">
-              <p>💬 <span className="text-white">Message:</span> "{apiData.message}"</p>
-              <p className="mt-2">🕒 <span className="text-white">Time:</span> {apiData.timestamp || "N/A"}</p>
-            </div>
-          </div>
         </div>
       </main>
     </div>
