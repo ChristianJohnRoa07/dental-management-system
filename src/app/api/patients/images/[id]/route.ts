@@ -99,6 +99,12 @@ export async function POST(
         return NextResponse.json({ status: 'success', data: record }, { status: 201 });
 
     } catch (error: any) {
+        const errorMessage = error.message || '';
+
+        if (errorMessage.includes(ERROR_CODES.VALIDATION_ERROR)) {
+            return NextResponse.json({ status: 'error', message: errorMessage }, { status: 400 });
+        }
+
         return NextResponse.json(
             { status: 'error', message: error.message },
             { status: 500 }
