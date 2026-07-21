@@ -1,4 +1,7 @@
-import Image from "next/image";
+import { Button } from "@/components/ui/button"
+import { Mail, ArrowRight, Plus } from "lucide-react"
+
+import { Login } from "./ui/Login/Login";
 
 export default async function Home() {
   let apiData = null;
@@ -13,10 +16,10 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex flex-col gap-6 text-center">
-          <h1 className="text-4xl font-bold text-blue-400">Next.js Full-Stack App</h1>
+    <div className="flex min-h-screen w-full items-center justify-center p-4 sm:p-6 lg:p-8">
+      <main className="flex w-full max-w-xl flex-col items-center justify-center p-6 sm:p-10 lg:p-12">
+        <div className="w-full text-sm">
+          <Login />
         </div>
       </main>
     </div>
