@@ -46,6 +46,20 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* Dental Appointment Colors */
+  --color-appointment-scheduled: var(--appointment-scheduled);
+  --color-appointment-confirmed: var(--appointment-confirmed);
+  --color-appointment-in-chair: var(--appointment-in-chair);
+  --color-appointment-completed: var(--appointment-completed);
+  --color-appointment-cancelled: var(--appointment-cancelled);
+
+  /* Tooth Charting Colors */
+  --color-charting-healthy: var(--charting-healthy);
+  --color-charting-decayed: var(--charting-decayed);
+  --color-charting-filled: var(--charting-filled);
+  --color-charting-crown: var(--charting-crown);
+  --color-charting-missing: var(--charting-missing);
 }
 
 :root {
@@ -81,6 +95,18 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+
+  /* Dental Palette Variables */
+  --appointment-scheduled: #3b82f6;
+  --appointment-confirmed: #10b981;
+  --appointment-completed: #64748b;
+  --appointment-cancelled: #ef4444;
+
+  --charting-healthy: #10b981;
+  --charting-decayed: #ef4444;
+  --charting-filled: #3b82f6;
+  --charting-crown: #8b5cf6;
+  --charting-missing: #94a3b8;
 }
 
 .dark {
