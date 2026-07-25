@@ -4,24 +4,9 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import {
-    Eye,
-    EyeOff,
-    Loader2,
-    Stethoscope,
-    Lock,
-    Mail,
-    ShieldAlert,
-} from "lucide-react";
-
+import { User, Eye, EyeOff, Loader2, Lock, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
     Form,
     FormControl,
@@ -31,54 +16,69 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { toast } from "sonner";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+    handleLogin,
+    toggleShowPassword,
+    setIsLoading,
+    LoginFormState,
+    loginUser,
+} from "@/lib/redux/slice/login/loginSlice";
 
 // Form Schema Validation
 const loginSchema = z.object({
-    email: z
-        .string()
-        .email({ message: "Please enter a valid clinic email address." }),
-    password: z
-        .string()
-        .min(6, { message: "Password must be at least 6 characters." }),
-    role: z.enum(["doctor", "hygienist", "receptionist", "admin"], {
-        required_error: "Please select your staff role.",
-    }),
-    rememberMe: z.boolean().default(false),
+    username: z.string().trim().min(1, { message: "Username is required." }),
+    password: z.string().trim().min(1, { message: "Password is required." }),
 });
 
 type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
-    const [showPassword, setShowPassword] = React.useState(false);
-    const [isLoading, setIsLoading] = React.useState(false);
+    const dispatch = useAppDispatch();
+    const { isLoading, showPassword, loginError } = useAppSelector(
+        (state) => state.login,
+    );
 
     const form = useForm<LoginValues>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
-            email: "",
+            username: "",
             password: "",
-            role: "doctor",
-            rememberMe: false,
         },
     });
 
+    const handleInputChange = (
+        e: React.ChangeEvent<HTMLInputElement>,
+        fieldOnChange: (...event: any[]) => void,
+    ) => {
+        fieldOnChange(e);
+        dispatch(
+            handleLogin({
+                name: e.target.name as keyof LoginFormState,
+                value: e.target.value,
+            }),
+        );
+    };
+
     async function onSubmit(values: LoginValues) {
-        setIsLoading(true);
+        dispatch(setIsLoading(true));
         console.log("Submitting login payload:", values);
 
-        // Simulate API Call
-        setTimeout(() => {
-            setIsLoading(false);
-            // Redirect or set auth state here
-        }, 1500);
+        const resultAction = await dispatch(loginUser(values));
+
+        if (loginUser.fulfilled.match(resultAction)) {
+            console.log("Login successful:", resultAction.payload);
+            // TODO: Add navigation or post-login redirect here
+        }
+        else if(loginUser.rejected.match(resultAction)){
+            const rawError = resultAction.payload as string;
+            const formattedError = rawError?.replace(/^AUTH_ERROR:\s*/, "") || "Invalid username or password.";
+
+            toast.error("Authentication Failed", {
+                description: formattedError,
+            });
+        }
     }
 
     return (
@@ -96,17 +96,23 @@ export function LoginForm() {
                     >
                         <FormField
                             control={form.control}
-                            name="email"
+                            name="username"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Email Address</FormLabel>
+                                    <FormLabel>Username</FormLabel>
                                     <FormControl>
                                         <div className="relative">
-                                            <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                                            <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
-                                                placeholder="dr.smith@dentalcare.com"
+                                                placeholder="Enter your username"
                                                 className="pl-9"
                                                 {...field}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        e,
+                                                        field.onChange,
+                                                    )
+                                                }
                                             />
                                         </div>
                                     </FormControl>
@@ -139,8 +145,14 @@ export function LoginForm() {
                                                         : "password"
                                                 }
                                                 placeholder="••••••••"
-                                                className="pl-9 pr-9"
+                                                className="pl-9 pr-9 [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
                                                 {...field}
+                                                onChange={(e) =>
+                                                    handleInputChange(
+                                                        e,
+                                                        field.onChange,
+                                                    )
+                                                }
                                             />
                                             <Button
                                                 type="button"
@@ -148,8 +160,8 @@ export function LoginForm() {
                                                 size="icon"
                                                 className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                                                 onClick={() =>
-                                                    setShowPassword(
-                                                        !showPassword,
+                                                    dispatch(
+                                                        toggleShowPassword(),
                                                     )
                                                 }
                                             >

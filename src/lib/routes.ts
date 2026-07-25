@@ -1,2 +1,25 @@
+export const API_RECOGNIZED_ROUTES = /^\/api\/(auth|procedures|patients|appointments)/;
 
-export const PROTECTED_ROUTES = /^\/api\/(auth|procedures|patients|appointments)/;
+export const API_PROTECTED_ROUTES = /^\/api\/(procedures|patients|appointments)/;
+
+export const UI_ROUTES = {
+  HOME: "/",
+  AUTH: {
+    LOGIN: "/login",
+    REGISTER: "/register",
+    VERIFY_ACCOUNT: "/verify-account"
+  },
+  DASHBOARD: "/dashboard",
+  APPOINTMENTS: {
+    ROOT: "/appointments",
+    NEW: "/appointments/new",
+    DETAILS: (id: string | number) => `/appointments/${id}`,
+  },
+  PATIENTS: {
+    ROOT: "/patients",
+    DETAILS: (id: string | number) => `/patients/${id}`,
+  },
+  PROCEDURES: "/procedures",
+} as const;
+
+export type AppRoute = typeof UI_ROUTES;
