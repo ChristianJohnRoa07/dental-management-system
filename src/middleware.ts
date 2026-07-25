@@ -60,6 +60,19 @@ export async function middleware(request: NextRequest) {
             const userId = payload.id as string;
             const userRole = payload.role as string;
 
+            const isVerified = Boolean(payload.isVerified);
+
+            if (!isVerified) {
+                return NextResponse.json(
+                    {
+                        status: ERROR_CODES.FORBIDDEN_ERROR,
+                        message:
+                            "Account is unverified. Please verify your email first.",
+                    },
+                    { status: 403 },
+                );
+            }
+
             // Role-Based Access Control (RBAC) check for Procedures
             if (pathname.startsWith("/api/procedures")) {
                 if (request.method !== "GET" && userRole !== "ADMIN") {
