@@ -1,7 +1,6 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -23,7 +22,6 @@ import {
   CardDescription,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { HeaderTitle } from "@/components/utils/cardHeader";
@@ -33,6 +31,7 @@ import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 
 import {
   forgotPasswordDispatch,
+  resetForgotPasswordForm
 } from "@/lib/redux/slice/auth/forgotPasswordSlice";
 
 const forgotPasswordSchema = z.object({
@@ -56,6 +55,19 @@ export function ForgotPasswordForm() {
       email: "",
     },
   });
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+
+    if (isSubmitted) {
+      timer = setTimeout(() => {
+        dispatch(resetForgotPasswordForm());
+        form.reset({ email: "" });
+      }, 5000);
+    }
+
+    return () => clearTimeout(timer);
+  }, [isSubmitted, dispatch, form]);
 
   async function onSubmit(values: ForgotPasswordValues) {
     await dispatch(forgotPasswordDispatch(values));

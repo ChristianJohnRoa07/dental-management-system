@@ -55,10 +55,6 @@ const forgotPasswordSlice = createSlice({
       state.forgotPasswordForm.email = action.payload.value;
     },
 
-    // setIsLoading: (state, action: PayloadAction<boolean>) => {
-    //   state.isLoading = action.payload;
-    // },
-
     clearForgotPasswordError: (state) => {
       state.errorMessage = null;
     },
@@ -66,6 +62,7 @@ const forgotPasswordSlice = createSlice({
     resetForgotPasswordForm: (state) => {
       state.forgotPasswordForm = initialForgotPasswordFormState;
       state.isSubmitted = false;
+      state.isSubmitting = false;
       state.errorMessage = null;
       state.successMessage = null;
     },
