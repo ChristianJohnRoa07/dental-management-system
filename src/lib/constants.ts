@@ -1,3 +1,5 @@
+export const TITLE = "Dr. Jones Dental Management Portal" as const;
+
 const staticErrorRegistry = {
   SERVER_ERROR: {
     code: 'SERVER_ERROR',
