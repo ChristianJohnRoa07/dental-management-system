@@ -7,7 +7,9 @@ export const UI_ROUTES = {
   AUTH: {
     LOGIN: "/login",
     REGISTER: "/register",
-    VERIFY_ACCOUNT: "/verify-account"
+    VERIFY_ACCOUNT: "/verify-account",
+    FORGOT_PASSWORD: "/forgot-password",
+    RESET_PASSWORD: "/reset-password"
   },
   DASHBOARD: "/dashboard",
   APPOINTMENTS: {

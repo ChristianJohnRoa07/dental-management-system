@@ -33,7 +33,7 @@ const initialState: LoginState = {
     loginError: null,
 };
 
-export const loginUser = createAsyncThunk<
+export const loginUserDispatch = createAsyncThunk<
     LoginResponse,
     LoginPayload,
     { rejectValue: string }
@@ -79,12 +79,12 @@ const loginSlice = createSlice({
         builder
         
             // Login
-            .addCase(loginUser.pending, (state) => {
+            .addCase(loginUserDispatch.pending, (state) => {
                 state.isLoading = true;
                 state.loginError = null;
             })
             .addCase(
-                loginUser.fulfilled,
+                loginUserDispatch.fulfilled,
                 (state, action: PayloadAction<LoginResponse>) => {
                     state.isLoading = false;
                     state.isVerified = action.payload.isVerified;
@@ -93,7 +93,7 @@ const loginSlice = createSlice({
                     }
                 },
             )
-            .addCase(loginUser.rejected, (state, action) => {
+            .addCase(loginUserDispatch.rejected, (state, action) => {
                 state.isLoading = false;
                 state.loginError = action.payload || "Login failed";
             });
