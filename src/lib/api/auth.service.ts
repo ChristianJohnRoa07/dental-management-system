@@ -21,11 +21,24 @@ export interface ForgotPasswordResponse{
   message: string;
 }
 
+export interface ResetPasswordPayload{
+  token: string;
+  newPassword: string;
+}
+
+export interface ResetPasswordResponse{
+  success: boolean;
+  message: string;
+}
+
 export const authApiService = {
   login: async (credentials: LoginPayload): Promise<LoginResponse> => {
     return apiClient.post("/auth/login", credentials);
   },
   forgotPassword: async (payload: ForgotPasswordPayload): Promise<ForgotPasswordResponse> => {
     return apiClient.post("/auth/forgot-password", payload);
+  },
+  resetPassword: async (payload: ResetPasswordPayload): Promise<ResetPasswordResponse> => {
+    return apiClient.post("/auth/reset-password", payload);
   },
 };

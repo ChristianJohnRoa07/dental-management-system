@@ -2,6 +2,7 @@ import { configureStore } from '@reduxjs/toolkit';
 
 import loginReducer from "@/lib/redux/slice/auth/loginSlice";
 import forgotPasswordReducer from "@/lib/redux/slice/auth/forgotPasswordSlice";
+import resetPasswordReducer from "@/lib/redux/slice/auth/resetPasswordSlice";
 import dashboardReducer from "@/lib/redux/slice/dashboard/dashboardSlice";
 
 
@@ -11,6 +12,7 @@ export const makeStore = () => {
       // Add your slices here
       login: loginReducer,
       forgotPassword: forgotPasswordReducer,
+      resetPassword: resetPasswordReducer,
       dashboard: dashboardReducer,
 
     },
