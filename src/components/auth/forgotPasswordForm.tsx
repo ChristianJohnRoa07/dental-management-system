@@ -7,6 +7,7 @@ import * as z from "zod";
 import { Loader2, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { ReturnButton } from "@/components/utils/returnButton";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -158,14 +159,7 @@ export function ForgotPasswordForm() {
       </CardContent>
 
       <CardFooter className="flex justify-center border-t p-4">
-        <button
-          type="button"
-          onClick={handleBacktoLogin}
-          className="inline-flex items-center justify-center text-xs text-primary hover:underline font-medium bg-transparent border-none p-0 cursor-pointer"
-        >
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Login
-        </button>
+        <ReturnButton onClick={handleBacktoLogin} title="Back to Login" />
       </CardFooter>
     </Card>
   );
