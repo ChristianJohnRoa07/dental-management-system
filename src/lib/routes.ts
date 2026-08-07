@@ -1,4 +1,4 @@
-export const API_RECOGNIZED_ROUTES = /^\/api\/(auth|procedures|patients|appointments)/;
+export const API_RECOGNIZED_ROUTES = /^\/api\/(user|auth|procedures|patients|appointments)/;
 
 export const API_PROTECTED_ROUTES = /^\/api\/(procedures|patients|appointments)/;
 

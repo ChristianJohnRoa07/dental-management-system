@@ -5,16 +5,21 @@ import * as jose from "jose";
 import React from "react";
 import { resend } from "@/lib/resend";
 import { render } from "@react-email/render";
+import { Role } from "@/app/generated/prisma/enums";
 
 import { ERROR_CODES, ERROR_MESSAGES } from "@/lib/constants";
-import { sendVerificationEmail } from "@/utils/sendEmail";
-import { ResetPasswordEmail } from "@/components/emails/ResendPasswordEmail";
+import {
+  sendVerificationEmail,
+  sendResetPasswordEmail,
+} from "@/app/services/emails/email.service";
 
 const { decodeJwt } = jose;
 
 const JWT_SECRET = new TextEncoder().encode(process.env.JWT_SECRET);
 
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "8h";
+
+const DEV_DOMAIN = process.env.DEV_DOMAIN;
 
 export class UserService {
   static async getAll() {
@@ -39,15 +44,25 @@ export class UserService {
     password: RequestPassword;
     firstName: string;
     lastName: string;
-    role?: any;
+    role: Role | string;
   }) {
     const { username, email, password, firstName, lastName, role } = data;
 
-    if (!username || !email || !password || !firstName || !lastName) {
+    if (!username || !email || !password || !firstName || !lastName || !role) {
       throw new Error(
         `${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`,
       );
     }
+
+    const isValidRole = Object.values(Role).includes(role as Role);
+
+    if (!isValidRole) {
+      throw new Error(
+        `${ERROR_CODES.VALIDATION_ERROR}: Invalid role provided.`,
+      );
+    }
+
+    const assignedRole = role as Role;
 
     const existingUser = await db.user.findFirst({
       where: {
@@ -70,7 +85,7 @@ export class UserService {
         password: hashedPassword,
         firstName: firstName,
         lastName: lastName,
-        role: role,
+        role: assignedRole,
       },
     });
 
@@ -87,9 +102,13 @@ export class UserService {
       },
     });
 
-    const verificationUrl = `http://localhost:3000/api/auth/verifyEmail?token=${token}`;
+    const verificationUrl = `http://${DEV_DOMAIN}/api/auth/verifyEmail?token=${token}`; // Change this if prod deployment
 
-    await sendVerificationEmail(newUser.email, verificationUrl);
+    await sendVerificationEmail({
+      to: newUser.email,
+      firstName: newUser.firstName,
+      verificationUrl,
+    });
 
     const { password: _hashedPassword, ...userWithoutPassword } = newUser;
     return userWithoutPassword;
@@ -98,35 +117,36 @@ export class UserService {
   static async verifyUser(data: { token: string }) {
     const { token } = data;
 
-    const tokenRecord = await db.verificationToken.findUnique({
+    const existingToken = await db.verificationToken.findUnique({
       where: { token },
       include: { user: true },
     });
 
-    if (!tokenRecord) {
+    if (!existingToken) {
       throw new Error(
         `${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`,
       );
     }
 
-    if (new Date() > tokenRecord.expiresAt) {
-      await db.verificationToken.delete({ where: { id: tokenRecord.id } });
+    if (new Date() > existingToken.expiresAt) {
+      await db.verificationToken.delete({ where: { id: existingToken.id } });
       throw new Error(
         `${ERROR_CODES.VERIFICATION_TOKEN_EXPIRED}: ${ERROR_MESSAGES.VERIFICATION_TOKEN_EXPIRED}`,
       );
     }
 
-    const updatedUser = await db.user.update({
-      where: { id: tokenRecord.userId },
-      data: {
-        isVerified: true,
-        verifiedAt: new Date(),
-      },
-    });
-
-    await db.verificationToken.delete({
-      where: { id: tokenRecord.id },
-    });
+    const [updatedUser] = await db.$transaction([
+      db.user.update({
+        where: { id: existingToken.userId },
+        data: {
+          isVerified: true,
+          verifiedAt: new Date(),
+        },
+      }),
+      db.verificationToken.delete({
+        where: { id: existingToken.id },
+      }),
+    ]);
 
     const { password, ...userWithoutPassword } = updatedUser;
     return userWithoutPassword;
@@ -259,26 +279,11 @@ export class UserService {
       origin || process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
     const resetLink = `${baseUrl}/reset-password?token=${rawToken}`;
 
-    const emailHtml = await render(
-      React.createElement(ResetPasswordEmail, {
-        firstName: user.firstName,
-        resetLink,
-      }),
-    );
-
-    const { error } = await resend.emails.send({
-      from: "Dr. Jones Portal <onboarding@resend.dev>",
-      to: [user.email],
-      subject: "Reset Your Password - Dr. Jones Portal",
-      html: emailHtml,
+    await sendResetPasswordEmail({
+      to: user.email,
+      firstName: user.firstName,
+      resetLink,
     });
-
-    if (error) {
-      console.error("Resend delivery failed:", error);
-      throw new Error(
-        "Failed to dispatch password reset email." + error.message,
-      );
-    }
 
     return { success: true };
   }

@@ -21,8 +21,9 @@ enum AppointmentStatus {
 }
 
 enum Role {
-  USER
   ADMIN
+  DOCTOR
+  RECEPTIONIST
 }
 
 model User {
@@ -32,7 +33,7 @@ model User {
   password   String
   firstName  String
   lastName   String
-  role       Role      @default(USER)
+  role       Role
   isVerified Boolean   @default(false)
   verifiedAt DateTime?
   createdAt  DateTime? @default(now())
