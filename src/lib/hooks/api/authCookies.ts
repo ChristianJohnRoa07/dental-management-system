@@ -1,9 +1,6 @@
 import { cookies } from "next/headers";
 import { encryptObject, decryptObject } from "@/lib/hooks/ui/encrpytDecrypt";
-
-const USER_COOKIE_NAME = "encrypted_user";
-// 8 hours in seconds (8 * 60 * 60 = 28,800 seconds)
-const EIGHT_HOURS_IN_SECONDS = 8 * 60 * 60;
+import { SESSION_DURATION_SECONDS, USER_COOKIE_NAME } from "@/lib/constants";
 
 /**
  * Encrypts user data and sets it in an HTTP-only secure cookie.
@@ -17,7 +14,7 @@ export async function setEncryptedUserCookie<T>(userData: T): Promise<void> {
     httpOnly: true, // Prevents client-side JS access (XSS protection)
     secure: process.env.NODE_ENV === "production", // Ensures cookie is sent over HTTPS
     sameSite: "lax", // CSRF protection
-    maxAge: EIGHT_HOURS_IN_SECONDS,
+    maxAge: SESSION_DURATION_SECONDS,
     path: "/",
   });
 }

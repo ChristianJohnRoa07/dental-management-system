@@ -12,6 +12,11 @@ export interface LoginResponse {
   token?: string;
 }
 
+export interface LogoutResponse {
+  success: boolean;
+  message?: string;
+}
+
 export interface ForgotPasswordPayload{
   email: string;
 }
@@ -43,6 +48,9 @@ export interface VerifyEmailResponse {
 export const authApiService = {
   login: async (credentials: LoginPayload): Promise<LoginResponse> => {
     return apiClient.post("/auth/login", credentials);
+  },
+  logout: async (): Promise<LogoutResponse> => {
+    return apiClient.post("/auth/logout");
   },
   forgotPassword: async (payload: ForgotPasswordPayload): Promise<ForgotPasswordResponse> => {
     return apiClient.post("/auth/forgot-password", payload);

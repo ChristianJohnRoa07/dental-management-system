@@ -1,19 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import {
-  Stethoscope,
-  Activity,
-  Calendar as CalendarIcon,
-  Users,
-  Search,
-  Bell,
-  CalendarPlus,
-  Menu,
-  X,
-} from "lucide-react";
+import { Search, Bell, CalendarPlus, Menu } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { UI_ROUTES } from "@/lib/routes";
 import { getNavItemsForRole } from "@/config/navigation";
@@ -24,8 +14,6 @@ import {
   setSearchQuery,
 } from "@/lib/redux/slice/dashboard/dashboardSlice";
 import { Loader2 } from "lucide-react";
-import { fetchCurrentUser } from "@/lib/redux/slice/user/userSlice";
-
 
 export default function DashboardLayout({
   children,
@@ -35,9 +23,11 @@ export default function DashboardLayout({
   const pathname = usePathname();
   const dispatch = useAppDispatch();
   const router = useRouter();
-  const { isMobileOpen, searchQuery } = useAppSelector((state) => state.dashboard);
+  const { isMobileOpen, searchQuery } = useAppSelector(
+    (state) => state.dashboard,
+  );
   const { user, status } = useAppSelector((state) => state.user);
-  
+
   const userRole = user?.role;
 
   const navItems = useMemo(() => getNavItemsForRole(userRole), [userRole]);
@@ -52,13 +42,6 @@ export default function DashboardLayout({
   };
 
   useEffect(() => {
-    if (status === "idle") {
-      dispatch(fetchCurrentUser());
-    }
-  }, [status, dispatch]);
-
-  useEffect(() => {
-    // Only redirect if fetchCurrentUser failed or completed with no user
     if (status === "failed" || (status === "succeeded" && !user)) {
       router.replace(UI_ROUTES.AUTH.LOGIN);
     }
@@ -69,7 +52,9 @@ export default function DashboardLayout({
     return (
       <div className="h-screen w-full flex flex-col items-center justify-center space-y-3 bg-slate-50">
         <Loader2 className="h-8 w-8 text-emerald-600 animate-spin" />
-        <p className="text-sm font-medium text-slate-600">Verifying session...</p>
+        <p className="text-sm font-medium text-slate-600">
+          Verifying session...
+        </p>
       </div>
     );
   }
