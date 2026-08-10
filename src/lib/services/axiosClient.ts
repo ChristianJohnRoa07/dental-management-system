@@ -2,6 +2,7 @@ import axios from "axios";
 
 export const apiClient = axios.create({
   baseURL: "/api", // Points to your Next.js API routes
+  withCredentials: true,
   headers: {
     "Content-Type": "application/json",
   },
