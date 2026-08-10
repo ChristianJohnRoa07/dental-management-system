@@ -3,7 +3,7 @@ import {
   authApiService,
   ResetPasswordPayload,
   ResetPasswordResponse,
-} from "@/lib/api/auth.service";
+} from "@/lib/services/auth.service";
 
 export interface ResetPasswordFormState {
   newPassword: string;

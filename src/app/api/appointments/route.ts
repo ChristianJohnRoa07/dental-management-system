@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { AppointmentService } from '@/app/services/appointments/appointment.services';
 import { ERROR_CODES, ERROR_MESSAGES } from '@/lib/constants';
-import { isTokenBlacklisted } from '@/utils/validateToken';
+import { isTokenBlacklisted } from '@/lib/hooks/api/validateToken';
 
 export const dynamic = 'force-dynamic';
 

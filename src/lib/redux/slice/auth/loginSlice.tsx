@@ -3,7 +3,7 @@ import {
     authApiService,
     LoginPayload,
     LoginResponse,
-} from "@/lib/api/auth.service";
+} from "@/lib/services/auth.service";
 
 export interface LoginFormState {
     username: string;

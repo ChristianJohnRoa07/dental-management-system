@@ -3,7 +3,7 @@ import {
     authApiService,
     ForgotPasswordPayload,
     ForgotPasswordResponse,
-} from "@/lib/api/auth.service";
+} from "@/lib/services/auth.service";
 
 export interface ForgotPasswordFormState {
     email: string;

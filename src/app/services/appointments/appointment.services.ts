@@ -1,7 +1,7 @@
 import db from "@/lib/db";
 import { ERROR_CODES, ERROR_MESSAGES, DYNAMIC_ERRORS } from "@/lib/constants";
 import { Decimal } from "@prisma/client/runtime/client";
-import { hasAppointmentsScheduledForDay } from "@/utils/checkAppointmentSchedule";
+import { hasAppointmentsScheduledForDay } from "@/lib/hooks/api/checkAppointmentSchedule";
 
 export class AppointmentService {
     static async getAll(data: {
