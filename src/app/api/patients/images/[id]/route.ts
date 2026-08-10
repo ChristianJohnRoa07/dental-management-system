@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import path from 'path';
 import { PatientService } from '@/app/services/patients/patient.services';
 import { ERROR_CODES, ERROR_MESSAGES } from '@/lib/constants';
-import { isTokenBlacklisted } from '@/utils/validateToken';
-import { generateRelativePath } from '@/utils/generateRelativePath';
+import { isTokenBlacklisted } from '@/lib/hooks/api/validateToken';
+import { generateRelativePath } from '@/lib/hooks/api/generateRelativePath';
 
 export const dynamic = 'force-dynamic';
 

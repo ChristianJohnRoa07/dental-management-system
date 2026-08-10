@@ -1,6 +1,7 @@
 "use client";
 
-import React from "react";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Calendar as CalendarIcon,
   Users,
@@ -13,6 +14,9 @@ import {
   FileText,
   Phone,
 } from "lucide-react";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { fetchCurrentUser } from "@/lib/redux/slice/user/userSlice";
+import { UI_ROUTES } from "@/lib/routes";
 
 const STATS = [
   {
@@ -148,6 +152,32 @@ const POPULAR_PROCEDURES = [
 ];
 
 export function DentalDashboardContent() {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const { user, status } = useAppSelector((state) => state.user);
+
+  useEffect(() => {
+    // Only trigger session check if no user is present in memory
+    if (!user && status === "idle") {
+      dispatch(fetchCurrentUser());
+    }
+  }, [user, status, dispatch]);
+
+  // 2. Console log logged-in user details upon availability
+  useEffect(() => {
+    if (user) {
+      console.log("Logged in User Details:", user);
+    }
+  }, [user]);
+
+  // 3. Client-side Route Guard: Redirect to login if unauthenticated
+  useEffect(() => {
+    // Bounce to login ONLY if a fetch completed and failed with no user
+    if (status === "failed" && !user) {
+      router.replace(UI_ROUTES.AUTH.LOGIN);
+    }
+  }, [status, user, router]);
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "Completed":
@@ -218,7 +248,9 @@ export function DentalDashboardContent() {
                 <h2 className="text-base font-bold text-slate-900">
                   Today's Appointment Schedule
                 </h2>
-                <p className="text-xs text-slate-500">Friday, August 07, 2026</p>
+                <p className="text-xs text-slate-500">
+                  Friday, August 07, 2026
+                </p>
               </div>
               <button className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-600 bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded-md transition-colors">
                 <Filter className="h-3.5 w-3.5" /> Filter
@@ -241,7 +273,9 @@ export function DentalDashboardContent() {
                       </span>
                     </div>
                     {/* Mobile Status Badge Position */}
-                    <div className="sm:hidden">{getStatusBadge(apt.status)}</div>
+                    <div className="sm:hidden">
+                      {getStatusBadge(apt.status)}
+                    </div>
                   </div>
 
                   <div className="flex items-center gap-3 flex-1 min-w-0">

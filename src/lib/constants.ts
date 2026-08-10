@@ -72,3 +72,8 @@ export const DYNAMIC_ERRORS = {
 
 export type StaticErrorKey = keyof typeof staticErrorRegistry;
 export type ErrorCode = typeof ERROR_CODES[StaticErrorKey] | 'NOT_FOUND_ERROR';
+
+export const SESSION_DURATION_SECONDS = 8 * 60 * 60;
+export const SESSION_DURATION = SESSION_DURATION_SECONDS * 1000;
+
+export const USER_COOKIE_NAME = "encrypted_user";

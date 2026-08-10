@@ -1,19 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import {
-  Stethoscope,
-  Activity,
-  Calendar as CalendarIcon,
-  Users,
-  Search,
-  Bell,
-  CalendarPlus,
-  Menu,
-  X,
-} from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import { Search, Bell, CalendarPlus, Menu } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { UI_ROUTES } from "@/lib/routes";
 import { getNavItemsForRole } from "@/config/navigation";
@@ -23,7 +13,7 @@ import {
   closeMobileMenu,
   setSearchQuery,
 } from "@/lib/redux/slice/dashboard/dashboardSlice";
-
+import { Loader2 } from "lucide-react";
 
 export default function DashboardLayout({
   children,
@@ -32,11 +22,13 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const dispatch = useAppDispatch();
+  const router = useRouter();
+  const { isMobileOpen, searchQuery } = useAppSelector(
+    (state) => state.dashboard,
+  );
+  const { user, status } = useAppSelector((state) => state.user);
 
-  const { isMobileOpen, searchQuery } = useAppSelector((state) => state.dashboard);
-  
-  // const userRole = useAppSelector((state) => state.user?.role) || "DOCTOR"; Uncomment this upon implementation of roles
-  const userRole = "DOCTOR";
+  const userRole = user?.role;
 
   const navItems = useMemo(() => getNavItemsForRole(userRole), [userRole]);
 
@@ -48,6 +40,27 @@ export default function DashboardLayout({
   const handleSetIsMobileOpen = (open: boolean) => {
     dispatch(toggleMobileMenu(open));
   };
+
+  useEffect(() => {
+    if (status === "failed" || (status === "succeeded" && !user)) {
+      router.replace(UI_ROUTES.AUTH.LOGIN);
+    }
+  }, [status, user, router]);
+
+  // Show loading indicator while verifying cookie session
+  if (status === "idle" || status === "loading") {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center space-y-3 bg-slate-50">
+        <Loader2 className="h-8 w-8 text-emerald-600 animate-spin" />
+        <p className="text-sm font-medium text-slate-600">
+          Verifying session...
+        </p>
+      </div>
+    );
+  }
+
+  // Render dashboard children if authenticated
+  if (!user) return null;
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-slate-900 antialiased overflow-hidden">

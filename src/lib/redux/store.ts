@@ -4,6 +4,7 @@ import loginReducer from "@/lib/redux/slice/auth/loginSlice";
 import forgotPasswordReducer from "@/lib/redux/slice/auth/forgotPasswordSlice";
 import resetPasswordReducer from "@/lib/redux/slice/auth/resetPasswordSlice";
 import verifyEmailReducer from "@/lib/redux/slice/auth/verifyEmailSlice";
+import userReducer from "@/lib/redux/slice/user/userSlice";
 import dashboardReducer from "@/lib/redux/slice/dashboard/dashboardSlice";
 
 
@@ -15,6 +16,7 @@ export const makeStore = () => {
       forgotPassword: forgotPasswordReducer,
       resetPassword: resetPasswordReducer,
       verifyEmail: verifyEmailReducer,
+      user: userReducer,
       dashboard: dashboardReducer,
 
     },

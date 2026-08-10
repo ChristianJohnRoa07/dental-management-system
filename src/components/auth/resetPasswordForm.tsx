@@ -2,7 +2,6 @@
 
 import React, { useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { redirect } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -87,11 +86,11 @@ export function ResetPasswordPage() {
   };
 
   const handleForgotPassword = () => {
-    redirect(UI_ROUTES.AUTH.FORGOT_PASSWORD);
+    router.push(UI_ROUTES.AUTH.FORGOT_PASSWORD);
   };
 
   const handleBackToLogin = () => {
-    redirect(UI_ROUTES.AUTH.LOGIN);
+    router.push(UI_ROUTES.AUTH.LOGIN);
   };
 
   // Missing Token View

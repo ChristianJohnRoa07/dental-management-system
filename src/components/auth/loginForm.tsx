@@ -1,12 +1,12 @@
 "use client";
 
-import * as React from "react";
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { User, Eye, EyeOff, Loader2, Lock, AlertCircle } from "lucide-react";
+import { User, Eye, EyeOff, Loader2, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -22,11 +22,13 @@ import {
   handleLogin,
   toggleShowPassword,
   setIsLoading,
+  setIsRedirecting,
   LoginFormState,
   loginUserDispatch,
 } from "@/lib/redux/slice/auth/loginSlice";
+import { fetchCurrentUser, setUser } from "@/lib/redux/slice/user/userSlice";
 import { UI_ROUTES } from "@/lib/routes";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { HeaderTitle } from "@/components/utils/cardHeader";
 
 // Form Schema Validation
@@ -38,10 +40,16 @@ const loginSchema = z.object({
 type LoginValues = z.infer<typeof loginSchema>;
 
 export function LoginForm() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
-  const { isLoading, showPassword, loginError } = useAppSelector(
+
+  const { isLoading, isRedirecting, showPassword } = useAppSelector(
     (state) => state.login,
   );
+
+  const { user, status } = useAppSelector((state) => state.user);
+
+  const isProcessing = isLoading || isRedirecting;
 
   const form = useForm<LoginValues>({
     resolver: zodResolver(loginSchema),
@@ -50,6 +58,31 @@ export function LoginForm() {
       password: "",
     },
   });
+
+  useEffect(() => {
+    // Reset overlay state whenever the login form mounts
+    dispatch(setIsLoading(false));
+    dispatch(setIsRedirecting(false));
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (user) {
+      router.replace(UI_ROUTES.DASHBOARD);
+      return;
+    }
+
+    if (status === "idle") {
+      dispatch(fetchCurrentUser())
+        .unwrap()
+        .then(() => {
+          toast.success("Welcome back!");
+          router.replace(UI_ROUTES.DASHBOARD);
+        })
+        .catch(() => {
+          // No active session found; stay on login page
+        });
+    }
+  }, [user, status, dispatch, router]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -66,33 +99,63 @@ export function LoginForm() {
 
   async function onSubmit(values: LoginValues) {
     dispatch(setIsLoading(true));
-    console.log("Submitting login payload:", values);
 
-    const resultAction = await dispatch(loginUserDispatch(values));
+    try {
+      const resultAction = await dispatch(loginUserDispatch(values));
 
-    if (loginUserDispatch.fulfilled.match(resultAction)) {
-      console.log("Login successful:", resultAction.payload);
-      // TODO: Add navigation or post-login redirect here
-    } else if (loginUserDispatch.rejected.match(resultAction)) {
-      const rawError = resultAction.payload as string;
-      const formattedError =
-        rawError?.replace(/^AUTH_ERROR:\s*/, "") ||
-        "Invalid username or password.";
+      if (loginUserDispatch.fulfilled.match(resultAction)) {
+        toast.success("Logged in successfully!");
 
-      toast.error("Authentication Failed", {
-        description: formattedError,
-      });
+        dispatch(setIsLoading(false));
+        dispatch(setIsRedirecting(true));
+
+        const payload = resultAction.payload as any;
+        const userData = payload?.data || payload?.user || payload;
+
+        if (userData) {
+          dispatch(setUser(userData));
+        }
+
+        // Redirect to dashboard
+        router.replace(UI_ROUTES.DASHBOARD);
+        router.refresh();
+      } else if (loginUserDispatch.rejected.match(resultAction)) {
+        dispatch(setIsLoading(false));
+        dispatch(setIsRedirecting(false));
+
+        const rawError = resultAction.payload as string;
+        const formattedError =
+          rawError?.replace(/^AUTH_ERROR:\s*/, "") ||
+          "Invalid username or password.";
+
+        toast.error("Authentication Failed", {
+          description: formattedError,
+        });
+      }
+    } catch {
+      dispatch(setIsLoading(false));
+      dispatch(setIsRedirecting(false));
     }
   }
 
   const handleForgotPassword = () => {
-    redirect(UI_ROUTES.AUTH.FORGOT_PASSWORD);
+    router.push(UI_ROUTES.AUTH.FORGOT_PASSWORD);
   };
 
   return (
     <Card className="border-border/50 shadow-lg">
+      {isProcessing && (
+        <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-50 flex flex-col items-center justify-center space-y-3 transition-all duration-300">
+          <Loader2 className="h-9 w-9 text-emerald-600 animate-spin" />
+          <p className="text-sm font-semibold text-slate-700">
+            {isRedirecting
+              ? "Redirecting to Dashboard..."
+              : "Authenticating..."}
+          </p>
+        </div>
+      )}
       <CardHeader className="space-y-5 pb-10 ">
-        <HeaderTitle/>
+        <HeaderTitle />
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -109,6 +172,7 @@ export function LoginForm() {
                       <Input
                         placeholder="Enter your username"
                         className="pl-9"
+                        disabled={isProcessing}
                         {...field}
                         onChange={(e) => handleInputChange(e, field.onChange)}
                       />
@@ -129,6 +193,7 @@ export function LoginForm() {
                     <button
                       type="button"
                       onClick={handleForgotPassword}
+                      disabled={isProcessing}
                       className="text-xs text-primary hover:underline font-medium bg-transparent border-none p-0 cursor-pointer"
                     >
                       Forgot password?
@@ -140,6 +205,7 @@ export function LoginForm() {
                       <Input
                         type={showPassword ? "text" : "password"}
                         placeholder="••••••••"
+                        disabled={isProcessing}
                         className="pl-9 pr-9 [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
                         {...field}
                         onChange={(e) => handleInputChange(e, field.onChange)}
@@ -148,6 +214,7 @@ export function LoginForm() {
                         type="button"
                         variant="ghost"
                         size="icon"
+                        disabled={isProcessing}
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
                         onClick={() => dispatch(toggleShowPassword())}
                       >
@@ -170,10 +237,12 @@ export function LoginForm() {
             <Button
               type="submit"
               className="w-full bg-appointment-confirmed hover:bg-appointment-confirmed/90 text-white font-semibold shadow-md transition-all"
-              disabled={isLoading}
+              disabled={isProcessing}
             >
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign In to Portal
+              {isProcessing && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              {isRedirecting ? "Redirecting..." : "Sign In to Portal"}
             </Button>
           </form>
         </Form>

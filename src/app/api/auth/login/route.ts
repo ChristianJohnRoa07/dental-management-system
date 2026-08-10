@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { UserService } from '@/app/services/users/user.services';
+import { setEncryptedUserCookie } from '@/lib/hooks/api/authCookies';
 import { ERROR_CODES } from '@/lib/constants';
 
 // POST /api/auth/login - Authenticate credentials
@@ -8,19 +9,9 @@ export async function POST(request: Request) {
     const body = await request.json();
     const userSession = await UserService.login(body);
 
-    const response = NextResponse.json({ status: 'success', data: userSession });
+    await setEncryptedUserCookie(userSession);
 
-    response.cookies.set({
-      name: 'auth_token',
-      value: userSession.token,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      path: '/',
-      maxAge: 60 * 60 * 8,
-    });
-
-    return response;
+    return NextResponse.json({ status: 'success', message: 'Successfully logged in' });
     
   } catch (error: any) {
     const errorMessage = error.message || '';
