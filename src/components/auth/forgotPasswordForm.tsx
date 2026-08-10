@@ -27,7 +27,7 @@ import {
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { HeaderTitle } from "@/components/utils/cardHeader";
 import { UI_ROUTES } from "@/lib/routes";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 
 import {
@@ -45,6 +45,7 @@ const forgotPasswordSchema = z.object({
 type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;
 
 export function ForgotPasswordForm() {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const { isSubmitting, isSubmitted, errorMessage } = useAppSelector(
     (state) => state.forgotPassword,
@@ -75,7 +76,7 @@ export function ForgotPasswordForm() {
   }
 
   const handleBacktoLogin = () => {
-    redirect(UI_ROUTES.AUTH.LOGIN);
+    router.push(UI_ROUTES.AUTH.LOGIN);
   };
 
   return (
