@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { authApiService, VerifyEmailResponse } from "@/lib/services/auth.service";
+import { authApiService, VerifyEmailResponse } from "@/lib/services/user/auth.service";
 
 interface VerifyEmailState {
   status: "idle" | "loading" | "success" | "error";
