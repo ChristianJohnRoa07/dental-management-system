@@ -20,8 +20,9 @@ export type AppointmentStatus = (typeof AppointmentStatus)[keyof typeof Appointm
 
 
 export const Role = {
-  USER: 'USER',
-  ADMIN: 'ADMIN'
+  ADMIN: 'ADMIN',
+  DOCTOR: 'DOCTOR',
+  RECEPTIONIST: 'RECEPTIONIST'
 } as const
 
 export type Role = (typeof Role)[keyof typeof Role]

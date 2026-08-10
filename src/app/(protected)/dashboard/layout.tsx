@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
@@ -16,31 +16,14 @@ import {
 } from "lucide-react";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { UI_ROUTES } from "@/lib/routes";
+import { getNavItemsForRole } from "@/config/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import {
+  toggleMobileMenu,
+  closeMobileMenu,
+  setSearchQuery,
+} from "@/lib/redux/slice/dashboard/dashboardSlice";
 
-
-const NAV_ITEMS = [
-  {
-    label: "Dashboard",
-    href: UI_ROUTES.DASHBOARD,
-    icon: Activity,
-  },
-  {
-    label: "Appointments",
-    href: UI_ROUTES.APPOINTMENTS.ROOT,
-    icon: CalendarIcon,
-    badge: 12,
-  },
-  {
-    label: "Patients",
-    href: UI_ROUTES.PATIENTS.ROOT,
-    icon: Users,
-  },
-  {
-    label: "Procedures & Services",
-    href: UI_ROUTES.PROCEDURES,
-    icon: Stethoscope,
-  },
-];
 
 export default function DashboardLayout({
   children,
@@ -48,13 +31,23 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const dispatch = useAppDispatch();
+
+  const { isMobileOpen, searchQuery } = useAppSelector((state) => state.dashboard);
+  
+  // const userRole = useAppSelector((state) => state.user?.role) || "DOCTOR"; Uncomment this upon implementation of roles
+  const userRole = "DOCTOR";
+
+  const navItems = useMemo(() => getNavItemsForRole(userRole), [userRole]);
 
   // Automatically close mobile sidebar when path changes
   useEffect(() => {
-    setIsMobileOpen(false);
-  }, [pathname]);
+    dispatch(closeMobileMenu());
+  }, [pathname, dispatch]);
+
+  const handleSetIsMobileOpen = (open: boolean) => {
+    dispatch(toggleMobileMenu(open));
+  };
 
   return (
     <div className="flex h-screen bg-slate-50 font-sans text-slate-900 antialiased overflow-hidden">
@@ -62,12 +55,16 @@ export default function DashboardLayout({
       {isMobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden transition-opacity"
-          onClick={() => setIsMobileOpen(false)}
+          onClick={() => dispatch(closeMobileMenu())}
         />
       )}
 
       {/* Sidebar Navigation */}
-      <Sidebar isMobileOpen={isMobileOpen} navItems={NAV_ITEMS} setIsMobileOpen={setIsMobileOpen}/>
+      <Sidebar
+        isMobileOpen={isMobileOpen}
+        navItems={navItems}
+        setIsMobileOpen={handleSetIsMobileOpen}
+      />
 
       {/* Main Container */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
@@ -77,7 +74,7 @@ export default function DashboardLayout({
             {/* Hamburger Button for Mobile/Tablet */}
             <button
               type="button"
-              onClick={() => setIsMobileOpen(true)}
+              onClick={() => dispatch(toggleMobileMenu(true))}
               className="p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg lg:hidden"
               aria-label="Open Sidebar"
             >
@@ -91,7 +88,7 @@ export default function DashboardLayout({
                 type="text"
                 placeholder="Search patients, procedures..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => dispatch(setSearchQuery(e.target.value))}
                 className="w-full pl-9 pr-4 py-2 text-sm bg-slate-50 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:bg-white transition-all"
               />
             </div>

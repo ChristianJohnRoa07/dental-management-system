@@ -31,6 +31,15 @@ export interface ResetPasswordResponse{
   message: string;
 }
 
+export interface VerifyEmailPayload {
+  token: string;
+}
+
+export interface VerifyEmailResponse {
+  success: boolean;
+  message: string;
+}
+
 export const authApiService = {
   login: async (credentials: LoginPayload): Promise<LoginResponse> => {
     return apiClient.post("/auth/login", credentials);
@@ -40,5 +49,8 @@ export const authApiService = {
   },
   resetPassword: async (payload: ResetPasswordPayload): Promise<ResetPasswordResponse> => {
     return apiClient.post("/auth/reset-password", payload);
+  },
+  verifyEmail: async (payload: VerifyEmailPayload): Promise<VerifyEmailResponse> => {
+    return apiClient.get(`/api/auth/verifyEmail?token=${payload.token}`);
   },
 };
