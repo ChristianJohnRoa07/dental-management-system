@@ -9,17 +9,7 @@ export const apiClient = axios.create({
   },
 });
 
-// Response Interceptor for global error handling
 apiClient.interceptors.response.use(
   (response) => response.data,
-  (error) => {
-    // If any protected request returns 401 Unauthorized
-    if (error.response && error.response.status === 401) {
-      if (typeof window !== "undefined") {
-        // Clear client storage if applicable and redirect to login
-        window.location.href = UI_ROUTES.AUTH.LOGIN;
-      }
-    }
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
