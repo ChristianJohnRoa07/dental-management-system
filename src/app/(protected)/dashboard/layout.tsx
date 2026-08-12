@@ -28,9 +28,22 @@ export default function DashboardLayout({
   );
   const { user, status } = useAppSelector((state) => state.user);
 
-  const userRole = user?.role;
+  console.log("user", user)
 
-  const navItems = useMemo(() => getNavItemsForRole(userRole), [userRole]);
+  const userData = useMemo(() => {
+    if (!user) return { firstName: "", lastName: "", role: "" };
+
+    return {
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: user.role,
+    };
+  }, [user]);
+
+  const navItems = useMemo(
+    () => getNavItemsForRole(userData.role),
+    [userData.role],
+  );
 
   // Automatically close mobile sidebar when path changes
   useEffect(() => {
@@ -77,6 +90,7 @@ export default function DashboardLayout({
         isMobileOpen={isMobileOpen}
         navItems={navItems}
         setIsMobileOpen={handleSetIsMobileOpen}
+        user={userData}
       />
 
       {/* Main Container */}
