@@ -4,6 +4,7 @@ import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Stethoscope, X, LucideIcon } from "lucide-react";
+import { Role } from "@/app/generated/prisma/enums";
 
 export interface NavItem {
   label: string;
@@ -12,18 +13,37 @@ export interface NavItem {
   badge?: number | string;
 }
 
+export interface SidebarUserData {
+  firstName: string;
+  lastName: string;
+  role: string;
+}
+
 interface SidebarProps {
   isMobileOpen: boolean;
   setIsMobileOpen: (open: boolean) => void;
   navItems: NavItem[];
+  user: SidebarUserData;
 }
 
 export function Sidebar({
   isMobileOpen,
   setIsMobileOpen,
   navItems,
+  user,
 }: SidebarProps) {
   const pathname = usePathname();
+
+  const { firstName, lastName, role } = user;
+
+  const fullName = user
+    ? `${firstName || ""} ${lastName || ""}`.trim()
+    : "User";
+
+  // 2. Generate initials from first and last name (e.g. "John" "Doe" -> "JD")
+  const initials = user
+    ? `${firstName?.[0] || ""}${lastName?.[0] || ""}`.toUpperCase() || "U"
+    : "U";
 
   return (
     <aside
@@ -85,13 +105,13 @@ export function Sidebar({
       {/* User Profile Footer */}
       <div className="p-4 border-t border-slate-100 flex items-center gap-3">
         <div className="h-9 w-9 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-slate-700 text-sm">
-          DJ
+          {initials}
         </div>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-semibold text-slate-900 truncate">
-            Dr. Sarah Jones
+            {role === Role.DOCTOR || Role.ADMIN ? `Dr. ${fullName}` : fullName}
           </p>
-          <p className="text-xs text-slate-500 truncate">Lead Orthodontist</p>
+          <p className="text-xs text-slate-500 truncate">{role}</p>
         </div>
       </div>
     </aside>
