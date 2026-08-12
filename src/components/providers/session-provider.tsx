@@ -1,7 +1,12 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useCallback,
+} from "react";
+import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { fetchCurrentUser, clearUser } from "@/lib/redux/slice/user/userSlice";
 import { authApiService } from "@/lib/services/user/auth.service";
@@ -19,6 +24,7 @@ const SessionContext = createContext<SessionContextType | undefined>(undefined);
 
 export function SessionProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const pathname = usePathname();
   const dispatch = useAppDispatch();
   const { user, status } = useAppSelector((state) => state.user);
 
@@ -35,22 +41,38 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     }
   }, [dispatch, router]);
 
+  // Session rehydration
   useEffect(() => {
-    if (status === "idle") {
+    const isAuthPage =
+      pathname?.includes("/login") || pathname?.includes("/forgot-password");
+    if (status === "idle" && !isAuthPage) {
       dispatch(fetchCurrentUser());
     }
-  }, [status, dispatch]);
+  }, [status, dispatch, pathname]);
 
+  // Intercept 401 responses globally while leveraging Next.js router & Redux
   useEffect(() => {
     const interceptor = apiClient.interceptors.response.use(
       (response) => response,
       (error) => {
-        if (error.response?.status === 401) {
+        const currentPath =
+          typeof window !== "undefined" ? window.location.pathname : "";
+
+        // Match any variation of auth/login endpoints or pages
+        const isAuthEndpoint =
+          error.config?.url?.includes("/auth/login") ||
+          error.config?.url?.includes("/login");
+
+        const isAuthPage =
+          currentPath.includes("/login") ||
+          currentPath.includes("/forgot-password");
+
+        if (error.response?.status === 401 && !isAuthEndpoint && !isAuthPage) {
           dispatch(clearUser());
           router.replace(UI_ROUTES.AUTH.LOGIN);
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {

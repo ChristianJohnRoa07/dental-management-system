@@ -41,11 +41,14 @@ export const loginUserDispatch = createAsyncThunk<
   { rejectValue: string }
 >("login/loginUser", async (credentials, { rejectWithValue }) => {
   try {
-    const response = await authApiService.login(credentials);
-    return response;
-  } catch (err: any) {
-    return rejectWithValue(err.message || "Failed to log in.");
-  }
+      const response = await authApiService.login(credentials);
+      return response;
+    } catch (error: any) {
+
+      const errorMessage = error.response?.data?.message;
+
+      return rejectWithValue(errorMessage);
+    }
 });
 
 const loginSlice = createSlice({
