@@ -4,7 +4,15 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { User, Eye, EyeOff, Loader2, Lock } from "lucide-react";
+import {
+  User,
+  Eye,
+  EyeOff,
+  Loader2,
+  Lock,
+  Sparkles,
+  ArrowRight,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
@@ -29,7 +37,8 @@ import {
 import { fetchCurrentUser, setUser } from "@/lib/redux/slice/user/userSlice";
 import { UI_ROUTES } from "@/lib/routes";
 import { useRouter } from "next/navigation";
-import { HeaderTitle } from "@/components/utils/cardHeader";
+import { HeaderTitle } from "@/components/auth/cardHeader";
+import { DENTAL_PALETTE } from "@/lib/common/colors";
 
 // Form Schema Validation
 const loginSchema = z.object({
@@ -143,7 +152,7 @@ export function LoginForm() {
   };
 
   return (
-    <Card className="border-border/50 shadow-lg">
+    <Card className="relative overflow-hidden w-full max-w-md mx-auto p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-md bg-white">
       {isProcessing && (
         <div className="absolute inset-0 bg-white/85 backdrop-blur-[2px] z-50 flex flex-col items-center justify-center space-y-3 transition-all duration-300">
           <Loader2 className="h-9 w-9 text-emerald-600 animate-spin" />
@@ -154,24 +163,26 @@ export function LoginForm() {
           </p>
         </div>
       )}
-      <CardHeader className="space-y-5 pb-10 ">
-        <HeaderTitle />
-      </CardHeader>
-      <CardContent>
+
+      <HeaderTitle />
+
+      <CardContent className="p-0">
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
             <FormField
               control={form.control}
               name="username"
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
+                <FormItem className="space-y-1.5">
+                  <FormLabel className="text-sm font-semibold text-slate-800">
+                    Username
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <User className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <User className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                       <Input
                         placeholder="Enter your username"
-                        className="pl-9"
+                        className="pl-9 h-11 rounded-xl border-slate-200 focus-visible:ring-emerald-500 text-sm"
                         disabled={isProcessing}
                         {...field}
                         onChange={(e) => handleInputChange(e, field.onChange)}
@@ -183,30 +194,23 @@ export function LoginForm() {
               )}
             />
 
+            {/* Password Field */}
             <FormField
               control={form.control}
               name="password"
               render={({ field }) => (
-                <FormItem>
-                  <div className="flex items-center justify-between">
-                    <FormLabel>Password</FormLabel>
-                    <button
-                      type="button"
-                      onClick={handleForgotPassword}
-                      disabled={isProcessing}
-                      className="text-xs text-primary hover:underline font-medium bg-transparent border-none p-0 cursor-pointer"
-                    >
-                      Forgot password?
-                    </button>
-                  </div>
+                <FormItem className="space-y-1.5">
+                  <FormLabel className="text-sm font-semibold text-slate-800">
+                    Password
+                  </FormLabel>
                   <FormControl>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                      <Lock className="absolute left-3 top-3 h-4 w-4 text-slate-400" />
                       <Input
                         type={showPassword ? "text" : "password"}
-                        placeholder="••••••••"
+                        placeholder="Enter your password"
                         disabled={isProcessing}
-                        className="pl-9 pr-9 [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
+                        className="pl-9 pr-10 h-11 rounded-xl border-slate-200 focus-visible:ring-emerald-500 text-sm [&::-ms-reveal]:hidden [&::-webkit-contacts-auto-fill-button]:hidden"
                         {...field}
                         onChange={(e) => handleInputChange(e, field.onChange)}
                       />
@@ -215,13 +219,13 @@ export function LoginForm() {
                         variant="ghost"
                         size="icon"
                         disabled={isProcessing}
-                        className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                        className="absolute right-1 top-1 h-9 w-9 text-slate-400 hover:text-slate-600 hover:bg-transparent"
                         onClick={() => dispatch(toggleShowPassword())}
                       >
                         {showPassword ? (
-                          <EyeOff className="h-4 w-4 text-muted-foreground" />
+                          <EyeOff className="h-4 w-4" />
                         ) : (
-                          <Eye className="h-4 w-4 text-muted-foreground" />
+                          <Eye className="h-4 w-4" />
                         )}
                         <span className="sr-only">
                           Toggle password visibility
@@ -234,15 +238,30 @@ export function LoginForm() {
               )}
             />
 
+            {/* Remember Me & Forgot Password Row */}
+            <div className="flex items-center justify-between text-xs pt-0.5">
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={isProcessing}
+                className="font-medium text-slate-800 hover:text-slate-900 hover:underline bg-transparent border-none p-0 cursor-pointer"
+              >
+                Forgot password?
+              </button>
+            </div>
+
+            {/* Submit Button */}
             <Button
               type="submit"
-              className="w-full bg-appointment-confirmed hover:bg-appointment-confirmed/90 text-white font-semibold shadow-md transition-all"
+              style={{ backgroundColor: DENTAL_PALETTE.primary.DEFAULT }}
+              className="w-full h-11 hover:opacity-90 text-white font-medium rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 text-sm mt-2"
               disabled={isProcessing}
             >
-              {isProcessing && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              {isRedirecting ? "Redirecting..." : "Sign In to Portal"}
+              {isProcessing && <Loader2 className="h-4 w-4 animate-spin" />}
+              <span>
+                {isRedirecting ? "Redirecting..." : "Log in to portal"}
+              </span>
+              {!isProcessing && <ArrowRight className="h-4 w-4" />}
             </Button>
           </form>
         </Form>

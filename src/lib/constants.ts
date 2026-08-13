@@ -1,4 +1,5 @@
-export const TITLE = "Dr. Jones Dental Management Portal" as const;
+export const TITLE = "Dr. Jones" as const;
+export const APP_NAME = "Dental Management Portal" as const;
 
 const staticErrorRegistry = {
   SERVER_ERROR: {

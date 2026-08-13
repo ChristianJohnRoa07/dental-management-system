@@ -7,7 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { UI_ROUTES } from "@/lib/routes";
 import { AlertCircle, CheckCircle2, Loader2, Lock } from "lucide-react";
-import { ReturnButton } from "../utils/returnButton";
+import { ReturnButton } from "./returnButton";
 import {
   Card,
   CardContent,
@@ -23,13 +23,14 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
-import { HeaderTitle } from "../utils/cardHeader";
+import { HeaderTitle } from "./cardHeader";
 import { Alert, AlertDescription } from "../ui/alert";
 import { Button } from "@base-ui/react/button";
 import { Input } from "@base-ui/react/input";
 
 import { resetPasswordDispatch } from "@/lib/redux/slice/auth/resetPasswordSlice";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { DENTAL_PALETTE } from "@/lib/common/colors";
 
 const resetPasswordSchema = z
   .object({
@@ -89,10 +90,6 @@ export function ResetPasswordPage() {
     router.push(UI_ROUTES.AUTH.FORGOT_PASSWORD);
   };
 
-  const handleBackToLogin = () => {
-    router.push(UI_ROUTES.AUTH.LOGIN);
-  };
-
   // Missing Token View
   if (!token) {
     return (
@@ -124,13 +121,10 @@ export function ResetPasswordPage() {
   }
 
   return (
-    <Card className="w-full max-w-md shadow-lg border border-border">
-      <CardHeader className="text-center mb-3.5">
-        <div className="mb-5">
-          <HeaderTitle />
-        </div>
-
-        <CardDescription className="mt-2 text-center text-sm text-gray-600">
+    <Card className="relative overflow-hidden w-full max-w-md mx-auto p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-md bg-white">
+      <CardHeader className="space-y-2 text-center p-0 pb-6">
+        <HeaderTitle />
+        <CardDescription className="text-sm text-slate-500 font-normal">
           {isSubmitted
             ? "Your password has been successfully reset"
             : "Enter your new password below."}
@@ -168,11 +162,11 @@ export function ResetPasswordPage() {
                     <FormLabel>New Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           type="password"
                           placeholder="••••••••"
-                          className="pl-9 mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400  focus:outline-none focus:ring-1  disabled:bg-gray-100"
+                          className="pl-9 h-11 mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400  focus:outline-none focus:ring-1  disabled:bg-gray-100"
                           disabled={isSubmitting}
                           {...field}
                         />
@@ -191,11 +185,11 @@ export function ResetPasswordPage() {
                     <FormLabel>Confirm New Password</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Lock className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           type="password"
                           placeholder="••••••••"
-                          className="pl-9 mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400  focus:outline-none focus:ring-1  disabled:bg-gray-100"
+                          className="pl-9 h-11 mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm text-gray-900 placeholder-gray-400  focus:outline-none focus:ring-1  disabled:bg-gray-100"
                           disabled={isSubmitting}
                           {...field}
                         />
@@ -209,7 +203,8 @@ export function ResetPasswordPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full flex items-center justify-center gap-2 rounded-md bg-appointment-confirmed hover:bg-appointment-confirmed/90 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline disabled:opacity-50"
+                style={{ backgroundColor: DENTAL_PALETTE.primary.DEFAULT }}
+                className="w-full flex items-center justify-center gap-2 rounded-md hover:opacity-90 py-2.5 text-sm font-semibold text-white shadow-sm focus-visible:outline disabled:opacity-50"
               >
                 {isSubmitting ? (
                   <>
@@ -224,10 +219,6 @@ export function ResetPasswordPage() {
           </Form>
         )}
       </CardContent>
-
-      <CardFooter className="flex justify-center border-t p-4">
-        <ReturnButton onClick={handleBackToLogin} title="Back to Login" />
-      </CardFooter>
     </Card>
   );
 }

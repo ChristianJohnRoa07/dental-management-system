@@ -7,7 +7,7 @@ import * as z from "zod";
 import { Loader2, Mail, ArrowLeft, CheckCircle2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { ReturnButton } from "@/components/utils/returnButton";
+import { ReturnButton } from "@/components/auth/returnButton";
 import { Input } from "@/components/ui/input";
 import {
   Form,
@@ -25,15 +25,16 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { HeaderTitle } from "@/components/utils/cardHeader";
+import { HeaderTitle } from "@/components/auth/cardHeader";
 import { UI_ROUTES } from "@/lib/routes";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 
 import {
   forgotPasswordDispatch,
-  resetForgotPasswordForm
+  resetForgotPasswordForm,
 } from "@/lib/redux/slice/auth/forgotPasswordSlice";
+import { DENTAL_PALETTE } from "@/lib/common/colors";
 
 const forgotPasswordSchema = z.object({
   email: z
@@ -80,13 +81,10 @@ export function ForgotPasswordForm() {
   };
 
   return (
-    <Card className="w-full max-w-md shadow-lg border border-border">
-      <CardHeader className="text-center mb-3.5">
-        <div className="mb-5">
-          <HeaderTitle />
-        </div>
-
-        <CardDescription>
+    <Card className="relative overflow-hidden w-full max-w-md mx-auto p-6 sm:p-8 rounded-2xl border border-slate-200/80 shadow-md bg-white">
+      <CardHeader className="space-y-2 text-center p-0 pb-6">
+        <HeaderTitle />
+        <CardDescription className="text-sm text-slate-500 font-normal">
           {isSubmitted
             ? "Check your inbox for the reset link"
             : "Enter your email address to receive a password reset link."}
@@ -126,10 +124,10 @@ export function ForgotPasswordForm() {
                     <FormLabel>Email Address</FormLabel>
                     <FormControl>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
                         <Input
                           placeholder="name@example.com"
-                          className="pl-9"
+                          className="pl-9 h-11"
                           disabled={isSubmitting}
                           {...field}
                         />
@@ -142,7 +140,8 @@ export function ForgotPasswordForm() {
 
               <Button
                 type="submit"
-                className="w-full bg-appointment-confirmed hover:bg-appointment-confirmed/90"
+                style={{ backgroundColor: DENTAL_PALETTE.primary.DEFAULT }}
+                className="w-full h-11 text-white font-medium rounded-xl shadow-sm hover:opacity-90 transition-all flex items-center justify-center gap-2 text-sm mt-2"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -159,7 +158,7 @@ export function ForgotPasswordForm() {
         )}
       </CardContent>
 
-      <CardFooter className="flex justify-center border-t p-4">
+      <CardFooter className="flex justify-center border-t border-slate-100 bg-white">
         <ReturnButton onClick={handleBacktoLogin} title="Back to Login" />
       </CardFooter>
     </Card>

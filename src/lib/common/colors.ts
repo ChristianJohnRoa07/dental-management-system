@@ -3,7 +3,7 @@
 export const DENTAL_PALETTE = {
   // Brand & Core Clinical Colors
   primary: {
-    DEFAULT: "#0284C7", // Medical Sky/Teal
+    DEFAULT: "#0c8a60", // Dark Green
     hover: "#0369A1",
     light: "#E0F2FE",
   },

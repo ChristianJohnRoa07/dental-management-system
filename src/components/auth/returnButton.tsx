@@ -22,12 +22,12 @@ export function ReturnButton({
       type="button"
       onClick={handleClick}
       className={cn(
-        "inline-flex items-center justify-center text-xs text-primary hover:underline font-medium bg-transparent border-none p-0 cursor-pointer disabled:pointer-events-none disabled:opacity-50",
+        "inline-flex items-center justify-center text-xs font-semibold text-slate-800 hover:text-slate-900 hover:underline bg-transparent border-none p-0 cursor-pointer transition-colors disabled:pointer-events-none disabled:opacity-50",
         className
       )}
       {...props}
     >
-      <ArrowLeft className="mr-2 h-4 w-4" />
+      <ArrowLeft className="mr-2 h-3.5 w-3.5 text-slate-700" />
       {children || title}
     </button>
   );
