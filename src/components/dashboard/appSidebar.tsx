@@ -87,6 +87,7 @@ export function AppSidebar({
 
   const isDoctorOrAdmin = role === Role.DOCTOR || role === Role.ADMIN;
   const displayName = isDoctorOrAdmin ? `Dr. ${fullName}` : fullName;
+  const displayEmail = email?.toLocaleLowerCase();
 
   return (
     <Sidebar
@@ -190,8 +191,8 @@ export function AppSidebar({
                         <span className="truncate font-semibold text-slate-900">
                           {displayName}
                         </span>
-                        <span className="truncate text-xs text-slate-500 capitalize">
-                          {email?.toLowerCase()}
+                        <span className="truncate text-xs text-slate-500">
+                          {displayEmail}
                         </span>
                       </div>
                     </div>
