@@ -25,7 +25,7 @@ export function HeaderTitle() {
       {/* Logo Badge */}
       <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl mx-auto">
         <div
-          className="h-8 w-8 rounded-lg bg-black flex items-center justify-center text-white shrink-0"
+          className="h-8 w-8 rounded-lg flex items-center justify-center text-white shrink-0"
           style={{ backgroundColor: DENTAL_PALETTE.primary.DEFAULT }}
         >
           <Tooth className="h-5 w-5" />
