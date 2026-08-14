@@ -113,21 +113,27 @@ export function LoginForm() {
       const resultAction = await dispatch(loginUserDispatch(values));
 
       if (loginUserDispatch.fulfilled.match(resultAction)) {
-        toast.success("Logged in successfully!");
+        
+        const userResult = await dispatch(fetchCurrentUser());
 
-        dispatch(setIsLoading(false));
-        dispatch(setIsRedirecting(true));
+        if (fetchCurrentUser.fulfilled.match(userResult)) {
 
-        const payload = resultAction.payload as any;
-        const userData = payload?.data || payload?.user || payload;
+          dispatch(setIsLoading(false));
+          dispatch(setIsRedirecting(true));
 
-        if (userData) {
-          dispatch(setUser(userData));
+          router.replace(UI_ROUTES.DASHBOARD);
+          
+        } else {
+          
+          dispatch(setIsLoading(false));
+          dispatch(setIsRedirecting(false));
+
+          const userError = userResult.payload as string;
+          toast.error("Session Error", {
+            description: userError || "Failed to load user profile.",
+          });
         }
 
-        // Redirect to dashboard
-        router.replace(UI_ROUTES.DASHBOARD);
-        router.refresh();
       } else if (loginUserDispatch.rejected.match(resultAction)) {
         dispatch(setIsLoading(false));
         dispatch(setIsRedirecting(false));

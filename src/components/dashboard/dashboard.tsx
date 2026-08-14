@@ -163,14 +163,6 @@ export function DentalDashboardContent() {
     }
   }, [user, status, dispatch]);
 
-  // 2. Console log logged-in user details upon availability
-  useEffect(() => {
-    if (user) {
-      console.log("Logged in User Details:", user);
-    }
-  }, [user]);
-
-  // 3. Client-side Route Guard: Redirect to login if unauthenticated
   useEffect(() => {
     // Bounce to login ONLY if a fetch completed and failed with no user
     if (status === "failed" && !user) {
