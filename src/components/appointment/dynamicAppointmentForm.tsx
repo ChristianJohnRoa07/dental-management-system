@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -13,6 +13,7 @@ import {
   FileText,
   Check,
   Loader2,
+  Eye,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -91,6 +92,7 @@ interface DynamicAppointmentFormModalProps {
   onOpenChange: (open: boolean) => void;
   initialData?: Partial<AppointmentFormData> | null;
   isEditMode?: boolean;
+  isViewMode?: boolean;
   onSubmit?: (data: AppointmentFormData) => Promise<void>;
 }
 
@@ -99,14 +101,22 @@ export default function DynamicAppointmentFormModal({
   onOpenChange,
   initialData,
   isEditMode = false,
+  isViewMode = false,
   onSubmit,
 }: DynamicAppointmentFormModalProps) {
+  const isViewOnly = isViewMode;
   const modalMode = isEditMode || Boolean(initialData?.id);
 
   const form = useForm({
     resolver: zodResolver(appointmentSchema),
     values: getInitialValues(initialData),
   });
+
+  useEffect(() => {
+    if (open) {
+      form.reset(getInitialValues(initialData));
+    }
+  }, [open, initialData, form]);
 
   const { isSubmitting } = form.formState;
 
@@ -119,6 +129,18 @@ export default function DynamicAppointmentFormModal({
     } catch (error) {
       console.error("Failed to save appointment:", error);
     }
+  };
+
+  const getHeaderTitle = () => {
+    if (isViewOnly) return "Appointment Details";
+    return modalMode ? "Edit Appointment" : "Schedule New Appointment";
+  };
+
+  const getHeaderDescription = () => {
+    if (isViewOnly) return "Viewing booked appointment information";
+    return modalMode
+      ? "Update patient session details and chair assignment"
+      : "Book a patient session and assign treatment chair";
   };
 
   return (
@@ -135,13 +157,12 @@ export default function DynamicAppointmentFormModal({
     >
       <DialogContent className="sm:max-w-2xl w-full max-h-[90vh] overflow-y-auto sm:rounded-2xl p-6 sm:p-8">
         <DialogHeader className="space-y-1 text-left">
-          <DialogTitle className="text-xl font-bold text-slate-900">
-            {modalMode ? "Edit Appointment" : "Schedule New Appointment"}
+          <DialogTitle className="text-xl font-bold text-slate-900 flex items-center gap-2">
+            {isViewOnly && <Eye className="h-5 w-5 text-emerald-600" />}
+            {getHeaderTitle()}
           </DialogTitle>
           <DialogDescription className="text-xs text-slate-500">
-            {modalMode
-              ? "Update patient session details and chair assignment"
-              : "Book a patient session and assign treatment chair"}
+            {getHeaderDescription()}
           </DialogDescription>
         </DialogHeader>
 
@@ -160,9 +181,13 @@ export default function DynamicAppointmentFormModal({
                     <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
                       <User className="h-4 w-4 text-emerald-600" /> Patient
                     </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      disabled={isViewOnly}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
                       <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-slate-50 border-slate-200 rounded-xl focus:ring-emerald-500">
+                        <SelectTrigger className="w-full h-10 bg-slate-50 border-slate-200 rounded-xl focus:ring-emerald-500 disabled:opacity-80 disabled:cursor-not-allowed">
                           <SelectValue placeholder="Select a patient..." />
                         </SelectTrigger>
                       </FormControl>
@@ -181,7 +206,7 @@ export default function DynamicAppointmentFormModal({
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    {!isViewOnly && <FormMessage />}
                   </FormItem>
                 )}
               />
@@ -196,9 +221,13 @@ export default function DynamicAppointmentFormModal({
                       <Stethoscope className="h-4 w-4 text-emerald-600" />{" "}
                       Procedure & Service
                     </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      disabled={isViewOnly}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
                       <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-slate-50 border-slate-200 rounded-xl focus:ring-emerald-500">
+                        <SelectTrigger className="w-full h-10 bg-slate-50 border-slate-200 rounded-xl focus:ring-emerald-500 disabled:opacity-80 disabled:cursor-not-allowed">
                           <SelectValue placeholder="Select a procedure..." />
                         </SelectTrigger>
                       </FormControl>
@@ -220,7 +249,7 @@ export default function DynamicAppointmentFormModal({
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    {!isViewOnly && <FormMessage />}
                   </FormItem>
                 )}
               />
@@ -235,9 +264,13 @@ export default function DynamicAppointmentFormModal({
                       <User className="h-4 w-4 text-emerald-600" /> Assigned
                       Dentist
                     </FormLabel>
-                    <Select onValueChange={field.onChange} value={field.value}>
+                    <Select
+                      disabled={isViewOnly}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
                       <FormControl>
-                        <SelectTrigger className="w-full h-10 bg-slate-50 border-slate-200 rounded-xl focus:ring-emerald-500">
+                        <SelectTrigger className="w-full h-10 bg-slate-50 border-slate-200 rounded-xl focus:ring-emerald-500 disabled:opacity-80 disabled:cursor-not-allowed">
                           <SelectValue placeholder="Select a dentist..." />
                         </SelectTrigger>
                       </FormControl>
@@ -253,7 +286,7 @@ export default function DynamicAppointmentFormModal({
                         </SelectItem>
                       </SelectContent>
                     </Select>
-                    <FormMessage />
+                    {!isViewOnly && <FormMessage />}
                   </FormItem>
                 )}
               />
@@ -270,11 +303,12 @@ export default function DynamicAppointmentFormModal({
                     <FormControl>
                       <Input
                         type="date"
+                        disabled={isViewOnly}
                         {...field}
-                        className="h-10 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-emerald-500"
+                        className="h-10 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-emerald-500 disabled:opacity-80 disabled:cursor-not-allowed"
                       />
                     </FormControl>
-                    <FormMessage />
+                    {!isViewOnly && <FormMessage />}
                   </FormItem>
                 )}
               />
@@ -291,11 +325,12 @@ export default function DynamicAppointmentFormModal({
                     <FormControl>
                       <Input
                         type="time"
+                        disabled={isViewOnly}
                         {...field}
-                        className="h-10 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-emerald-500"
+                        className="h-10 bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-emerald-500 disabled:opacity-80 disabled:cursor-not-allowed"
                       />
                     </FormControl>
-                    <FormMessage />
+                    {!isViewOnly && <FormMessage />}
                   </FormItem>
                 )}
               />
@@ -318,12 +353,14 @@ export default function DynamicAppointmentFormModal({
                               type="button"
                               key={chair}
                               variant="outline"
+                              disabled={isViewOnly}
                               onClick={() => field.onChange(chair)}
                               className={cn(
                                 "h-10 text-sm font-medium rounded-xl transition-all border",
                                 field.value === chair
                                   ? "border-emerald-600 bg-emerald-50/80 text-emerald-800 font-semibold hover:bg-emerald-100/80"
                                   : "border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100",
+                                isViewOnly && field.value !== chair && "opacity-50"
                               )}
                             >
                               {chair}
@@ -332,7 +369,7 @@ export default function DynamicAppointmentFormModal({
                         )}
                       </div>
                     </FormControl>
-                    <FormMessage />
+                    {!isViewOnly && <FormMessage />}
                   </FormItem>
                 )}
               />
@@ -350,12 +387,17 @@ export default function DynamicAppointmentFormModal({
                     <FormControl>
                       <Textarea
                         rows={3}
-                        placeholder="Add dental medical history notes or specific instructions..."
+                        disabled={isViewOnly}
+                        placeholder={
+                          isViewOnly
+                            ? "No additional notes specified."
+                            : "Add dental medical history notes or specific instructions..."
+                        }
                         {...field}
-                        className="bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-emerald-500 resize-none"
+                        className="bg-slate-50 border-slate-200 rounded-xl focus-visible:ring-emerald-500 resize-none disabled:opacity-80 disabled:cursor-not-allowed"
                       />
                     </FormControl>
-                    <FormMessage />
+                    {!isViewOnly && <FormMessage />}
                   </FormItem>
                 )}
               />
@@ -363,33 +405,45 @@ export default function DynamicAppointmentFormModal({
 
             {/* Action Buttons */}
             <DialogFooter className="pt-4 border-t border-slate-100 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={() => onOpenChange(false)}
-                className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl"
-              >
-                Cancel
-              </Button>
+              {isViewOnly ? (
+                <Button
+                  type="button"
+                  onClick={() => onOpenChange(false)}
+                  className="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold px-5 py-2.5 rounded-xl transition-all"
+                >
+                  Close
+                </Button>
+              ) : (
+                <>
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    onClick={() => onOpenChange(false)}
+                    className="w-full sm:w-auto px-4 py-2.5 text-sm font-medium text-slate-600 hover:text-slate-800 hover:bg-slate-100 rounded-xl"
+                  >
+                    Cancel
+                  </Button>
 
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all"
-              >
-                {isSubmitting ? (
-                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
-                ) : (
-                  <Check className="h-4 w-4 mr-2" />
-                )}
-                <span>
-                  {isSubmitting
-                    ? "Saving..."
-                    : modalMode
-                      ? "Save Changes"
-                      : "Confirm Appointment"}
-                </span>
-              </Button>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-5 py-2.5 rounded-xl shadow-sm transition-all"
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : (
+                      <Check className="h-4 w-4 mr-2" />
+                    )}
+                    <span>
+                      {isSubmitting
+                        ? "Saving..."
+                        : modalMode
+                          ? "Save Changes"
+                          : "Confirm Appointment"}
+                    </span>
+                  </Button>
+                </>
+              )}
             </DialogFooter>
           </form>
         </Form>
