@@ -1,7 +1,8 @@
 import {
   Activity,
   Calendar as CalendarIcon,
-  Users,
+  User,
+  ShieldUser,
   Stethoscope,
   type LucideIcon,
 } from "lucide-react";
@@ -26,15 +27,15 @@ export const BASE_NAV_ITEMS: NavItem[] = [
   },
   {
     label: "Appointments",
-    href: UI_ROUTES.APPOINTMENTS.ROOT,
+    href: UI_ROUTES.APPOINTMENTS,
     icon: CalendarIcon,
     badge: 12,
     roles: ["ADMIN", "DOCTOR", "RECEPTIONIST"],
   },
   {
     label: "Patients",
-    href: UI_ROUTES.PATIENTS.ROOT,
-    icon: Users,
+    href: UI_ROUTES.PATIENTS,
+    icon: User,
     roles: ["ADMIN", "DOCTOR", "RECEPTIONIST"],
   },
   {
@@ -42,6 +43,12 @@ export const BASE_NAV_ITEMS: NavItem[] = [
     href: UI_ROUTES.PROCEDURES,
     icon: Stethoscope,
     roles: ["ADMIN", "DOCTOR"],
+  },
+  {
+    label: "Accounts Management",
+    href: UI_ROUTES.ACCOUNTS_MANAGEMENT,
+    icon: ShieldUser,
+    roles: ["ADMIN"],
   },
 ];
 
