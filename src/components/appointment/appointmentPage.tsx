@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo, useState } from "react";
-import Link from "next/link";
 import {
   CalendarPlus,
   Filter,
@@ -12,8 +11,9 @@ import {
   Clock,
   FileEdit,
   XCircle,
+  Eye,
 } from "lucide-react";
-import { UI_ROUTES } from "@/lib/routes";
+
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -23,66 +23,129 @@ import {
   DropdownMenuItem,
   DropdownMenuGroup,
 } from "../ui/dropdown-menu";
-import DynamicAppointmentFormModal from "@/components/appointment/dynamicAppointmentForm";
+import DynamicAppointmentFormModal, {
+  AppointmentFormData,
+} from "@/components/appointment/dynamicAppointmentForm";
 import { Button } from "../ui/button";
-import { Appointment } from "@/app/generated/prisma/client";
 
-const APPOINTMENTS = [
+export interface AppointmentItem {
+  id: string;
+  time: string;
+  chair: "Chair 01" | "Chair 02" | "Chair 03";
+  patientName: string;
+  patientId?: string;
+  age: number;
+  procedure: string;
+  dentist: string;
+  dentistId?: string;
+  status: "Completed" | "In Progress" | "Confirmed" | "Cancelled";
+  avatar: string;
+  date?: string;
+  notes?: string;
+}
+
+const APPOINTMENTS: AppointmentItem[] = [
   {
     id: "1",
     time: "09:00 AM",
     chair: "Chair 01",
     patientName: "Emma Watson",
+    patientId: "p-8821",
     age: 29,
     procedure: "Root Canal Therapy",
     dentist: "Dr. Sarah Jones",
+    dentistId: "dr-sarah-jones",
     status: "Completed",
     avatar:
       "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100",
+    date: "2026-08-07",
+    notes: "Patient prefers morning sessions. Sensitive to cold.",
   },
   {
     id: "2",
     time: "10:30 AM",
     chair: "Chair 02",
     patientName: "Robert Chen",
+    patientId: "p-8822",
     age: 42,
     procedure: "Dental Crown Fitting",
     dentist: "Dr. Sarah Jones",
+    dentistId: "dr-sarah-jones",
     status: "In Progress",
     avatar:
       "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100",
+    date: "2026-08-07",
   },
   {
     id: "3",
     time: "01:15 PM",
     chair: "Chair 01",
     patientName: "Sophia Martinez",
+    patientId: "p-8823",
     age: 34,
     procedure: "Routine Teeth Cleaning",
     dentist: "Dr. Alex Miller",
+    dentistId: "dr-alex-miller",
     status: "Confirmed",
     avatar:
       "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100",
+    date: "2026-08-07",
   },
   {
     id: "4",
     time: "02:45 PM",
     chair: "Chair 03",
     patientName: "David Miller",
+    patientId: "p-8824",
     age: 51,
     procedure: "Tooth Extraction",
     dentist: "Dr. Sarah Jones",
+    dentistId: "dr-sarah-jones",
     status: "Confirmed",
     avatar:
       "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100",
+    date: "2026-08-07",
   },
 ];
+
+// Helper function to map 12-hour AM/PM string to 24-hour (HH:mm) format for HTML input[type="time"]
+function parseTimeTo24H(time12h: string): string {
+  if (!time12h) return "09:00";
+  const [time, modifier] = time12h.split(" ");
+  const [hours, minutes] = time.split(":");
+  let parsedHours = parseInt(hours, 10);
+
+  if (modifier === "PM" && parsedHours < 12) parsedHours += 12;
+  if (modifier === "AM" && parsedHours === 12) parsedHours = 0;
+
+  return `${parsedHours.toString().padStart(2, "0")}:${minutes}`;
+}
+
+// Converts an appointment list record into form data expected by DynamicAppointmentFormModal
+function appointmentToFormData(
+  appointment: AppointmentItem | null
+): Partial<AppointmentFormData> | null {
+  if (!appointment) return null;
+
+  return {
+    id: appointment.id,
+    patientId: appointment.patientId ?? "p-8821",
+    dentistId: appointment.dentistId ?? "dr-sarah-jones",
+    procedure: appointment.procedure,
+    date: appointment.date ?? "2026-08-07",
+    time: parseTimeTo24H(appointment.time),
+    chair: appointment.chair,
+    notes: appointment.notes ?? "",
+  };
+}
 
 export default function AppointmentsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
   const [editingAppointment, setEditingAppointment] =
-    useState<Appointment | null>(null);
+    useState<AppointmentItem | null>(null);
+  const [viewingAppointment, setViewingAppointment] =
+    useState<AppointmentItem | null>(null);
 
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
@@ -101,18 +164,15 @@ export default function AppointmentsPage() {
     });
   }, [searchQuery, statusFilter]);
 
-  const handleCreateAppointment = async () => {
-    // Implement API call or dispatch action here
+  const handleCreateAppointment = async (formData: AppointmentFormData) => {
+    console.log("Creating new appointment:", formData);
     setIsCreateModalOpen(false);
   };
 
-  const handleUpdateAppointment = async (formData: any) => {
+  const handleUpdateAppointment = async (formData: AppointmentFormData) => {
     if (!editingAppointment) return;
 
-    // Perform your update logic here (API call / state update)
     console.log("Updating appointment ID:", editingAppointment.id, formData);
-
-    // Close the edit modal upon success
     setEditingAppointment(null);
   };
 
@@ -141,7 +201,7 @@ export default function AppointmentsPage() {
             />
           </div>
 
-          {/* New Appointment Redirect Button */}
+          {/* New Appointment Button */}
           <Button
             type="button"
             onClick={() => setIsCreateModalOpen(true)}
@@ -164,9 +224,19 @@ export default function AppointmentsPage() {
             onOpenChange={(open) => {
               if (!open) setEditingAppointment(null);
             }}
-            initialData={editingAppointment}
+            initialData={appointmentToFormData(editingAppointment)}
             isEditMode={true}
             onSubmit={handleUpdateAppointment}
+          />
+
+          {/* View Mode Modal */}
+          <DynamicAppointmentFormModal
+            open={Boolean(viewingAppointment)}
+            onOpenChange={(open) => {
+              if (!open) setViewingAppointment(null);
+            }}
+            initialData={appointmentToFormData(viewingAppointment)}
+            isViewMode={true}
           />
         </div>
       </div>
@@ -210,8 +280,8 @@ export default function AppointmentsPage() {
                     item.status === "Completed"
                       ? "bg-emerald-100 text-emerald-800"
                       : item.status === "In Progress"
-                        ? "bg-blue-100 text-blue-700"
-                        : "bg-amber-100 text-amber-800"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-amber-100 text-amber-800"
                   }`}
                 >
                   {item.status}
@@ -235,9 +305,14 @@ export default function AppointmentsPage() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="cursor-pointer gap-2"
-                      onClick={() =>
-                        setEditingAppointment(item as unknown as Appointment)
-                      }
+                      onClick={() => setViewingAppointment(item)}
+                    >
+                      <Eye className="h-4 w-4 text-slate-500" />
+                      <span>View Details</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer gap-2"
+                      onClick={() => setEditingAppointment(item)}
                     >
                       <FileEdit className="h-4 w-4 text-slate-500" />
                       <span>Edit Details</span>
@@ -266,7 +341,6 @@ export default function AppointmentsPage() {
                 >
                   {/* --- MOBILE VIEW (< sm) --- */}
                   <div className="flex flex-col gap-3 sm:hidden">
-                    {/* Top Row: Patient Info & Actions */}
                     <div className="flex items-start justify-between gap-3">
                       <div className="flex items-center gap-3 min-w-0">
                         <img
@@ -294,7 +368,6 @@ export default function AppointmentsPage() {
                       {actionMenu}
                     </div>
 
-                    {/* Bottom Row: Time, Chair & Status */}
                     <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/80">
                       <div className="flex items-center gap-2">
                         <span className="text-xs font-bold text-slate-900 bg-slate-100 px-2.5 py-1 rounded-md">
@@ -310,7 +383,6 @@ export default function AppointmentsPage() {
 
                   {/* --- DESKTOP VIEW (≥ sm) --- */}
                   <div className="hidden sm:flex items-center justify-between gap-4">
-                    {/* Time & Chair */}
                     <div className="w-28 shrink-0">
                       <span className="text-sm font-bold text-slate-900 block">
                         {item.time}
@@ -320,7 +392,6 @@ export default function AppointmentsPage() {
                       </span>
                     </div>
 
-                    {/* Patient Info */}
                     <div className="flex items-center gap-3.5 flex-1 min-w-0">
                       <img
                         src={item.avatar}
@@ -345,7 +416,6 @@ export default function AppointmentsPage() {
                       </div>
                     </div>
 
-                    {/* Status Badge & Actions */}
                     <div className="flex items-center gap-3 shrink-0">
                       {statusBadge}
                       {actionMenu}
