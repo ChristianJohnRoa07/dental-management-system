@@ -1,5 +1,5 @@
 import { DentalDashboardContent } from "@/components/dashboard/dashboard";
 
-export default function DashboardPage() {
+export default function RootPage() {
   return <DentalDashboardContent />;
 }
