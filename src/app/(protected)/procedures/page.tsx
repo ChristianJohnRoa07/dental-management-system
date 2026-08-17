@@ -1,5 +1,5 @@
 import ProcedurePage from "@/components/procedure/procedurePage";
 
-export default function DashboardPage() {
+export default function RootPage() {
   return <ProcedurePage />;
 }

@@ -1,5 +1,5 @@
 import PatientsPage from "@/components/patient/patientPage";
 
-export default function DashboardPage() {
+export default function RootPage() {
   return <PatientsPage />;
 }
