@@ -12,16 +12,10 @@ export const UI_ROUTES = {
     RESET_PASSWORD: "/reset-password"
   },
   DASHBOARD: "/dashboard",
-  APPOINTMENTS: {
-    ROOT: "/appointments",
-    NEW: "/appointments/new",
-    DETAILS: (id: string | number) => `/appointments/${id}`,
-  },
-  PATIENTS: {
-    ROOT: "/patients",
-    DETAILS: (id: string | number) => `/patients/${id}`,
-  },
+  APPOINTMENTS: "/appointments",
+  PATIENTS: "/patients",
   PROCEDURES: "/procedures",
+  ACCOUNTS_MANAGEMENT: "/accounts",
 } as const;
 
 export type AppRoute = typeof UI_ROUTES;
