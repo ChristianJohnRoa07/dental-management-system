@@ -31,7 +31,7 @@ export interface ProcedureRecord {
   id: string;
   name: string;
   category: string;
-  cost: number;
+  price: number;
   status: "Active" | "Inactive";
   description?: string;
 }
@@ -41,7 +41,7 @@ const INITIAL_PROCEDURES: ProcedureRecord[] = [
     id: "1",
     name: "Root Canal Therapy",
     category: "Endodontics",
-    cost: 650,
+    price: 650,
     status: "Active",
     description: "Treatment of the tooth's root canals and inflamed pulp.",
   },
@@ -49,7 +49,7 @@ const INITIAL_PROCEDURES: ProcedureRecord[] = [
     id: "2",
     name: "Dental Crown Fitting",
     category: "Prosthodontics",
-    cost: 800,
+    price: 800,
     status: "Active",
     description: "Custom tooth-shaped cap placement to restore structure.",
   },
@@ -57,7 +57,7 @@ const INITIAL_PROCEDURES: ProcedureRecord[] = [
     id: "3",
     name: "Routine Teeth Cleaning",
     category: "Preventive",
-    cost: 120,
+    price: 120,
     status: "Active",
     description: "Plaque/tartar removal and tooth polishing.",
   },
@@ -65,7 +65,7 @@ const INITIAL_PROCEDURES: ProcedureRecord[] = [
     id: "4",
     name: "Surgical Tooth Extraction",
     category: "Oral Surgery",
-    cost: 350,
+    price: 350,
     status: "Inactive",
     description: "Removal of severely damaged or impacted teeth.",
   },
@@ -78,7 +78,7 @@ function procedureToFormData(
     id: procedure.id,
     name: procedure.name,
     category: procedure.category,
-    cost: procedure.cost,
+    price: procedure.price,
     description: procedure.description ?? "",
   };
 }
@@ -112,8 +112,8 @@ export default function ProceduresPage() {
     const newProcedure: ProcedureRecord = {
       id: String(Date.now()),
       name: data.name,
-      category: data.category,
-      cost: Number(data.cost),
+      category: data.category ?? "General",
+      price: Number(data.price),
       status: "Active",
       description: data.description,
     };
@@ -128,8 +128,8 @@ export default function ProceduresPage() {
     const updatedProcedure: ProcedureRecord = {
       ...editingProcedure,
       name: data.name,
-      category: data.category,
-      cost: Number(data.cost),
+      category: data.category ?? "General",
+      price: Number(data.price),
       description: data.description,
     };
 
@@ -322,7 +322,7 @@ export default function ProceduresPage() {
                     <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
                       <span className="flex items-center gap-1 font-semibold text-slate-700">
                         <DollarSign className="h-3.5 w-3.5 text-slate-400" />
-                        ${item.cost}
+                        ${item.price}
                       </span>
                     </div>
 
@@ -351,10 +351,10 @@ export default function ProceduresPage() {
                     </div>
 
                     <div className="w-24 shrink-0 text-xs">
-                      <span className="text-slate-400 block">Cost</span>
+                      <span className="text-slate-400 block">Price</span>
                       <span className="font-semibold text-slate-900 flex items-center gap-0.5">
                         <DollarSign className="h-3 w-3 text-slate-400" />
-                        {item.cost}
+                        {item.price}
                       </span>
                     </div>
 
