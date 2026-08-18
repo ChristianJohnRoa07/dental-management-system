@@ -38,6 +38,7 @@ export type ProcedureMinAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
+  category: string | null
   price: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -50,6 +51,7 @@ export type ProcedureMaxAggregateOutputType = {
   id: string | null
   name: string | null
   description: string | null
+  category: string | null
   price: number | null
   isActive: boolean | null
   createdAt: Date | null
@@ -62,6 +64,7 @@ export type ProcedureCountAggregateOutputType = {
   id: number
   name: number
   description: number
+  category: number
   price: number
   isActive: number
   createdAt: number
@@ -84,6 +87,7 @@ export type ProcedureMinAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  category?: true
   price?: true
   isActive?: true
   createdAt?: true
@@ -96,6 +100,7 @@ export type ProcedureMaxAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  category?: true
   price?: true
   isActive?: true
   createdAt?: true
@@ -108,6 +113,7 @@ export type ProcedureCountAggregateInputType = {
   id?: true
   name?: true
   description?: true
+  category?: true
   price?: true
   isActive?: true
   createdAt?: true
@@ -207,6 +213,7 @@ export type ProcedureGroupByOutputType = {
   id: string
   name: string
   description: string | null
+  category: string | null
   price: number | null
   isActive: boolean
   createdAt: Date
@@ -242,6 +249,7 @@ export type ProcedureWhereInput = {
   id?: Prisma.StringFilter<"Procedure"> | string
   name?: Prisma.StringFilter<"Procedure"> | string
   description?: Prisma.StringNullableFilter<"Procedure"> | string | null
+  category?: Prisma.StringNullableFilter<"Procedure"> | string | null
   price?: Prisma.FloatNullableFilter<"Procedure"> | number | null
   isActive?: Prisma.BoolFilter<"Procedure"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Procedure"> | Date | string
@@ -255,6 +263,7 @@ export type ProcedureOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -271,6 +280,7 @@ export type ProcedureWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.ProcedureWhereInput | Prisma.ProcedureWhereInput[]
   name?: Prisma.StringFilter<"Procedure"> | string
   description?: Prisma.StringNullableFilter<"Procedure"> | string | null
+  category?: Prisma.StringNullableFilter<"Procedure"> | string | null
   price?: Prisma.FloatNullableFilter<"Procedure"> | number | null
   isActive?: Prisma.BoolFilter<"Procedure"> | boolean
   createdAt?: Prisma.DateTimeFilter<"Procedure"> | Date | string
@@ -284,6 +294,7 @@ export type ProcedureOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrderInput | Prisma.SortOrder
+  category?: Prisma.SortOrderInput | Prisma.SortOrder
   price?: Prisma.SortOrderInput | Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -304,6 +315,7 @@ export type ProcedureScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Procedure"> | string
   name?: Prisma.StringWithAggregatesFilter<"Procedure"> | string
   description?: Prisma.StringNullableWithAggregatesFilter<"Procedure"> | string | null
+  category?: Prisma.StringNullableWithAggregatesFilter<"Procedure"> | string | null
   price?: Prisma.FloatNullableWithAggregatesFilter<"Procedure"> | number | null
   isActive?: Prisma.BoolWithAggregatesFilter<"Procedure"> | boolean
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"Procedure"> | Date | string
@@ -316,6 +328,7 @@ export type ProcedureCreateInput = {
   id?: string
   name: string
   description?: string | null
+  category?: string | null
   price?: number | null
   isActive?: boolean
   createdAt?: Date | string
@@ -329,6 +342,7 @@ export type ProcedureUncheckedCreateInput = {
   id?: string
   name: string
   description?: string | null
+  category?: string | null
   price?: number | null
   isActive?: boolean
   createdAt?: Date | string
@@ -342,6 +356,7 @@ export type ProcedureUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -355,6 +370,7 @@ export type ProcedureUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,6 +384,7 @@ export type ProcedureCreateManyInput = {
   id?: string
   name: string
   description?: string | null
+  category?: string | null
   price?: number | null
   isActive?: boolean
   createdAt?: Date | string
@@ -380,6 +397,7 @@ export type ProcedureUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -392,6 +410,7 @@ export type ProcedureUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -409,6 +428,7 @@ export type ProcedureCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -425,6 +445,7 @@ export type ProcedureMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -437,6 +458,7 @@ export type ProcedureMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   description?: Prisma.SortOrder
+  category?: Prisma.SortOrder
   price?: Prisma.SortOrder
   isActive?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -475,6 +497,7 @@ export type ProcedureCreateWithoutAppointmentsInput = {
   id?: string
   name: string
   description?: string | null
+  category?: string | null
   price?: number | null
   isActive?: boolean
   createdAt?: Date | string
@@ -487,6 +510,7 @@ export type ProcedureUncheckedCreateWithoutAppointmentsInput = {
   id?: string
   name: string
   description?: string | null
+  category?: string | null
   price?: number | null
   isActive?: boolean
   createdAt?: Date | string
@@ -515,6 +539,7 @@ export type ProcedureUpdateWithoutAppointmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -527,6 +552,7 @@ export type ProcedureUncheckedUpdateWithoutAppointmentsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -570,6 +596,7 @@ export type ProcedureSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   price?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -584,6 +611,7 @@ export type ProcedureSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   price?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -596,6 +624,7 @@ export type ProcedureSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   price?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -608,6 +637,7 @@ export type ProcedureSelectScalar = {
   id?: boolean
   name?: boolean
   description?: boolean
+  category?: boolean
   price?: boolean
   isActive?: boolean
   createdAt?: boolean
@@ -616,7 +646,7 @@ export type ProcedureSelectScalar = {
   updatedBy?: boolean
 }
 
-export type ProcedureOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "price" | "isActive" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy", ExtArgs["result"]["procedure"]>
+export type ProcedureOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "price" | "isActive" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy", ExtArgs["result"]["procedure"]>
 export type ProcedureInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appointments?: boolean | Prisma.Procedure$appointmentsArgs<ExtArgs>
   _count?: boolean | Prisma.ProcedureCountOutputTypeDefaultArgs<ExtArgs>
@@ -633,6 +663,7 @@ export type $ProcedurePayload<ExtArgs extends runtime.Types.Extensions.InternalA
     id: string
     name: string
     description: string | null
+    category: string | null
     price: number | null
     isActive: boolean
     createdAt: Date
@@ -1066,6 +1097,7 @@ export interface ProcedureFieldRefs {
   readonly id: Prisma.FieldRef<"Procedure", 'String'>
   readonly name: Prisma.FieldRef<"Procedure", 'String'>
   readonly description: Prisma.FieldRef<"Procedure", 'String'>
+  readonly category: Prisma.FieldRef<"Procedure", 'String'>
   readonly price: Prisma.FieldRef<"Procedure", 'Float'>
   readonly isActive: Prisma.FieldRef<"Procedure", 'Boolean'>
   readonly createdAt: Prisma.FieldRef<"Procedure", 'DateTime'>

@@ -112,6 +112,7 @@ model Procedure {
   id          String  @id @default(uuid())
   name        String
   description String?
+  category    String?
   price       Float?
   isActive    Boolean @default(true)
 
