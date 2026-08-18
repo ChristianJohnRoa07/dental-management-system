@@ -7,6 +7,7 @@ export interface UserData {
   role: string;
   firstName?: string;
   lastName?: string;
+  token: string;
 }
 
 export interface UserResponse {
