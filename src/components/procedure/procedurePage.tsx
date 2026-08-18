@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useState } from "react";
+import React, { useMemo } from "react";
 import {
   Plus,
   Filter,
@@ -8,10 +8,9 @@ import {
   Stethoscope,
   Search,
   FileEdit,
-  Clock,
   DollarSign,
   FileText,
-  Activity,
+  Power,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -23,9 +22,20 @@ import {
   DropdownMenuGroup,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import DynamicProcedureFormModal, {
+import DynamicProcedureFormModal from "@/components/procedure/dynamicProcedureForm";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "@/lib/redux/store";
+import {
+  setSearchQuery,
+  setStatusFilter,
+  setIsCreateModalOpen,
+  setEditingProcedure,
+  setViewingProcedure,
+  createProcedure,
+  updateProcedure,
+  toggleProcedureStatus,
   ProcedureFormData,
-} from "@/components/procedure/dynamicProcedureForm";
+} from "@/lib/redux/slice/procedure/procedurePageSlice";
 
 export interface ProcedureRecord {
   id: string;
@@ -36,64 +46,29 @@ export interface ProcedureRecord {
   description?: string;
 }
 
-const INITIAL_PROCEDURES: ProcedureRecord[] = [
-  {
-    id: "1",
-    name: "Root Canal Therapy",
-    category: "Endodontics",
-    price: 650,
-    status: "Active",
-    description: "Treatment of the tooth's root canals and inflamed pulp.",
-  },
-  {
-    id: "2",
-    name: "Dental Crown Fitting",
-    category: "Prosthodontics",
-    price: 800,
-    status: "Active",
-    description: "Custom tooth-shaped cap placement to restore structure.",
-  },
-  {
-    id: "3",
-    name: "Routine Teeth Cleaning",
-    category: "Preventive",
-    price: 120,
-    status: "Active",
-    description: "Plaque/tartar removal and tooth polishing.",
-  },
-  {
-    id: "4",
-    name: "Surgical Tooth Extraction",
-    category: "Oral Surgery",
-    price: 350,
-    status: "Inactive",
-    description: "Removal of severely damaged or impacted teeth.",
-  },
-];
-
 function procedureToFormData(
-  procedure: ProcedureRecord
+  procedure: ProcedureRecord,
 ): Partial<ProcedureFormData> {
   return {
     id: procedure.id,
     name: procedure.name,
     category: procedure.category,
-    price: procedure.price,
+    price: Number(procedure.price),
     description: procedure.description ?? "",
   };
 }
 
 export default function ProceduresPage() {
-  const [procedures, setProcedures] =
-    useState<ProcedureRecord[]>(INITIAL_PROCEDURES);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const dispatch = useDispatch();
 
-  const [editingProcedure, setEditingProcedure] =
-    useState<ProcedureRecord | null>(null);
-  const [viewingProcedure, setViewingProcedure] =
-    useState<ProcedureRecord | null>(null);
-  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const {
+    procedures,
+    searchQuery,
+    statusFilter,
+    editingProcedure,
+    viewingProcedure,
+    isCreateModalOpen,
+  } = useSelector((state: RootState) => state.procedures);
 
   const filteredProcedures = useMemo(() => {
     return procedures.filter((item) => {
@@ -108,48 +83,26 @@ export default function ProceduresPage() {
     });
   }, [procedures, searchQuery, statusFilter]);
 
-  const handleCreateProcedure = async (data: ProcedureFormData) => {
-    const newProcedure: ProcedureRecord = {
-      id: String(Date.now()),
-      name: data.name,
-      category: data.category ?? "General",
-      price: Number(data.price),
-      status: "Active",
-      description: data.description,
-    };
-
-    setProcedures((prev) => [newProcedure, ...prev]);
-    setIsCreateModalOpen(false);
+  const handleCreateProcedure = async (data: {
+    name: string;
+    price: number;
+    isActive: boolean;
+    id?: string;
+    category?: string;
+    description?: string;
+  }) => {
+    dispatch(createProcedure(data));
   };
 
-  const handleUpdateProcedure = async (data: ProcedureFormData) => {
-    if (!editingProcedure) return;
-
-    const updatedProcedure: ProcedureRecord = {
-      ...editingProcedure,
-      name: data.name,
-      category: data.category ?? "General",
-      price: Number(data.price),
-      description: data.description,
-    };
-
-    setProcedures((prev) =>
-      prev.map((p) => (p.id === editingProcedure.id ? updatedProcedure : p))
-    );
-    setEditingProcedure(null);
-  };
-
-  const handleToggleProcedureStatus = (id: string) => {
-    setProcedures((prev) =>
-      prev.map((proc) =>
-        proc.id === id
-          ? {
-              ...proc,
-              status: proc.status === "Active" ? "Inactive" : "Active",
-            }
-          : proc
-      )
-    );
+  const handleUpdateProcedure = async (data: {
+    name: string;
+    price: number;
+    isActive: boolean;
+    id?: string;
+    category?: string;
+    description?: string;
+  }) => {
+    dispatch(updateProcedure(data));
   };
 
   return (
@@ -174,7 +127,7 @@ export default function ProceduresPage() {
               type="text"
               placeholder="Search procedures..."
               value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
+              onChange={(e) => dispatch(setSearchQuery(e.target.value))}
               className="w-full pl-9 pr-4 py-2 text-sm bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-all shadow-sm"
             />
           </div>
@@ -182,7 +135,7 @@ export default function ProceduresPage() {
           {/* Add Procedure Button */}
           <Button
             type="button"
-            onClick={() => setIsCreateModalOpen(true)}
+            onClick={() => dispatch(setIsCreateModalOpen(true))}
             className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white text-sm font-semibold px-4 py-2.5 sm:py-2 rounded-xl shadow-sm transition-colors shrink-0"
           >
             <Plus className="h-4 w-4" />
@@ -192,7 +145,7 @@ export default function ProceduresPage() {
           {/* Create Modal */}
           <DynamicProcedureFormModal
             open={isCreateModalOpen}
-            onOpenChange={setIsCreateModalOpen}
+            onOpenChange={(open) => dispatch(setIsCreateModalOpen(open))}
             onSubmit={handleCreateProcedure}
           />
 
@@ -200,7 +153,7 @@ export default function ProceduresPage() {
           <DynamicProcedureFormModal
             open={Boolean(editingProcedure)}
             onOpenChange={(open) => {
-              if (!open) setEditingProcedure(null);
+              if (!open) dispatch(setEditingProcedure(null));
             }}
             initialData={
               editingProcedure ? procedureToFormData(editingProcedure) : null
@@ -213,7 +166,7 @@ export default function ProceduresPage() {
           <DynamicProcedureFormModal
             open={Boolean(viewingProcedure)}
             onOpenChange={(open) => {
-              if (!open) setViewingProcedure(null);
+              if (!open) dispatch(setViewingProcedure(null));
             }}
             initialData={
               viewingProcedure ? procedureToFormData(viewingProcedure) : null
@@ -238,7 +191,9 @@ export default function ProceduresPage() {
           {/* Filter Toggle */}
           <button
             onClick={() =>
-              setStatusFilter((prev) => (prev === "ALL" ? "ACTIVE" : "ALL"))
+              dispatch(
+                setStatusFilter(statusFilter === "ALL" ? "ACTIVE" : "ALL"),
+              )
             }
             className={`inline-flex items-center gap-1.5 border text-xs font-medium px-3 py-1.5 rounded-lg transition-colors shrink-0 ${
               statusFilter !== "ALL"
@@ -283,19 +238,27 @@ export default function ProceduresPage() {
                     <DropdownMenuSeparator />
                     <DropdownMenuItem
                       className="cursor-pointer gap-2"
-                      onClick={() => setViewingProcedure(item)}
+                      onClick={() => dispatch(setViewingProcedure(item))}
                     >
                       <FileText className="h-4 w-4 text-blue-600" />
                       <span>View Details</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer gap-2"
-                      onClick={() => setEditingProcedure(item)}
+                      onClick={() => dispatch(setEditingProcedure(item))}
                     >
                       <FileEdit className="h-4 w-4 text-slate-500" />
                       <span>Edit Procedure</span>
                     </DropdownMenuItem>
-                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="cursor-pointer gap-2"
+                      onClick={() => dispatch(toggleProcedureStatus(item.id))}
+                    >
+                      <Power className="h-4 w-4 text-amber-500" />
+                      <span>
+                        {item.status === "Active" ? "Deactivate" : "Activate"}
+                      </span>
+                    </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
               );
@@ -321,8 +284,8 @@ export default function ProceduresPage() {
 
                     <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
                       <span className="flex items-center gap-1 font-semibold text-slate-700">
-                        <DollarSign className="h-3.5 w-3.5 text-slate-400" />
-                        ${item.price}
+                        <DollarSign className="h-3.5 w-3.5 text-slate-400" />$
+                        {item.price}
                       </span>
                     </div>
 
@@ -377,8 +340,8 @@ export default function ProceduresPage() {
               No procedures found
             </p>
             <p className="text-xs text-slate-500 max-w-sm mx-auto">
-              We couldn't find any dental procedures matching your criteria.
-              Try altering your search query or filter settings.
+              We couldn't find any dental procedures matching your criteria. Try
+              altering your search query or filter settings.
             </p>
           </div>
         )}
