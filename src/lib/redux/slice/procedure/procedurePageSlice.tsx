@@ -1,12 +1,19 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { RootState } from "@/lib/redux/store";
+import { procedureApiService } from "@/lib/services/procedure/procedure.service";
 
 export interface ProcedureRecord {
   id: string;
   name: string;
   category: string;
   price: number;
-  status: "Active" | "Inactive";
+  isActive: boolean;
+  status?: string;
   description?: string;
+  createdAt?: string;
+  createdBy?: string;
+  updatedAt?: string;
+  updatedBy?: string;
 }
 
 export interface ProcedureFormData {
@@ -14,6 +21,7 @@ export interface ProcedureFormData {
   category?: string;
   price: number;
   description?: string;
+  isActive?: boolean;
 }
 
 interface ProceduresState {
@@ -23,51 +31,56 @@ interface ProceduresState {
   editingProcedure: ProcedureRecord | null;
   viewingProcedure: ProcedureRecord | null;
   isCreateModalOpen: boolean;
+  apiStatus: "idle" | "loading" | "succeeded" | "failed";
+  error: string | null;
 }
 
-const INITIAL_PROCEDURES: ProcedureRecord[] = [
-  {
-    id: "1",
-    name: "Root Canal Therapy",
-    category: "Endodontics",
-    price: 650,
-    status: "Active",
-    description: "Treatment of the tooth's root canals and inflamed pulp.",
-  },
-  {
-    id: "2",
-    name: "Dental Crown Fitting",
-    category: "Prosthodontics",
-    price: 800,
-    status: "Active",
-    description: "Custom tooth-shaped cap placement to restore structure.",
-  },
-  {
-    id: "3",
-    name: "Routine Teeth Cleaning",
-    category: "Preventive",
-    price: 120,
-    status: "Active",
-    description: "Plaque/tartar removal and tooth polishing.",
-  },
-  {
-    id: "4",
-    name: "Surgical Tooth Extraction",
-    category: "Oral Surgery",
-    price: 350,
-    status: "Inactive",
-    description: "Removal of severely damaged or impacted teeth.",
-  },
-];
-
 const initialState: ProceduresState = {
-  procedures: INITIAL_PROCEDURES,
+  procedures: [],
   searchQuery: "",
   statusFilter: "ALL",
   editingProcedure: null,
   viewingProcedure: null,
   isCreateModalOpen: false,
+  apiStatus: "idle",
+  error: null,
 };
+
+export const getProcedures = createAsyncThunk<
+  any,
+  void,
+  { state: RootState; rejectWithValue: string }
+>(
+  "procedure/getProcedures",
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const token = state.user.user?.token;
+
+      if (!token) {
+        return rejectWithValue("Authentication token missing. Please sign in again.");
+      }
+
+      const response = await procedureApiService.getProcedures(token);
+
+      if (response.status !== "success" || !response.data) {
+        return rejectWithValue(response.message || "Failed to fetch procedures");
+      }
+
+      const formattedData = response.data.map((item: ProcedureFormData) => ({
+        ...item,
+        category: item.category ?? "General",
+        isActive: item.isActive ? "ACTIVE" : "INACTIVE",
+      }));
+
+      return formattedData;
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || err.message || "An error occurred";
+      return rejectWithValue(errorMessage);
+    }
+  }
+);
 
 export const proceduresSlice = createSlice({
   name: "procedures",
@@ -100,7 +113,7 @@ export const proceduresSlice = createSlice({
         name: data.name,
         category: data.category ?? "General",
         price: Number(data.price),
-        status: "Active",
+        isActive: data.isActive ?? true,
         description: data.description,
       };
 
@@ -121,6 +134,7 @@ export const proceduresSlice = createSlice({
           name: data.name,
           category: data.category ?? "General",
           price: Number(data.price),
+          isActive: data.isActive ?? state.editingProcedure.isActive,
           description: data.description,
         };
       }
@@ -131,9 +145,29 @@ export const proceduresSlice = createSlice({
       const id = action.payload;
       const procedure = state.procedures.find((p) => p.id === id);
       if (procedure) {
-        procedure.status = procedure.status === "Active" ? "Inactive" : "Active";
+        procedure.isActive = !procedure.isActive;
       }
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getProcedures.pending, (state) => {
+        state.apiStatus = "loading";
+        state.error = null;
+      })
+      .addCase(
+        getProcedures.fulfilled,
+        (state, action: PayloadAction<ProcedureRecord[]>) => {
+          state.apiStatus = "succeeded";
+          state.procedures = action.payload;
+          state.error = null;
+        }
+      )
+      .addCase(getProcedures.rejected, (state, action) => {
+        state.apiStatus = "failed";
+        state.procedures = [];
+        state.error = (action.payload as string) || "Failed to fetch procedures";
+      });
   },
 });
 

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import {
   Plus,
   Filter,
@@ -22,8 +22,9 @@ import {
   DropdownMenuGroup,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
+import { Spinner } from "../ui/spinner";
 import DynamicProcedureFormModal from "@/components/procedure/dynamicProcedureForm";
-import { useSelector, useDispatch } from "react-redux";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { RootState } from "@/lib/redux/store";
 import {
   setSearchQuery,
@@ -35,31 +36,12 @@ import {
   updateProcedure,
   toggleProcedureStatus,
   ProcedureFormData,
+  getProcedures,
+  ProcedureRecord,
 } from "@/lib/redux/slice/procedure/procedurePageSlice";
 
-export interface ProcedureRecord {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  status: "Active" | "Inactive";
-  description?: string;
-}
-
-function procedureToFormData(
-  procedure: ProcedureRecord,
-): Partial<ProcedureFormData> {
-  return {
-    id: procedure.id,
-    name: procedure.name,
-    category: procedure.category,
-    price: Number(procedure.price),
-    description: procedure.description ?? "",
-  };
-}
-
 export default function ProceduresPage() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   const {
     procedures,
@@ -68,20 +50,43 @@ export default function ProceduresPage() {
     editingProcedure,
     viewingProcedure,
     isCreateModalOpen,
-  } = useSelector((state: RootState) => state.procedures);
+    apiStatus,
+  } = useAppSelector((state: RootState) => state.procedures);
+
+  useEffect(() => {
+    dispatch(getProcedures());
+  }, [dispatch]);
 
   const filteredProcedures = useMemo(() => {
+    if (!procedures) return [];
+
+    const query = searchQuery.toLowerCase();
+
     return procedures.filter((item) => {
       const matchesSearch =
-        item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.category.toLowerCase().includes(searchQuery.toLowerCase());
+        item.name.toLowerCase().includes(query) ||
+        (item.category?.toLowerCase().includes(query) ?? false);
 
       const matchesStatus =
-        statusFilter === "ALL" || item.status.toUpperCase() === statusFilter;
+        statusFilter === "ALL" ||
+        (statusFilter === "ACTIVE" && item.isActive) ||
+        (statusFilter === "INACTIVE" && !item.isActive);
 
       return matchesSearch && matchesStatus;
     });
   }, [procedures, searchQuery, statusFilter]);
+
+  const procedureToFormData = (
+    procedure: ProcedureRecord,
+  ): ProcedureFormData => {
+    return {
+      name: procedure.name,
+      category: procedure.category ?? "",
+      price: procedure.price,
+      description: procedure.description ?? "",
+      isActive: procedure.isActive,
+    };
+  };
 
   const handleCreateProcedure = async (data: {
     name: string;
@@ -105,6 +110,8 @@ export default function ProceduresPage() {
     dispatch(updateProcedure(data));
   };
 
+  const isLoading = apiStatus === "loading";
+
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
       {/* Top Header Section */}
@@ -120,7 +127,6 @@ export default function ProceduresPage() {
 
         {/* Action Toolbar */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-          {/* Search Input */}
           <div className="relative w-full sm:w-64">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <input
@@ -132,7 +138,6 @@ export default function ProceduresPage() {
             />
           </div>
 
-          {/* Add Procedure Button */}
           <Button
             type="button"
             onClick={() => dispatch(setIsCreateModalOpen(true))}
@@ -142,14 +147,12 @@ export default function ProceduresPage() {
             <span>New Procedure</span>
           </Button>
 
-          {/* Create Modal */}
           <DynamicProcedureFormModal
             open={isCreateModalOpen}
             onOpenChange={(open) => dispatch(setIsCreateModalOpen(open))}
             onSubmit={handleCreateProcedure}
           />
 
-          {/* Edit Modal */}
           <DynamicProcedureFormModal
             open={Boolean(editingProcedure)}
             onOpenChange={(open) => {
@@ -162,7 +165,6 @@ export default function ProceduresPage() {
             onSubmit={handleUpdateProcedure}
           />
 
-          {/* View Modal */}
           <DynamicProcedureFormModal
             open={Boolean(viewingProcedure)}
             onOpenChange={(open) => {
@@ -177,18 +179,17 @@ export default function ProceduresPage() {
       </div>
 
       {/* Main Directory */}
-      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden min-h-[300px] flex flex-col">
         {/* Header Bar */}
         <div className="px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-100 flex flex-row items-center justify-between bg-white gap-3">
           <div className="flex items-center gap-2 text-slate-900 font-bold text-sm sm:text-base min-w-0">
             <Stethoscope className="h-5 w-5 text-emerald-600 shrink-0" />
             <span className="truncate">Procedure Catalog</span>
             <span className="text-xs font-normal text-slate-500 ml-1 hidden md:inline shrink-0">
-              • {filteredProcedures.length} Total Procedures
+              • {isLoading ? "..." : filteredProcedures.length} Total Procedures
             </span>
           </div>
 
-          {/* Filter Toggle */}
           <button
             onClick={() =>
               dispatch(
@@ -206,19 +207,26 @@ export default function ProceduresPage() {
           </button>
         </div>
 
-        {/* Procedures List */}
-        {filteredProcedures.length > 0 ? (
+        {/* Procedures Content */}
+        {isLoading ? (
+          <div className="flex-1 flex flex-col items-center justify-center p-12 space-y-3">
+            <Spinner className="h-8 w-8" />
+            <p className="text-xs font-medium text-slate-500">
+              Loading procedures...
+            </p>
+          </div>
+        ) : filteredProcedures.length > 0 ? (
           <div className="divide-y divide-slate-100">
             {filteredProcedures.map((item) => {
               const statusBadge = (
                 <span
                   className={`text-xs font-semibold px-2.5 py-1 rounded-full shrink-0 ${
-                    item.status === "Active"
+                    item.isActive
                       ? "bg-emerald-100 text-emerald-800"
                       : "bg-slate-100 text-slate-600"
                   }`}
                 >
-                  {item.status}
+                  {item.isActive ? "Active" : "Inactive"}
                 </span>
               );
 
@@ -256,7 +264,7 @@ export default function ProceduresPage() {
                     >
                       <Power className="h-4 w-4 text-amber-500" />
                       <span>
-                        {item.status === "Active" ? "Deactivate" : "Activate"}
+                        {item.isActive ? "Deactivate" : "Activate"}
                       </span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -331,9 +339,8 @@ export default function ProceduresPage() {
             })}
           </div>
         ) : (
-          /* Empty State */
-          <div className="p-8 sm:p-12 text-center space-y-3">
-            <div className="h-12 w-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center mx-auto">
+          <div className="flex-1 p-8 sm:p-12 text-center space-y-3 flex flex-col justify-center items-center">
+            <div className="h-12 w-12 rounded-full bg-slate-100 text-slate-400 flex items-center justify-center">
               <Search className="h-6 w-6" />
             </div>
             <p className="text-sm font-semibold text-slate-800">
