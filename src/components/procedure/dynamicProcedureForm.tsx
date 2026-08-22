@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Stethoscope,
-  DollarSign,
+  PhilippinePeso,
   Check,
   Loader2,
   FileText,
@@ -219,7 +219,7 @@ export default function DynamicProcedureFormModal({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-emerald-600" /> Price
+                      <PhilippinePeso className="h-4 w-4 text-emerald-600" /> Price
                     </FormLabel>
                     <FormControl>
                       <Input
