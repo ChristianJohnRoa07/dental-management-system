@@ -31,8 +31,10 @@ interface ProceduresState {
   editingProcedure: ProcedureRecord | null;
   viewingProcedure: ProcedureRecord | null;
   isCreateModalOpen: boolean;
-  apiStatus: "idle" | "loading" | "succeeded" | "failed";
+  fetchStatus: "idle" | "loading" | "succeeded" | "failed";
+  createStatus: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
+  successMessage: string | null;
 }
 
 const initialState: ProceduresState = {
@@ -42,44 +44,97 @@ const initialState: ProceduresState = {
   editingProcedure: null,
   viewingProcedure: null,
   isCreateModalOpen: false,
-  apiStatus: "idle",
+  fetchStatus: "idle",
+  createStatus: "idle",
   error: null,
+  successMessage: null,
 };
 
 export const getProcedures = createAsyncThunk<
-  any,
+  ProcedureRecord[],
   void,
   { state: RootState; rejectWithValue: string }
+>("procedure/getProcedures", async (_, { getState, rejectWithValue }) => {
+  try {
+    const state = getState();
+    const token = state.user.user?.token;
+
+    if (!token) {
+      return rejectWithValue(
+        "Authentication token missing. Please sign in again.",
+      );
+    }
+
+    const response = await procedureApiService.getProcedures(token);
+
+    if (response.status !== "success" || !response.data) {
+      return rejectWithValue(response.message || "Failed to fetch procedures");
+    }
+
+    const formattedData = response.data.map((item: any) => ({
+      ...item,
+      category: item.category ?? "General",
+      isActive: Boolean(item.isActive),
+    }));
+
+    return formattedData;
+  } catch (err: any) {
+    const errorMessage =
+      err.response?.data?.message || err.message || "An error occurred";
+    return rejectWithValue(errorMessage);
+  }
+});
+
+export const createProcedure = createAsyncThunk<
+  string, // Returns success message string
+  ProcedureFormData,
+  { state: RootState; rejectWithValue: string }
 >(
-  "procedure/getProcedures",
-  async (_, { getState, rejectWithValue }) => {
+  "procedure/createProcedure",
+  async (formData, { getState, dispatch, rejectWithValue }) => {
     try {
       const state = getState();
       const token = state.user.user?.token;
+      const userId = state.user.user?.id;
 
       if (!token) {
-        return rejectWithValue("Authentication token missing. Please sign in again.");
+        return rejectWithValue(
+          "Authentication token missing. Please sign in again.",
+        );
       }
 
-      const response = await procedureApiService.getProcedures(token);
-
-      if (response.status !== "success" || !response.data) {
-        return rejectWithValue(response.message || "Failed to fetch procedures");
+      if (!userId) {
+        return rejectWithValue("User ID is missing. Please sign in again.");
       }
 
-      const formattedData = response.data.map((item: ProcedureFormData) => ({
-        ...item,
-        category: item.category ?? "General",
-        isActive: item.isActive ? "ACTIVE" : "INACTIVE",
-      }));
+      const payload = {
+        name: formData.name,
+        description: formData.description || "",
+        category: formData.category,
+        price: Number(formData.price),
+        userId: userId,
+      };
 
-      return formattedData;
+      const response = await procedureApiService.createProcedure(
+        payload,
+        token,
+      );
+
+      if (response.status !== "success") {
+        return rejectWithValue(
+          response.message,
+        );
+      }
+
+      await dispatch(getProcedures());
+
+      return "Procedure created successfully";
     } catch (err: any) {
       const errorMessage =
         err.response?.data?.message || err.message || "An error occurred";
       return rejectWithValue(errorMessage);
     }
-  }
+  },
 );
 
 export const proceduresSlice = createSlice({
@@ -98,34 +153,26 @@ export const proceduresSlice = createSlice({
     setIsCreateModalOpen: (state, action: PayloadAction<boolean>) => {
       state.isCreateModalOpen = action.payload;
     },
-    setEditingProcedure: (state, action: PayloadAction<ProcedureRecord | null>) => {
+    setEditingProcedure: (
+      state,
+      action: PayloadAction<ProcedureRecord | null>,
+    ) => {
       state.editingProcedure = action.payload;
     },
-    setViewingProcedure: (state, action: PayloadAction<ProcedureRecord | null>) => {
+    setViewingProcedure: (
+      state,
+      action: PayloadAction<ProcedureRecord | null>,
+    ) => {
       state.viewingProcedure = action.payload;
     },
 
-    // CRUD Actions
-    createProcedure: (state, action: PayloadAction<ProcedureFormData>) => {
-      const data = action.payload;
-      const newProcedure: ProcedureRecord = {
-        id: String(Date.now()),
-        name: data.name,
-        category: data.category ?? "General",
-        price: Number(data.price),
-        isActive: data.isActive ?? true,
-        description: data.description,
-      };
-
-      state.procedures.unshift(newProcedure);
-      state.isCreateModalOpen = false;
-    },
+    // Sync Local Reducers
     updateProcedure: (state, action: PayloadAction<ProcedureFormData>) => {
       if (!state.editingProcedure) return;
 
       const data = action.payload;
       const index = state.procedures.findIndex(
-        (p) => p.id === state.editingProcedure?.id
+        (p) => p.id === state.editingProcedure?.id,
       );
 
       if (index !== -1) {
@@ -151,22 +198,46 @@ export const proceduresSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch Procedures
       .addCase(getProcedures.pending, (state) => {
-        state.apiStatus = "loading";
+        state.fetchStatus = "loading";
         state.error = null;
       })
       .addCase(
         getProcedures.fulfilled,
         (state, action: PayloadAction<ProcedureRecord[]>) => {
-          state.apiStatus = "succeeded";
+          state.fetchStatus = "succeeded";
           state.procedures = action.payload;
           state.error = null;
-        }
+        },
       )
       .addCase(getProcedures.rejected, (state, action) => {
-        state.apiStatus = "failed";
+        state.fetchStatus = "failed";
         state.procedures = [];
-        state.error = (action.payload as string) || "Failed to fetch procedures";
+        state.error =
+          (action.payload as string) || "Failed to fetch procedures";
+      })
+
+      // Create Procedure
+      .addCase(createProcedure.pending, (state) => {
+        state.createStatus = "loading";
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(
+        createProcedure.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.createStatus = "succeeded";
+          state.successMessage = action.payload; // Store success message
+          state.isCreateModalOpen = false;
+          state.error = null;
+        },
+      )
+      .addCase(createProcedure.rejected, (state, action) => {
+        state.createStatus = "failed";
+        state.error =
+          (action.payload as string) || "Failed to create procedure";
+        state.successMessage = null;
       });
   },
 });
@@ -177,7 +248,6 @@ export const {
   setIsCreateModalOpen,
   setEditingProcedure,
   setViewingProcedure,
-  createProcedure,
   updateProcedure,
   toggleProcedureStatus,
 } = proceduresSlice.actions;
