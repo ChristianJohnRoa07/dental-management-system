@@ -11,6 +11,9 @@ import {
   DollarSign,
   FileText,
   Power,
+  Clock,
+  UserCheck,
+  PhilippinePeso,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -102,6 +105,8 @@ export default function ProceduresPage() {
       price: procedure.price,
       description: procedure.description ?? "",
       isActive: procedure.isActive,
+      updatedAt: procedure.updatedAt,
+      updatedBy: procedure.updatedBy,
     };
   };
 
@@ -320,15 +325,16 @@ export default function ProceduresPage() {
 
                     <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
                       <span className="flex items-center gap-1 font-semibold text-slate-700">
-                        <DollarSign className="h-3.5 w-3.5 text-slate-400" />$
+                        <PhilippinePeso className="h-3.5 w-3.5 text-slate-400" />$
                         {item.price}
                       </span>
                     </div>
 
+                    <p className="text-xs text-slate-400 truncate max-w-[280px]">
+                      {item.description || "No description provided."}
+                    </p>
+
                     <div className="flex items-center justify-between pt-2.5 border-t border-slate-100/80">
-                      <p className="text-xs text-slate-400 truncate max-w-[200px]">
-                        {item.description || "No description provided."}
-                      </p>
                       {statusBadge}
                     </div>
                   </div>
@@ -347,14 +353,6 @@ export default function ProceduresPage() {
                       <p className="text-xs text-slate-500 mt-1 truncate">
                         {item.description || "No description provided."}
                       </p>
-                    </div>
-
-                    <div className="w-24 shrink-0 text-xs">
-                      <span className="text-slate-400 block">Price</span>
-                      <span className="font-semibold text-slate-900 flex items-center gap-0.5">
-                        <DollarSign className="h-3 w-3 text-slate-400" />
-                        {item.price}
-                      </span>
                     </div>
 
                     <div className="flex items-center gap-3 shrink-0">
