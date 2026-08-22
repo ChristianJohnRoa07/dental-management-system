@@ -50,7 +50,7 @@ export default function ProceduresPage() {
     editingProcedure,
     viewingProcedure,
     isCreateModalOpen,
-    apiStatus,
+    fetchStatus,
   } = useAppSelector((state: RootState) => state.procedures);
 
   useEffect(() => {
@@ -92,7 +92,6 @@ export default function ProceduresPage() {
     name: string;
     price: number;
     isActive: boolean;
-    id?: string;
     category?: string;
     description?: string;
   }) => {
@@ -110,7 +109,7 @@ export default function ProceduresPage() {
     dispatch(updateProcedure(data));
   };
 
-  const isLoading = apiStatus === "loading";
+  const isFetchLoading = fetchStatus === "loading";
 
   return (
     <div className="space-y-6 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
@@ -186,7 +185,7 @@ export default function ProceduresPage() {
             <Stethoscope className="h-5 w-5 text-emerald-600 shrink-0" />
             <span className="truncate">Procedure Catalog</span>
             <span className="text-xs font-normal text-slate-500 ml-1 hidden md:inline shrink-0">
-              • {isLoading ? "..." : filteredProcedures.length} Total Procedures
+              • {isFetchLoading ? "..." : filteredProcedures.length} Total Procedures
             </span>
           </div>
 
@@ -208,7 +207,7 @@ export default function ProceduresPage() {
         </div>
 
         {/* Procedures Content */}
-        {isLoading ? (
+        {isFetchLoading ? (
           <div className="flex-1 flex flex-col items-center justify-center p-12 space-y-3">
             <Spinner className="h-8 w-8" />
             <p className="text-xs font-medium text-slate-500">
