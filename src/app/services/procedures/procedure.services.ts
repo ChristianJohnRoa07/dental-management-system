@@ -12,6 +12,23 @@ export class ProcedureService {
 
     return await db.procedure.findMany({
       orderBy: { name: 'asc' },
+      include: {
+        updatedByUser: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        createdByUser: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
   }
 
