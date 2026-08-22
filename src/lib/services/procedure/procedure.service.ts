@@ -35,9 +35,6 @@ export const procedureApiService = {
     payload: CreateProcedurePayload,
     token?: string
   ): Promise<Response> => {
-
-    console.log("API Payload: ",payload);
-
     return apiClient.post("/procedures", payload, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
