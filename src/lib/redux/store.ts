@@ -6,6 +6,7 @@ import resetPasswordReducer from "@/lib/redux/slice/auth/resetPasswordSlice";
 import verifyEmailReducer from "@/lib/redux/slice/auth/verifyEmailSlice";
 import userReducer from "@/lib/redux/slice/user/userSlice";
 import dashboardReducer from "@/lib/redux/slice/dashboard/dashboardSlice";
+import procedureReducer from "@/lib/redux/slice/procedure/procedurePageSlice";
 
 
 export const makeStore = () => {
@@ -18,6 +19,7 @@ export const makeStore = () => {
       verifyEmail: verifyEmailReducer,
       user: userReducer,
       dashboard: dashboardReducer,
+      procedures: procedureReducer
 
     },
   });

@@ -12,6 +12,23 @@ export class ProcedureService {
 
     return await db.procedure.findMany({
       orderBy: { name: 'asc' },
+      include: {
+        updatedByUser: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+            email: true,
+          },
+        },
+        createdByUser: {
+          select: {
+            id: true,
+            firstName: true,
+            lastName: true,
+          },
+        },
+      },
     });
   }
 
@@ -19,9 +36,10 @@ export class ProcedureService {
     name: string;
     description?: string;
     price?: number;
+    category?:string;
     userId: string
   }) {
-    const { name, userId, description, price } = data;
+    const { name, userId, description, price, category } = data;
 
     if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
@@ -32,6 +50,7 @@ export class ProcedureService {
         name: name,
         description: description,
         price: price,
+        category: category,
         createdBy: userId,
         updatedBy: userId,
       },
@@ -42,10 +61,11 @@ export class ProcedureService {
     id: string;
     name: string;
     description?: string;
+    category?: string;
     price?: number;
     userId: string
   }) {
-    const { id, name, userId, description, price } = data;
+    const { id, name, userId, description, category, price } = data;
 
     if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
@@ -67,6 +87,7 @@ export class ProcedureService {
       data: {
         name: name,
         description: description,
+        category: category,
         price: price,
         updatedBy: userId,
       },

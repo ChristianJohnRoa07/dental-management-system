@@ -157,6 +157,7 @@ export const ProcedureScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  category: 'category',
   price: 'price',
   isActive: 'isActive',
   createdAt: 'createdAt',

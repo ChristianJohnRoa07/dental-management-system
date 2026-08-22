@@ -6,12 +6,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
   Stethoscope,
-  DollarSign,
+  PhilippinePeso,
   Check,
   Loader2,
   FileText,
   Activity,
   Tag,
+  Clock,
+  User,
 } from "lucide-react";
 
 import {
@@ -47,6 +49,8 @@ export const procedureSchema = z.object({
     .string()
     .max(500, "Description cannot exceed 500 characters")
     .optional(),
+  updatedBy: z.string().optional(),
+  updatedAt: z.string().optional(),
 });
 
 export type ProcedureFormData = z.infer<typeof procedureSchema>;
@@ -57,6 +61,8 @@ const defaultFormValues: ProcedureFormData = {
   price: 0,
   isActive: true,
   description: "",
+  updatedBy: "",
+  updatedAt: "",
 };
 
 function getInitialValues(
@@ -69,6 +75,8 @@ function getInitialValues(
     price: initialData.price ?? 0,
     isActive: initialData.isActive ?? true,
     description: initialData.description ?? "",
+    updatedBy: initialData.updatedBy ?? "",
+    updatedAt: initialData.updatedAt ?? "",
   };
 }
 
@@ -119,6 +127,22 @@ export default function DynamicProcedureFormModal({
     }
   };
 
+  const formatDate = (dateString?: string) => {
+    if (!dateString) return null;
+    try {
+      return new Date(dateString).toLocaleString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        hour12: true,
+      });
+    } catch {
+      return dateString;
+    }
+  };
+
   const getHeaderInfo = () => {
     if (isViewMode) {
       return {
@@ -139,12 +163,13 @@ export default function DynamicProcedureFormModal({
   };
 
   const headerInfo = getHeaderInfo();
+  const modifiedBy = initialData?.updatedBy;
+  const modifiedAt = formatDate(initialData?.updatedAt);
 
   return (
     <Dialog
       open={open}
       onOpenChange={(nextOpen, eventDetails) => {
-        // Prevent accidental dismiss only during active editing/creating
         if (!isViewMode && eventDetails?.reason === "outside-press") {
           return;
         }
@@ -174,7 +199,7 @@ export default function DynamicProcedureFormModal({
                 render={({ field }) => (
                   <FormItem className="sm:col-span-2">
                     <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
-                      <Stethoscope className="h-4 w-4 text-emerald-600" />{" "}
+                      <Stethoscope className="h-4 w-4 text-emerald-600" />
                       Procedure Name
                     </FormLabel>
                     <FormControl>
@@ -219,7 +244,8 @@ export default function DynamicProcedureFormModal({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
-                      <DollarSign className="h-4 w-4 text-emerald-600" /> Price
+                      <PhilippinePeso className="h-4 w-4 text-emerald-600" />{" "}
+                      Price
                     </FormLabel>
                     <FormControl>
                       <Input
@@ -247,11 +273,13 @@ export default function DynamicProcedureFormModal({
                 control={form.control}
                 name="isActive"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col justify-between rounded-xl border border-slate-200 bg-slate-50 p-3">
-                    <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2 cursor-pointer">
-                      <Activity className="h-4 w-4 text-emerald-600" /> Status
+                  <FormItem className="space-y-2">
+                    <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
+                      <Activity className="h-4 w-4 text-emerald-600" />
+                      <span>Status</span>
                     </FormLabel>
-                    <div className="flex items-center justify-between pt-1">
+
+                    <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3">
                       <span className="text-xs text-slate-500 font-medium">
                         {field.value ? "Active" : "Inactive"}
                       </span>
@@ -275,7 +303,7 @@ export default function DynamicProcedureFormModal({
                 render={({ field }) => (
                   <FormItem className="sm:col-span-2">
                     <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-emerald-600" />{" "}
+                      <FileText className="h-4 w-4 text-emerald-600" />
                       Description
                     </FormLabel>
                     <FormControl>
@@ -298,8 +326,36 @@ export default function DynamicProcedureFormModal({
               />
             </div>
 
+            {/* Audit Metadata (Modified By & Date) */}
+            {(modifiedBy || modifiedAt) && (
+              <div className="rounded-xl border border-slate-100 bg-slate-50/80 p-3 flex flex-col sm:flex-row sm:items-center justify-between gap-2 text-xs text-slate-500">
+                {modifiedBy && (
+                  <div className="flex items-center gap-1.5">
+                    <User className="h-3.5 w-3.5 text-slate-400" />
+                    <span>
+                      Modified by:{" "}
+                      <strong className="font-semibold text-slate-700">
+                        {modifiedBy}
+                      </strong>
+                    </span>
+                  </div>
+                )}
+                {modifiedAt && (
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="h-3.5 w-3.5 text-slate-400" />
+                    <span>
+                      Modified:{" "}
+                      <strong className="font-semibold text-slate-700">
+                        {modifiedAt}
+                      </strong>
+                    </span>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Action Buttons */}
-            <DialogFooter className="pt-4 border-t border-slate-100 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end gap-3">
+            <DialogFooter className="pt-4 flex flex-col-reverse sm:flex-row sm:items-center sm:justify-end bg-transparent border-none shadow-none gap-3">
               {isViewMode ? (
                 <Button
                   type="button"
