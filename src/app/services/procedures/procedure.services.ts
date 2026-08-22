@@ -19,9 +19,10 @@ export class ProcedureService {
     name: string;
     description?: string;
     price?: number;
+    category?:string;
     userId: string
   }) {
-    const { name, userId, description, price } = data;
+    const { name, userId, description, price, category } = data;
 
     if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
@@ -32,6 +33,7 @@ export class ProcedureService {
         name: name,
         description: description,
         price: price,
+        category: category,
         createdBy: userId,
         updatedBy: userId,
       },
