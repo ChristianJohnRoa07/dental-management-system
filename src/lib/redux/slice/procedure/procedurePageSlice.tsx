@@ -33,6 +33,10 @@ export interface UpdateProcedureFormData {
   isActive?: boolean;
 }
 
+export interface ToggleStatusFormData {
+  id: string;
+}
+
 interface ProceduresState {
   procedures: ProcedureRecord[];
   searchQuery: string;
@@ -43,6 +47,7 @@ interface ProceduresState {
   fetchStatus: "idle" | "loading" | "succeeded" | "failed";
   createStatus: "idle" | "loading" | "succeeded" | "failed";
   updateStatus: "idle" | "loading" | "succeeded" | "failed";
+  toggleStatusState: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   successMessage: string | null;
 }
@@ -57,6 +62,7 @@ const initialState: ProceduresState = {
   fetchStatus: "idle",
   createStatus: "idle",
   updateStatus: "idle",
+  toggleStatusState: "idle",
   error: null,
   successMessage: null,
 };
@@ -97,8 +103,8 @@ export const getProcedures = createAsyncThunk<
 });
 
 export const createProcedure = createAsyncThunk<
-  string, 
-  CreateProcedureFormData,
+  string,
+  ProcedureFormData,
   { state: RootState; rejectWithValue: string }
 >(
   "procedure/createProcedure",
@@ -132,9 +138,7 @@ export const createProcedure = createAsyncThunk<
       );
 
       if (response.status !== "success") {
-        return rejectWithValue(
-          response.message,
-        );
+        return rejectWithValue(response.message);
       }
 
       await dispatch(getProcedures());
@@ -149,7 +153,7 @@ export const createProcedure = createAsyncThunk<
 );
 
 export const updateProcedure = createAsyncThunk<
-  string, 
+  string,
   UpdateProcedureFormData,
   { state: RootState; rejectWithValue: string }
 >(
@@ -185,9 +189,54 @@ export const updateProcedure = createAsyncThunk<
       );
 
       if (response.status !== "success") {
+        return rejectWithValue(response.message);
+      }
+
+      await dispatch(getProcedures());
+
+      return "Procedure updated successfully";
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || err.message || "An error occurred";
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const toggleProcedureStatus = createAsyncThunk<
+  string,
+  ToggleStatusFormData,
+  { state: RootState; rejectWithValue: string }
+>(
+  "procedure/toggleStatus",
+  async (formData, { getState, dispatch, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const token = state.user.user?.token;
+      const userId = state.user.user?.id;
+
+      if (!token) {
         return rejectWithValue(
-          response.message,
+          "Authentication token missing. Please sign in again.",
         );
+      }
+
+      if (!userId) {
+        return rejectWithValue("User ID is missing. Please sign in again.");
+      }
+
+      const payload = {
+        id: formData.id,
+        userId: userId
+      };
+
+      const response = await procedureApiService.toggleStatus(
+        payload,
+        token,
+      );
+
+      if (response.status !== "success") {
+        return rejectWithValue(response.message);
       }
 
       await dispatch(getProcedures());
@@ -229,13 +278,9 @@ export const proceduresSlice = createSlice({
     ) => {
       state.viewingProcedure = action.payload;
     },
-    
-    toggleProcedureStatus: (state, action: PayloadAction<string>) => {
-      const id = action.payload;
-      const procedure = state.procedures.find((p) => p.id === id);
-      if (procedure) {
-        procedure.isActive = !procedure.isActive;
-      }
+    clearMessages: (state) => {
+      state.successMessage = null;
+      state.error = null;
     },
   },
   extraReducers: (builder) => {
@@ -295,12 +340,32 @@ export const proceduresSlice = createSlice({
           state.successMessage = action.payload;
           state.editingProcedure = null;
           state.error = null;
-        }
+        },
       )
       .addCase(updateProcedure.rejected, (state, action) => {
         state.updateStatus = "failed";
         state.error =
           (action.payload as string) || "Failed to update procedure";
+        state.successMessage = null;
+      })
+
+      // Toggle Status
+      .addCase(toggleProcedureStatus.pending, (state) => {
+        state.toggleStatusState = "loading";
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(
+        toggleProcedureStatus.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.toggleStatusState = "succeeded";
+          state.successMessage = action.payload;
+          state.error = null;
+        },
+      )
+      .addCase(toggleProcedureStatus.rejected, (state, action) => {
+        state.toggleStatusState = "failed";
+        state.error = (action.payload as string) || "Failed to toggle status";
         state.successMessage = null;
       });
   },
@@ -312,7 +377,7 @@ export const {
   setIsCreateModalOpen,
   setEditingProcedure,
   setViewingProcedure,
-  toggleProcedureStatus,
+  clearMessages
 } = proceduresSlice.actions;
 
 export default proceduresSlice.reducer;

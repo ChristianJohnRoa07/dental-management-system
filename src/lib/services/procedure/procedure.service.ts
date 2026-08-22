@@ -32,6 +32,11 @@ export interface UpdateProcedurePayload {
   userId: string;
 }
 
+export interface ToggleProcedureStatusPayload{
+  id: string;
+  userId: string;
+}
+
 export const procedureApiService = {
   getProcedures: async (token?: string): Promise<Response> => {
     return apiClient.get("/procedures", {
@@ -53,6 +58,15 @@ export const procedureApiService = {
     token?: string
   ): Promise<Response> => {
     return apiClient.put("/procedures", payload, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
+
+  toggleStatus: async (
+    payload: ToggleProcedureStatusPayload,
+    token?: string
+  ): Promise<Response> => {
+    return apiClient.patch("/procedures", payload, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },

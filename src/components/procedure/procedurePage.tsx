@@ -23,6 +23,7 @@ import {
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
 import { Spinner } from "../ui/spinner";
+import { toast } from "sonner";
 import DynamicProcedureFormModal from "@/components/procedure/dynamicProcedureForm";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { RootState } from "@/lib/redux/store";
@@ -39,6 +40,7 @@ import {
   UpdateProcedureFormData,
   getProcedures,
   ProcedureRecord,
+  clearMessages,
 } from "@/lib/redux/slice/procedure/procedurePageSlice";
 
 export default function ProceduresPage() {
@@ -52,11 +54,25 @@ export default function ProceduresPage() {
     viewingProcedure,
     isCreateModalOpen,
     fetchStatus,
+    successMessage,
+    error,
   } = useAppSelector((state: RootState) => state.procedures);
 
   useEffect(() => {
     dispatch(getProcedures());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (successMessage) {
+      toast.success(successMessage);
+      dispatch(clearMessages());
+    }
+
+    if (error) {
+      toast.error(error);
+      dispatch(clearMessages());
+    }
+  }, [successMessage, error, dispatch]);
 
   const filteredProcedures = useMemo(() => {
     if (!procedures) return [];
@@ -102,25 +118,23 @@ export default function ProceduresPage() {
     };
   };
 
-  const handleCreateProcedure = async (data: {
-    name: string;
-    price: number;
-    isActive: boolean;
-    category?: string;
-    description?: string;
-  }) => {
+  const handleCreateProcedure = async (data: ProcedureFormData) => {
     dispatch(createProcedure(data));
   };
 
-  const handleUpdateProcedure = async (data: {
-    name: string;
-    price: number;
-    isActive: boolean;
-    id?: string;
-    category?: string;
-    description?: string;
-  }) => {
-    dispatch(updateProcedure(data));
+  const handleUpdateProcedure = async (data: ProcedureFormData) => {
+    if (!editingProcedure?.id) return;
+
+    dispatch(
+      updateProcedure({
+        ...data,
+        id: editingProcedure.id,
+      }),
+    );
+  };
+
+  const handleToggleProcedureStatus = (id: string) => {
+    dispatch(toggleProcedureStatus({ id }));
   };
 
   const isFetchLoading = fetchStatus === "loading";
@@ -172,7 +186,9 @@ export default function ProceduresPage() {
               if (!open) dispatch(setEditingProcedure(null));
             }}
             initialData={
-              editingProcedure ? updateProcedureToFormData(editingProcedure) : null
+              editingProcedure
+                ? updateProcedureToFormData(editingProcedure)
+                : null
             }
             isEditMode={true}
             onSubmit={handleUpdateProcedure}
@@ -199,7 +215,8 @@ export default function ProceduresPage() {
             <Stethoscope className="h-5 w-5 text-emerald-600 shrink-0" />
             <span className="truncate">Procedure Catalog</span>
             <span className="text-xs font-normal text-slate-500 ml-1 hidden md:inline shrink-0">
-              • {isFetchLoading ? "..." : filteredProcedures.length} Total Procedures
+              • {isFetchLoading ? "..." : filteredProcedures.length} Total
+              Procedures
             </span>
           </div>
 
@@ -273,12 +290,10 @@ export default function ProceduresPage() {
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="cursor-pointer gap-2"
-                      onClick={() => dispatch(toggleProcedureStatus(item.id))}
+                      onClick={() => handleToggleProcedureStatus(item.id)}
                     >
                       <Power className="h-4 w-4 text-amber-500" />
-                      <span>
-                        {item.isActive ? "Deactivate" : "Activate"}
-                      </span>
+                      <span>{item.isActive ? "Deactivate" : "Activate"}</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
                 </DropdownMenu>
