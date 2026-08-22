@@ -36,6 +36,7 @@ import {
   updateProcedure,
   toggleProcedureStatus,
   ProcedureFormData,
+  UpdateProcedureFormData,
   getProcedures,
   ProcedureRecord,
 } from "@/lib/redux/slice/procedure/procedurePageSlice";
@@ -80,6 +81,19 @@ export default function ProceduresPage() {
     procedure: ProcedureRecord,
   ): ProcedureFormData => {
     return {
+      name: procedure.name,
+      category: procedure.category ?? "",
+      price: procedure.price,
+      description: procedure.description ?? "",
+      isActive: procedure.isActive,
+    };
+  };
+
+  const updateProcedureToFormData = (
+    procedure: ProcedureRecord,
+  ): UpdateProcedureFormData => {
+    return {
+      id: procedure.id,
       name: procedure.name,
       category: procedure.category ?? "",
       price: procedure.price,
@@ -158,7 +172,7 @@ export default function ProceduresPage() {
               if (!open) dispatch(setEditingProcedure(null));
             }}
             initialData={
-              editingProcedure ? procedureToFormData(editingProcedure) : null
+              editingProcedure ? updateProcedureToFormData(editingProcedure) : null
             }
             isEditMode={true}
             onSubmit={handleUpdateProcedure}

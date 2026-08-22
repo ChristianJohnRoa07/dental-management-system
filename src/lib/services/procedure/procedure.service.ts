@@ -24,6 +24,14 @@ export interface CreateProcedurePayload {
   userId: string;
 }
 
+export interface UpdateProcedurePayload {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  userId: string;
+}
+
 export const procedureApiService = {
   getProcedures: async (token?: string): Promise<Response> => {
     return apiClient.get("/procedures", {
@@ -36,6 +44,15 @@ export const procedureApiService = {
     token?: string
   ): Promise<Response> => {
     return apiClient.post("/procedures", payload, {
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+    });
+  },
+
+  updateProcedure: async (
+    payload: UpdateProcedurePayload,
+    token?: string
+  ): Promise<Response> => {
+    return apiClient.put("/procedures", payload, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
   },

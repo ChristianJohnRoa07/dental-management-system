@@ -24,6 +24,15 @@ export interface ProcedureFormData {
   isActive?: boolean;
 }
 
+export interface UpdateProcedureFormData {
+  id: string;
+  name: string;
+  category?: string;
+  price: number;
+  description?: string;
+  isActive?: boolean;
+}
+
 interface ProceduresState {
   procedures: ProcedureRecord[];
   searchQuery: string;
@@ -33,6 +42,7 @@ interface ProceduresState {
   isCreateModalOpen: boolean;
   fetchStatus: "idle" | "loading" | "succeeded" | "failed";
   createStatus: "idle" | "loading" | "succeeded" | "failed";
+  updateStatus: "idle" | "loading" | "succeeded" | "failed";
   error: string | null;
   successMessage: string | null;
 }
@@ -46,6 +56,7 @@ const initialState: ProceduresState = {
   isCreateModalOpen: false,
   fetchStatus: "idle",
   createStatus: "idle",
+  updateStatus: "idle",
   error: null,
   successMessage: null,
 };
@@ -86,8 +97,8 @@ export const getProcedures = createAsyncThunk<
 });
 
 export const createProcedure = createAsyncThunk<
-  string, // Returns success message string
-  ProcedureFormData,
+  string, 
+  CreateProcedureFormData,
   { state: RootState; rejectWithValue: string }
 >(
   "procedure/createProcedure",
@@ -137,6 +148,59 @@ export const createProcedure = createAsyncThunk<
   },
 );
 
+export const updateProcedure = createAsyncThunk<
+  string, 
+  UpdateProcedureFormData,
+  { state: RootState; rejectWithValue: string }
+>(
+  "procedure/updateProcedure",
+  async (formData, { getState, dispatch, rejectWithValue }) => {
+    try {
+      const state = getState();
+      const token = state.user.user?.token;
+      const userId = state.user.user?.id;
+
+      if (!token) {
+        return rejectWithValue(
+          "Authentication token missing. Please sign in again.",
+        );
+      }
+
+      if (!userId) {
+        return rejectWithValue("User ID is missing. Please sign in again.");
+      }
+
+      const payload = {
+        id: formData.id,
+        name: formData.name,
+        description: formData.description || "",
+        category: formData.category,
+        price: Number(formData.price),
+        userId: userId,
+      };
+
+      const response = await procedureApiService.updateProcedure(
+        payload,
+        token,
+      );
+
+      if (response.status !== "success") {
+        return rejectWithValue(
+          response.message,
+        );
+      }
+
+      await dispatch(getProcedures());
+
+      return "Procedure updated successfully";
+    } catch (err: any) {
+      const errorMessage =
+        err.response?.data?.message || err.message || "An error occurred";
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
 export const proceduresSlice = createSlice({
   name: "procedures",
   initialState,
@@ -165,29 +229,7 @@ export const proceduresSlice = createSlice({
     ) => {
       state.viewingProcedure = action.payload;
     },
-
-    // Sync Local Reducers
-    updateProcedure: (state, action: PayloadAction<ProcedureFormData>) => {
-      if (!state.editingProcedure) return;
-
-      const data = action.payload;
-      const index = state.procedures.findIndex(
-        (p) => p.id === state.editingProcedure?.id,
-      );
-
-      if (index !== -1) {
-        state.procedures[index] = {
-          ...state.editingProcedure,
-          name: data.name,
-          category: data.category ?? "General",
-          price: Number(data.price),
-          isActive: data.isActive ?? state.editingProcedure.isActive,
-          description: data.description,
-        };
-      }
-
-      state.editingProcedure = null;
-    },
+    
     toggleProcedureStatus: (state, action: PayloadAction<string>) => {
       const id = action.payload;
       const procedure = state.procedures.find((p) => p.id === id);
@@ -238,6 +280,28 @@ export const proceduresSlice = createSlice({
         state.error =
           (action.payload as string) || "Failed to create procedure";
         state.successMessage = null;
+      })
+
+      // Update Procedure
+      .addCase(updateProcedure.pending, (state) => {
+        state.updateStatus = "loading";
+        state.error = null;
+        state.successMessage = null;
+      })
+      .addCase(
+        updateProcedure.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.updateStatus = "succeeded";
+          state.successMessage = action.payload;
+          state.editingProcedure = null;
+          state.error = null;
+        }
+      )
+      .addCase(updateProcedure.rejected, (state, action) => {
+        state.updateStatus = "failed";
+        state.error =
+          (action.payload as string) || "Failed to update procedure";
+        state.successMessage = null;
       });
   },
 });
@@ -248,7 +312,6 @@ export const {
   setIsCreateModalOpen,
   setEditingProcedure,
   setViewingProcedure,
-  updateProcedure,
   toggleProcedureStatus,
 } = proceduresSlice.actions;
 
