@@ -22,6 +22,8 @@ export interface ProcedureFormData {
   price: number;
   description?: string;
   isActive?: boolean;
+  updatedAt?: string;
+  updatedBy?: string;
 }
 
 export interface UpdateProcedureFormData {
@@ -88,11 +90,21 @@ export const getProcedures = createAsyncThunk<
       return rejectWithValue(response.message || "Failed to fetch procedures");
     }
 
-    const formattedData = response.data.map((item: any) => ({
-      ...item,
-      category: item.category ?? "General",
-      isActive: Boolean(item.isActive),
-    }));
+    const formattedData = response.data.map((item: any) => {
+      const user = item.updatedByUser || item.createdByUser;
+      
+      const updatedByName = user && (user.firstName || user.lastName)
+        ? `${user.firstName || ""} ${user.lastName || ""}`.trim()
+        : "System";
+
+      return {
+        ...item,
+        category: item.category,
+        isActive: Boolean(item.isActive),
+        updatedAt: item.updatedAt ?? item.createdAt,
+        updatedBy: updatedByName,
+      };
+    });
 
     return formattedData;
   } catch (err: any) {
