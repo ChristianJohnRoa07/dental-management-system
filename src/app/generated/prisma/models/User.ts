@@ -232,6 +232,8 @@ export type UserWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   verificationTokens?: Prisma.VerificationTokenListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
+  createdProcedures?: Prisma.ProcedureListRelationFilter
+  updatedProcedures?: Prisma.ProcedureListRelationFilter
 }
 
 export type UserOrderByWithRelationInput = {
@@ -248,6 +250,8 @@ export type UserOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   verificationTokens?: Prisma.VerificationTokenOrderByRelationAggregateInput
   passwordResetTokens?: Prisma.PasswordResetTokenOrderByRelationAggregateInput
+  createdProcedures?: Prisma.ProcedureOrderByRelationAggregateInput
+  updatedProcedures?: Prisma.ProcedureOrderByRelationAggregateInput
 }
 
 export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -267,6 +271,8 @@ export type UserWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"User"> | Date | string
   verificationTokens?: Prisma.VerificationTokenListRelationFilter
   passwordResetTokens?: Prisma.PasswordResetTokenListRelationFilter
+  createdProcedures?: Prisma.ProcedureListRelationFilter
+  updatedProcedures?: Prisma.ProcedureListRelationFilter
 }, "id" | "email" | "username">
 
 export type UserOrderByWithAggregationInput = {
@@ -317,6 +323,8 @@ export type UserCreateInput = {
   updatedAt?: Date | string
   verificationTokens?: Prisma.VerificationTokenCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureCreateNestedManyWithoutCreatedByUserInput
+  updatedProcedures?: Prisma.ProcedureCreateNestedManyWithoutUpdatedByUserInput
 }
 
 export type UserUncheckedCreateInput = {
@@ -333,6 +341,8 @@ export type UserUncheckedCreateInput = {
   updatedAt?: Date | string
   verificationTokens?: Prisma.VerificationTokenUncheckedCreateNestedManyWithoutUserInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutCreatedByUserInput
+  updatedProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutUpdatedByUserInput
 }
 
 export type UserUpdateInput = {
@@ -349,6 +359,8 @@ export type UserUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificationTokens?: Prisma.VerificationTokenUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUpdateManyWithoutCreatedByUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUpdateManyWithoutUpdatedByUserNestedInput
 }
 
 export type UserUncheckedUpdateInput = {
@@ -365,6 +377,8 @@ export type UserUncheckedUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificationTokens?: Prisma.VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutUpdatedByUserNestedInput
 }
 
 export type UserCreateManyInput = {
@@ -504,6 +518,34 @@ export type UserUpdateOneRequiredWithoutPasswordResetTokensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutPasswordResetTokensInput, Prisma.UserUpdateWithoutPasswordResetTokensInput>, Prisma.UserUncheckedUpdateWithoutPasswordResetTokensInput>
 }
 
+export type UserCreateNestedOneWithoutCreatedProceduresInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedProceduresInput, Prisma.UserUncheckedCreateWithoutCreatedProceduresInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedProceduresInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserCreateNestedOneWithoutUpdatedProceduresInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedProceduresInput, Prisma.UserUncheckedCreateWithoutUpdatedProceduresInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedProceduresInput
+  connect?: Prisma.UserWhereUniqueInput
+}
+
+export type UserUpdateOneRequiredWithoutCreatedProceduresNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutCreatedProceduresInput, Prisma.UserUncheckedCreateWithoutCreatedProceduresInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutCreatedProceduresInput
+  upsert?: Prisma.UserUpsertWithoutCreatedProceduresInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutCreatedProceduresInput, Prisma.UserUpdateWithoutCreatedProceduresInput>, Prisma.UserUncheckedUpdateWithoutCreatedProceduresInput>
+}
+
+export type UserUpdateOneRequiredWithoutUpdatedProceduresNestedInput = {
+  create?: Prisma.XOR<Prisma.UserCreateWithoutUpdatedProceduresInput, Prisma.UserUncheckedCreateWithoutUpdatedProceduresInput>
+  connectOrCreate?: Prisma.UserCreateOrConnectWithoutUpdatedProceduresInput
+  upsert?: Prisma.UserUpsertWithoutUpdatedProceduresInput
+  connect?: Prisma.UserWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.UserUpdateToOneWithWhereWithoutUpdatedProceduresInput, Prisma.UserUpdateWithoutUpdatedProceduresInput>, Prisma.UserUncheckedUpdateWithoutUpdatedProceduresInput>
+}
+
 export type UserCreateWithoutVerificationTokensInput = {
   id?: string
   email: string
@@ -517,6 +559,8 @@ export type UserCreateWithoutVerificationTokensInput = {
   createdAt?: Date | string | null
   updatedAt?: Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureCreateNestedManyWithoutCreatedByUserInput
+  updatedProcedures?: Prisma.ProcedureCreateNestedManyWithoutUpdatedByUserInput
 }
 
 export type UserUncheckedCreateWithoutVerificationTokensInput = {
@@ -532,6 +576,8 @@ export type UserUncheckedCreateWithoutVerificationTokensInput = {
   createdAt?: Date | string | null
   updatedAt?: Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutCreatedByUserInput
+  updatedProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutUpdatedByUserInput
 }
 
 export type UserCreateOrConnectWithoutVerificationTokensInput = {
@@ -563,6 +609,8 @@ export type UserUpdateWithoutVerificationTokensInput = {
   createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUpdateManyWithoutCreatedByUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUpdateManyWithoutUpdatedByUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutVerificationTokensInput = {
@@ -578,6 +626,8 @@ export type UserUncheckedUpdateWithoutVerificationTokensInput = {
   createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutUpdatedByUserNestedInput
 }
 
 export type UserCreateWithoutPasswordResetTokensInput = {
@@ -593,6 +643,8 @@ export type UserCreateWithoutPasswordResetTokensInput = {
   createdAt?: Date | string | null
   updatedAt?: Date | string
   verificationTokens?: Prisma.VerificationTokenCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureCreateNestedManyWithoutCreatedByUserInput
+  updatedProcedures?: Prisma.ProcedureCreateNestedManyWithoutUpdatedByUserInput
 }
 
 export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
@@ -608,6 +660,8 @@ export type UserUncheckedCreateWithoutPasswordResetTokensInput = {
   createdAt?: Date | string | null
   updatedAt?: Date | string
   verificationTokens?: Prisma.VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutCreatedByUserInput
+  updatedProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutUpdatedByUserInput
 }
 
 export type UserCreateOrConnectWithoutPasswordResetTokensInput = {
@@ -639,6 +693,8 @@ export type UserUpdateWithoutPasswordResetTokensInput = {
   createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificationTokens?: Prisma.VerificationTokenUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUpdateManyWithoutCreatedByUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUpdateManyWithoutUpdatedByUserNestedInput
 }
 
 export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
@@ -654,6 +710,176 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
   createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   verificationTokens?: Prisma.VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutCreatedByUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutUpdatedByUserNestedInput
+}
+
+export type UserCreateWithoutCreatedProceduresInput = {
+  id?: string
+  email: string
+  username: string
+  password: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
+  isVerified?: boolean
+  verifiedAt?: Date | string | null
+  createdAt?: Date | string | null
+  updatedAt?: Date | string
+  verificationTokens?: Prisma.VerificationTokenCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  updatedProcedures?: Prisma.ProcedureCreateNestedManyWithoutUpdatedByUserInput
+}
+
+export type UserUncheckedCreateWithoutCreatedProceduresInput = {
+  id?: string
+  email: string
+  username: string
+  password: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
+  isVerified?: boolean
+  verifiedAt?: Date | string | null
+  createdAt?: Date | string | null
+  updatedAt?: Date | string
+  verificationTokens?: Prisma.VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  updatedProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutUpdatedByUserInput
+}
+
+export type UserCreateOrConnectWithoutCreatedProceduresInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedProceduresInput, Prisma.UserUncheckedCreateWithoutCreatedProceduresInput>
+}
+
+export type UserCreateWithoutUpdatedProceduresInput = {
+  id?: string
+  email: string
+  username: string
+  password: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
+  isVerified?: boolean
+  verifiedAt?: Date | string | null
+  createdAt?: Date | string | null
+  updatedAt?: Date | string
+  verificationTokens?: Prisma.VerificationTokenCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserUncheckedCreateWithoutUpdatedProceduresInput = {
+  id?: string
+  email: string
+  username: string
+  password: string
+  firstName: string
+  lastName: string
+  role: $Enums.Role
+  isVerified?: boolean
+  verifiedAt?: Date | string | null
+  createdAt?: Date | string | null
+  updatedAt?: Date | string
+  verificationTokens?: Prisma.VerificationTokenUncheckedCreateNestedManyWithoutUserInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedCreateNestedManyWithoutUserInput
+  createdProcedures?: Prisma.ProcedureUncheckedCreateNestedManyWithoutCreatedByUserInput
+}
+
+export type UserCreateOrConnectWithoutUpdatedProceduresInput = {
+  where: Prisma.UserWhereUniqueInput
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedProceduresInput, Prisma.UserUncheckedCreateWithoutUpdatedProceduresInput>
+}
+
+export type UserUpsertWithoutCreatedProceduresInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutCreatedProceduresInput, Prisma.UserUncheckedUpdateWithoutCreatedProceduresInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutCreatedProceduresInput, Prisma.UserUncheckedCreateWithoutCreatedProceduresInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutCreatedProceduresInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutCreatedProceduresInput, Prisma.UserUncheckedUpdateWithoutCreatedProceduresInput>
+}
+
+export type UserUpdateWithoutCreatedProceduresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  verificationTokens?: Prisma.VerificationTokenUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUpdateManyWithoutUpdatedByUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutCreatedProceduresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  verificationTokens?: Prisma.VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  updatedProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutUpdatedByUserNestedInput
+}
+
+export type UserUpsertWithoutUpdatedProceduresInput = {
+  update: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedProceduresInput, Prisma.UserUncheckedUpdateWithoutUpdatedProceduresInput>
+  create: Prisma.XOR<Prisma.UserCreateWithoutUpdatedProceduresInput, Prisma.UserUncheckedCreateWithoutUpdatedProceduresInput>
+  where?: Prisma.UserWhereInput
+}
+
+export type UserUpdateToOneWithWhereWithoutUpdatedProceduresInput = {
+  where?: Prisma.UserWhereInput
+  data: Prisma.XOR<Prisma.UserUpdateWithoutUpdatedProceduresInput, Prisma.UserUncheckedUpdateWithoutUpdatedProceduresInput>
+}
+
+export type UserUpdateWithoutUpdatedProceduresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  verificationTokens?: Prisma.VerificationTokenUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUpdateManyWithoutCreatedByUserNestedInput
+}
+
+export type UserUncheckedUpdateWithoutUpdatedProceduresInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  username?: Prisma.StringFieldUpdateOperationsInput | string
+  password?: Prisma.StringFieldUpdateOperationsInput | string
+  firstName?: Prisma.StringFieldUpdateOperationsInput | string
+  lastName?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumRoleFieldUpdateOperationsInput | $Enums.Role
+  isVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  verifiedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  verificationTokens?: Prisma.VerificationTokenUncheckedUpdateManyWithoutUserNestedInput
+  passwordResetTokens?: Prisma.PasswordResetTokenUncheckedUpdateManyWithoutUserNestedInput
+  createdProcedures?: Prisma.ProcedureUncheckedUpdateManyWithoutCreatedByUserNestedInput
 }
 
 
@@ -664,11 +890,15 @@ export type UserUncheckedUpdateWithoutPasswordResetTokensInput = {
 export type UserCountOutputType = {
   verificationTokens: number
   passwordResetTokens: number
+  createdProcedures: number
+  updatedProcedures: number
 }
 
 export type UserCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   verificationTokens?: boolean | UserCountOutputTypeCountVerificationTokensArgs
   passwordResetTokens?: boolean | UserCountOutputTypeCountPasswordResetTokensArgs
+  createdProcedures?: boolean | UserCountOutputTypeCountCreatedProceduresArgs
+  updatedProcedures?: boolean | UserCountOutputTypeCountUpdatedProceduresArgs
 }
 
 /**
@@ -695,6 +925,20 @@ export type UserCountOutputTypeCountPasswordResetTokensArgs<ExtArgs extends runt
   where?: Prisma.PasswordResetTokenWhereInput
 }
 
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountCreatedProceduresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProcedureWhereInput
+}
+
+/**
+ * UserCountOutputType without action
+ */
+export type UserCountOutputTypeCountUpdatedProceduresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ProcedureWhereInput
+}
+
 
 export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -710,6 +954,8 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   updatedAt?: boolean
   verificationTokens?: boolean | Prisma.User$verificationTokensArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.User$passwordResetTokensArgs<ExtArgs>
+  createdProcedures?: boolean | Prisma.User$createdProceduresArgs<ExtArgs>
+  updatedProcedures?: boolean | Prisma.User$updatedProceduresArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["user"]>
 
@@ -759,6 +1005,8 @@ export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = run
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   verificationTokens?: boolean | Prisma.User$verificationTokensArgs<ExtArgs>
   passwordResetTokens?: boolean | Prisma.User$passwordResetTokensArgs<ExtArgs>
+  createdProcedures?: boolean | Prisma.User$createdProceduresArgs<ExtArgs>
+  updatedProcedures?: boolean | Prisma.User$updatedProceduresArgs<ExtArgs>
   _count?: boolean | Prisma.UserCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type UserIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
@@ -769,6 +1017,8 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     verificationTokens: Prisma.$VerificationTokenPayload<ExtArgs>[]
     passwordResetTokens: Prisma.$PasswordResetTokenPayload<ExtArgs>[]
+    createdProcedures: Prisma.$ProcedurePayload<ExtArgs>[]
+    updatedProcedures: Prisma.$ProcedurePayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1178,6 +1428,8 @@ export interface Prisma__UserClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   verificationTokens<T extends Prisma.User$verificationTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$verificationTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   passwordResetTokens<T extends Prisma.User$passwordResetTokensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$passwordResetTokensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PasswordResetTokenPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdProcedures<T extends Prisma.User$createdProceduresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$createdProceduresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProcedurePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  updatedProcedures<T extends Prisma.User$updatedProceduresArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.User$updatedProceduresArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ProcedurePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1656,6 +1908,54 @@ export type User$passwordResetTokensArgs<ExtArgs extends runtime.Types.Extension
   take?: number
   skip?: number
   distinct?: Prisma.PasswordResetTokenScalarFieldEnum | Prisma.PasswordResetTokenScalarFieldEnum[]
+}
+
+/**
+ * User.createdProcedures
+ */
+export type User$createdProceduresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Procedure
+   */
+  select?: Prisma.ProcedureSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Procedure
+   */
+  omit?: Prisma.ProcedureOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProcedureInclude<ExtArgs> | null
+  where?: Prisma.ProcedureWhereInput
+  orderBy?: Prisma.ProcedureOrderByWithRelationInput | Prisma.ProcedureOrderByWithRelationInput[]
+  cursor?: Prisma.ProcedureWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProcedureScalarFieldEnum | Prisma.ProcedureScalarFieldEnum[]
+}
+
+/**
+ * User.updatedProcedures
+ */
+export type User$updatedProceduresArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Procedure
+   */
+  select?: Prisma.ProcedureSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Procedure
+   */
+  omit?: Prisma.ProcedureOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProcedureInclude<ExtArgs> | null
+  where?: Prisma.ProcedureWhereInput
+  orderBy?: Prisma.ProcedureOrderByWithRelationInput | Prisma.ProcedureOrderByWithRelationInput[]
+  cursor?: Prisma.ProcedureWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ProcedureScalarFieldEnum | Prisma.ProcedureScalarFieldEnum[]
 }
 
 /**

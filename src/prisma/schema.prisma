@@ -41,6 +41,9 @@ model User {
 
   verificationTokens  VerificationToken[]
   passwordResetTokens PasswordResetToken[]
+
+  createdProcedures Procedure[] @relation("CreatedProcedures")
+  updatedProcedures Procedure[] @relation("UpdatedProcedures")
 }
 
 model VerificationToken {
@@ -123,7 +126,9 @@ model Procedure {
   updatedBy String
 
   // Relations
-  appointments Appointment[]
+  appointments  Appointment[]
+  createdByUser User          @relation("CreatedProcedures", fields: [createdBy], references: [id])
+  updatedByUser User          @relation("UpdatedProcedures", fields: [updatedBy], references: [id])
 }
 
 model PatientImage {

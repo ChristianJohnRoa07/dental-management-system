@@ -257,6 +257,8 @@ export type ProcedureWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"Procedure"> | Date | string
   updatedBy?: Prisma.StringFilter<"Procedure"> | string
   appointments?: Prisma.AppointmentListRelationFilter
+  createdByUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  updatedByUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }
 
 export type ProcedureOrderByWithRelationInput = {
@@ -271,6 +273,8 @@ export type ProcedureOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   updatedBy?: Prisma.SortOrder
   appointments?: Prisma.AppointmentOrderByRelationAggregateInput
+  createdByUser?: Prisma.UserOrderByWithRelationInput
+  updatedByUser?: Prisma.UserOrderByWithRelationInput
 }
 
 export type ProcedureWhereUniqueInput = Prisma.AtLeast<{
@@ -288,6 +292,8 @@ export type ProcedureWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"Procedure"> | Date | string
   updatedBy?: Prisma.StringFilter<"Procedure"> | string
   appointments?: Prisma.AppointmentListRelationFilter
+  createdByUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
+  updatedByUser?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
 }, "id">
 
 export type ProcedureOrderByWithAggregationInput = {
@@ -332,10 +338,10 @@ export type ProcedureCreateInput = {
   price?: number | null
   isActive?: boolean
   createdAt?: Date | string
-  createdBy: string
   updatedAt?: Date | string
-  updatedBy: string
   appointments?: Prisma.AppointmentCreateNestedManyWithoutProcedureInput
+  createdByUser: Prisma.UserCreateNestedOneWithoutCreatedProceduresInput
+  updatedByUser: Prisma.UserCreateNestedOneWithoutUpdatedProceduresInput
 }
 
 export type ProcedureUncheckedCreateInput = {
@@ -360,10 +366,10 @@ export type ProcedureUpdateInput = {
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
   appointments?: Prisma.AppointmentUpdateManyWithoutProcedureNestedInput
+  createdByUser?: Prisma.UserUpdateOneRequiredWithoutCreatedProceduresNestedInput
+  updatedByUser?: Prisma.UserUpdateOneRequiredWithoutUpdatedProceduresNestedInput
 }
 
 export type ProcedureUncheckedUpdateInput = {
@@ -401,9 +407,7 @@ export type ProcedureUpdateManyMutationInput = {
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type ProcedureUncheckedUpdateManyInput = {
@@ -417,6 +421,16 @@ export type ProcedureUncheckedUpdateManyInput = {
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ProcedureListRelationFilter = {
+  every?: Prisma.ProcedureWhereInput
+  some?: Prisma.ProcedureWhereInput
+  none?: Prisma.ProcedureWhereInput
+}
+
+export type ProcedureOrderByRelationAggregateInput = {
+  _count?: Prisma.SortOrder
 }
 
 export type ProcedureScalarRelationFilter = {
@@ -471,6 +485,90 @@ export type ProcedureSumOrderByAggregateInput = {
   price?: Prisma.SortOrder
 }
 
+export type ProcedureCreateNestedManyWithoutCreatedByUserInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput> | Prisma.ProcedureCreateWithoutCreatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyCreatedByUserInputEnvelope
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+}
+
+export type ProcedureCreateNestedManyWithoutUpdatedByUserInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput> | Prisma.ProcedureCreateWithoutUpdatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyUpdatedByUserInputEnvelope
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+}
+
+export type ProcedureUncheckedCreateNestedManyWithoutCreatedByUserInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput> | Prisma.ProcedureCreateWithoutCreatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyCreatedByUserInputEnvelope
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+}
+
+export type ProcedureUncheckedCreateNestedManyWithoutUpdatedByUserInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput> | Prisma.ProcedureCreateWithoutUpdatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyUpdatedByUserInputEnvelope
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+}
+
+export type ProcedureUpdateManyWithoutCreatedByUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput> | Prisma.ProcedureCreateWithoutCreatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput[]
+  upsert?: Prisma.ProcedureUpsertWithWhereUniqueWithoutCreatedByUserInput | Prisma.ProcedureUpsertWithWhereUniqueWithoutCreatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyCreatedByUserInputEnvelope
+  set?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  disconnect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  delete?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  update?: Prisma.ProcedureUpdateWithWhereUniqueWithoutCreatedByUserInput | Prisma.ProcedureUpdateWithWhereUniqueWithoutCreatedByUserInput[]
+  updateMany?: Prisma.ProcedureUpdateManyWithWhereWithoutCreatedByUserInput | Prisma.ProcedureUpdateManyWithWhereWithoutCreatedByUserInput[]
+  deleteMany?: Prisma.ProcedureScalarWhereInput | Prisma.ProcedureScalarWhereInput[]
+}
+
+export type ProcedureUpdateManyWithoutUpdatedByUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput> | Prisma.ProcedureCreateWithoutUpdatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput[]
+  upsert?: Prisma.ProcedureUpsertWithWhereUniqueWithoutUpdatedByUserInput | Prisma.ProcedureUpsertWithWhereUniqueWithoutUpdatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyUpdatedByUserInputEnvelope
+  set?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  disconnect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  delete?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  update?: Prisma.ProcedureUpdateWithWhereUniqueWithoutUpdatedByUserInput | Prisma.ProcedureUpdateWithWhereUniqueWithoutUpdatedByUserInput[]
+  updateMany?: Prisma.ProcedureUpdateManyWithWhereWithoutUpdatedByUserInput | Prisma.ProcedureUpdateManyWithWhereWithoutUpdatedByUserInput[]
+  deleteMany?: Prisma.ProcedureScalarWhereInput | Prisma.ProcedureScalarWhereInput[]
+}
+
+export type ProcedureUncheckedUpdateManyWithoutCreatedByUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput> | Prisma.ProcedureCreateWithoutCreatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutCreatedByUserInput[]
+  upsert?: Prisma.ProcedureUpsertWithWhereUniqueWithoutCreatedByUserInput | Prisma.ProcedureUpsertWithWhereUniqueWithoutCreatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyCreatedByUserInputEnvelope
+  set?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  disconnect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  delete?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  update?: Prisma.ProcedureUpdateWithWhereUniqueWithoutCreatedByUserInput | Prisma.ProcedureUpdateWithWhereUniqueWithoutCreatedByUserInput[]
+  updateMany?: Prisma.ProcedureUpdateManyWithWhereWithoutCreatedByUserInput | Prisma.ProcedureUpdateManyWithWhereWithoutCreatedByUserInput[]
+  deleteMany?: Prisma.ProcedureScalarWhereInput | Prisma.ProcedureScalarWhereInput[]
+}
+
+export type ProcedureUncheckedUpdateManyWithoutUpdatedByUserNestedInput = {
+  create?: Prisma.XOR<Prisma.ProcedureCreateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput> | Prisma.ProcedureCreateWithoutUpdatedByUserInput[] | Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput[]
+  connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput | Prisma.ProcedureCreateOrConnectWithoutUpdatedByUserInput[]
+  upsert?: Prisma.ProcedureUpsertWithWhereUniqueWithoutUpdatedByUserInput | Prisma.ProcedureUpsertWithWhereUniqueWithoutUpdatedByUserInput[]
+  createMany?: Prisma.ProcedureCreateManyUpdatedByUserInputEnvelope
+  set?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  disconnect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  delete?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  connect?: Prisma.ProcedureWhereUniqueInput | Prisma.ProcedureWhereUniqueInput[]
+  update?: Prisma.ProcedureUpdateWithWhereUniqueWithoutUpdatedByUserInput | Prisma.ProcedureUpdateWithWhereUniqueWithoutUpdatedByUserInput[]
+  updateMany?: Prisma.ProcedureUpdateManyWithWhereWithoutUpdatedByUserInput | Prisma.ProcedureUpdateManyWithWhereWithoutUpdatedByUserInput[]
+  deleteMany?: Prisma.ProcedureScalarWhereInput | Prisma.ProcedureScalarWhereInput[]
+}
+
 export type ProcedureCreateNestedOneWithoutAppointmentsInput = {
   create?: Prisma.XOR<Prisma.ProcedureCreateWithoutAppointmentsInput, Prisma.ProcedureUncheckedCreateWithoutAppointmentsInput>
   connectOrCreate?: Prisma.ProcedureCreateOrConnectWithoutAppointmentsInput
@@ -493,7 +591,56 @@ export type NullableFloatFieldUpdateOperationsInput = {
   divide?: number
 }
 
-export type ProcedureCreateWithoutAppointmentsInput = {
+export type ProcedureCreateWithoutCreatedByUserInput = {
+  id?: string
+  name: string
+  description?: string | null
+  category?: string | null
+  price?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  appointments?: Prisma.AppointmentCreateNestedManyWithoutProcedureInput
+  updatedByUser: Prisma.UserCreateNestedOneWithoutUpdatedProceduresInput
+}
+
+export type ProcedureUncheckedCreateWithoutCreatedByUserInput = {
+  id?: string
+  name: string
+  description?: string | null
+  category?: string | null
+  price?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  updatedBy: string
+  appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutProcedureInput
+}
+
+export type ProcedureCreateOrConnectWithoutCreatedByUserInput = {
+  where: Prisma.ProcedureWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProcedureCreateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput>
+}
+
+export type ProcedureCreateManyCreatedByUserInputEnvelope = {
+  data: Prisma.ProcedureCreateManyCreatedByUserInput | Prisma.ProcedureCreateManyCreatedByUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProcedureCreateWithoutUpdatedByUserInput = {
+  id?: string
+  name: string
+  description?: string | null
+  category?: string | null
+  price?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  appointments?: Prisma.AppointmentCreateNestedManyWithoutProcedureInput
+  createdByUser: Prisma.UserCreateNestedOneWithoutCreatedProceduresInput
+}
+
+export type ProcedureUncheckedCreateWithoutUpdatedByUserInput = {
   id?: string
   name: string
   description?: string | null
@@ -503,7 +650,78 @@ export type ProcedureCreateWithoutAppointmentsInput = {
   createdAt?: Date | string
   createdBy: string
   updatedAt?: Date | string
-  updatedBy: string
+  appointments?: Prisma.AppointmentUncheckedCreateNestedManyWithoutProcedureInput
+}
+
+export type ProcedureCreateOrConnectWithoutUpdatedByUserInput = {
+  where: Prisma.ProcedureWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProcedureCreateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput>
+}
+
+export type ProcedureCreateManyUpdatedByUserInputEnvelope = {
+  data: Prisma.ProcedureCreateManyUpdatedByUserInput | Prisma.ProcedureCreateManyUpdatedByUserInput[]
+  skipDuplicates?: boolean
+}
+
+export type ProcedureUpsertWithWhereUniqueWithoutCreatedByUserInput = {
+  where: Prisma.ProcedureWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProcedureUpdateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedUpdateWithoutCreatedByUserInput>
+  create: Prisma.XOR<Prisma.ProcedureCreateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutCreatedByUserInput>
+}
+
+export type ProcedureUpdateWithWhereUniqueWithoutCreatedByUserInput = {
+  where: Prisma.ProcedureWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProcedureUpdateWithoutCreatedByUserInput, Prisma.ProcedureUncheckedUpdateWithoutCreatedByUserInput>
+}
+
+export type ProcedureUpdateManyWithWhereWithoutCreatedByUserInput = {
+  where: Prisma.ProcedureScalarWhereInput
+  data: Prisma.XOR<Prisma.ProcedureUpdateManyMutationInput, Prisma.ProcedureUncheckedUpdateManyWithoutCreatedByUserInput>
+}
+
+export type ProcedureScalarWhereInput = {
+  AND?: Prisma.ProcedureScalarWhereInput | Prisma.ProcedureScalarWhereInput[]
+  OR?: Prisma.ProcedureScalarWhereInput[]
+  NOT?: Prisma.ProcedureScalarWhereInput | Prisma.ProcedureScalarWhereInput[]
+  id?: Prisma.StringFilter<"Procedure"> | string
+  name?: Prisma.StringFilter<"Procedure"> | string
+  description?: Prisma.StringNullableFilter<"Procedure"> | string | null
+  category?: Prisma.StringNullableFilter<"Procedure"> | string | null
+  price?: Prisma.FloatNullableFilter<"Procedure"> | number | null
+  isActive?: Prisma.BoolFilter<"Procedure"> | boolean
+  createdAt?: Prisma.DateTimeFilter<"Procedure"> | Date | string
+  createdBy?: Prisma.StringFilter<"Procedure"> | string
+  updatedAt?: Prisma.DateTimeFilter<"Procedure"> | Date | string
+  updatedBy?: Prisma.StringFilter<"Procedure"> | string
+}
+
+export type ProcedureUpsertWithWhereUniqueWithoutUpdatedByUserInput = {
+  where: Prisma.ProcedureWhereUniqueInput
+  update: Prisma.XOR<Prisma.ProcedureUpdateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedUpdateWithoutUpdatedByUserInput>
+  create: Prisma.XOR<Prisma.ProcedureCreateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedCreateWithoutUpdatedByUserInput>
+}
+
+export type ProcedureUpdateWithWhereUniqueWithoutUpdatedByUserInput = {
+  where: Prisma.ProcedureWhereUniqueInput
+  data: Prisma.XOR<Prisma.ProcedureUpdateWithoutUpdatedByUserInput, Prisma.ProcedureUncheckedUpdateWithoutUpdatedByUserInput>
+}
+
+export type ProcedureUpdateManyWithWhereWithoutUpdatedByUserInput = {
+  where: Prisma.ProcedureScalarWhereInput
+  data: Prisma.XOR<Prisma.ProcedureUpdateManyMutationInput, Prisma.ProcedureUncheckedUpdateManyWithoutUpdatedByUserInput>
+}
+
+export type ProcedureCreateWithoutAppointmentsInput = {
+  id?: string
+  name: string
+  description?: string | null
+  category?: string | null
+  price?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  createdByUser: Prisma.UserCreateNestedOneWithoutCreatedProceduresInput
+  updatedByUser: Prisma.UserCreateNestedOneWithoutUpdatedProceduresInput
 }
 
 export type ProcedureUncheckedCreateWithoutAppointmentsInput = {
@@ -543,9 +761,9 @@ export type ProcedureUpdateWithoutAppointmentsInput = {
   price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
   isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  createdByUser?: Prisma.UserUpdateOneRequiredWithoutCreatedProceduresNestedInput
+  updatedByUser?: Prisma.UserUpdateOneRequiredWithoutUpdatedProceduresNestedInput
 }
 
 export type ProcedureUncheckedUpdateWithoutAppointmentsInput = {
@@ -559,6 +777,106 @@ export type ProcedureUncheckedUpdateWithoutAppointmentsInput = {
   createdBy?: Prisma.StringFieldUpdateOperationsInput | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ProcedureCreateManyCreatedByUserInput = {
+  id?: string
+  name: string
+  description?: string | null
+  category?: string | null
+  price?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  updatedBy: string
+}
+
+export type ProcedureCreateManyUpdatedByUserInput = {
+  id?: string
+  name: string
+  description?: string | null
+  category?: string | null
+  price?: number | null
+  isActive?: boolean
+  createdAt?: Date | string
+  createdBy: string
+  updatedAt?: Date | string
+}
+
+export type ProcedureUpdateWithoutCreatedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  appointments?: Prisma.AppointmentUpdateManyWithoutProcedureNestedInput
+  updatedByUser?: Prisma.UserUpdateOneRequiredWithoutUpdatedProceduresNestedInput
+}
+
+export type ProcedureUncheckedUpdateWithoutCreatedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
+  appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutProcedureNestedInput
+}
+
+export type ProcedureUncheckedUpdateManyWithoutCreatedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedBy?: Prisma.StringFieldUpdateOperationsInput | string
+}
+
+export type ProcedureUpdateWithoutUpdatedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  appointments?: Prisma.AppointmentUpdateManyWithoutProcedureNestedInput
+  createdByUser?: Prisma.UserUpdateOneRequiredWithoutCreatedProceduresNestedInput
+}
+
+export type ProcedureUncheckedUpdateWithoutUpdatedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  appointments?: Prisma.AppointmentUncheckedUpdateManyWithoutProcedureNestedInput
+}
+
+export type ProcedureUncheckedUpdateManyWithoutUpdatedByUserInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  description?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  category?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  price?: Prisma.NullableFloatFieldUpdateOperationsInput | number | null
+  isActive?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  createdBy?: Prisma.StringFieldUpdateOperationsInput | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -604,6 +922,8 @@ export type ProcedureSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   updatedAt?: boolean
   updatedBy?: boolean
   appointments?: boolean | Prisma.Procedure$appointmentsArgs<ExtArgs>
+  createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updatedByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ProcedureCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["procedure"]>
 
@@ -618,6 +938,8 @@ export type ProcedureSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   createdBy?: boolean
   updatedAt?: boolean
   updatedBy?: boolean
+  createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updatedByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["procedure"]>
 
 export type ProcedureSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -631,6 +953,8 @@ export type ProcedureSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   createdBy?: boolean
   updatedAt?: boolean
   updatedBy?: boolean
+  createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updatedByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["procedure"]>
 
 export type ProcedureSelectScalar = {
@@ -649,15 +973,25 @@ export type ProcedureSelectScalar = {
 export type ProcedureOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "description" | "category" | "price" | "isActive" | "createdAt" | "createdBy" | "updatedAt" | "updatedBy", ExtArgs["result"]["procedure"]>
 export type ProcedureInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   appointments?: boolean | Prisma.Procedure$appointmentsArgs<ExtArgs>
+  createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updatedByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   _count?: boolean | Prisma.ProcedureCountOutputTypeDefaultArgs<ExtArgs>
 }
-export type ProcedureIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
-export type ProcedureIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type ProcedureIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updatedByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
+export type ProcedureIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  createdByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  updatedByUser?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+}
 
 export type $ProcedurePayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "Procedure"
   objects: {
     appointments: Prisma.$AppointmentPayload<ExtArgs>[]
+    createdByUser: Prisma.$UserPayload<ExtArgs>
+    updatedByUser: Prisma.$UserPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1065,6 +1399,8 @@ readonly fields: ProcedureFieldRefs;
 export interface Prisma__ProcedureClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   appointments<T extends Prisma.Procedure$appointmentsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Procedure$appointmentsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AppointmentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  createdByUser<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  updatedByUser<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1358,6 +1694,10 @@ export type ProcedureCreateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    */
   data: Prisma.ProcedureCreateManyInput | Prisma.ProcedureCreateManyInput[]
   skipDuplicates?: boolean
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProcedureIncludeCreateManyAndReturn<ExtArgs> | null
 }
 
 /**
@@ -1428,6 +1768,10 @@ export type ProcedureUpdateManyAndReturnArgs<ExtArgs extends runtime.Types.Exten
    * Limit how many Procedures to update.
    */
   limit?: number
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ProcedureIncludeUpdateManyAndReturn<ExtArgs> | null
 }
 
 /**
