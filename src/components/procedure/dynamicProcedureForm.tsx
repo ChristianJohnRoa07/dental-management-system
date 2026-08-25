@@ -242,7 +242,9 @@ export default function DynamicProcedureFormModal({
                 control={form.control}
                 name="price"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem
+                    className={modalMode && !isViewMode ? "sm:col-span-2" : ""}
+                  >
                     <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
                       <PhilippinePeso className="h-4 w-4 text-emerald-600" />{" "}
                       Price
@@ -269,32 +271,34 @@ export default function DynamicProcedureFormModal({
               />
 
               {/* Active Status */}
-              <FormField
-                control={form.control}
-                name="isActive"
-                render={({ field }) => (
-                  <FormItem className="space-y-2">
-                    <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
-                      <Activity className="h-4 w-4 text-emerald-600" />
-                      <span>Status</span>
-                    </FormLabel>
+              {(!modalMode || isViewMode) && (
+                <FormField
+                  control={form.control}
+                  name="isActive"
+                  render={({ field }) => (
+                    <FormItem className="space-y-2">
+                      <FormLabel className="text-xs font-semibold text-slate-700 flex items-center gap-2">
+                        <Activity className="h-4 w-4 text-emerald-600" />
+                        <span>Status</span>
+                      </FormLabel>
 
-                    <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3">
-                      <span className="text-xs text-slate-500 font-medium">
-                        {field.value ? "Active" : "Inactive"}
-                      </span>
-                      <FormControl>
-                        <Switch
-                          disabled={isViewMode}
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </div>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                      <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-3 h-10">
+                        <span className="text-xs text-slate-600 font-medium">
+                          {field.value ? "Active" : "Inactive"}
+                        </span>
+                        <FormControl>
+                          <Switch
+                            disabled={isViewMode}
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                          />
+                        </FormControl>
+                      </div>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              )}
 
               {/* Description */}
               <FormField
