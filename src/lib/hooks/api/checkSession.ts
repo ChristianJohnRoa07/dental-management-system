@@ -5,16 +5,17 @@ import { ERROR_CODES, ERROR_MESSAGES } from "@/lib/constants";
 import { getEncryptedUserCookie } from "./authCookies";
 import { Role } from "@/app/generated/prisma/enums";
 
-type AuthenticatedHandler = (
+type AuthenticatedHandler<C = any> = (
   req: Request,
+  context: C,
   user: CustomJwtPayload
 ) => Promise<NextResponse>;
 
-export function checkSession(
-  handler: AuthenticatedHandler,
+export function checkSession<C = any>(
+  handler: AuthenticatedHandler<C>,
   options?: { requiredRoles?: Role[] }
 ) {
-  return async (req: Request) => {
+  return async (req: Request, context: C) => {
     try {
       const userSession = await getEncryptedUserCookie();
 
@@ -42,10 +43,10 @@ export function checkSession(
         );
       }
 
-      return await handler(req, payload);
+      return await handler(req, context, payload);
     } catch (error: any) {
       return NextResponse.json(
-        { status: "error", message: error.message || "Internal server error" },
+        { status: "error", message: error.message},
         { status: 500 }
       );
     }
