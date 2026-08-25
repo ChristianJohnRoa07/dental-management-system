@@ -73,18 +73,9 @@ export const getProcedures = createAsyncThunk<
   ProcedureRecord[],
   void,
   { state: RootState; rejectWithValue: string }
->("procedure/getProcedures", async (_, { getState, rejectWithValue }) => {
+>("procedure/getProcedures", async (_, { rejectWithValue }) => {
   try {
-    const state = getState();
-    const token = state.user.user?.token;
-
-    if (!token) {
-      return rejectWithValue(
-        "Authentication token missing. Please sign in again.",
-      );
-    }
-
-    const response = await procedureApiService.getProcedures(token);
+    const response = await procedureApiService.getProcedures();
 
     if (response.status !== "success" || !response.data) {
       return rejectWithValue(response.message || "Failed to fetch procedures");
@@ -109,7 +100,7 @@ export const getProcedures = createAsyncThunk<
     return formattedData;
   } catch (err: any) {
     const errorMessage =
-      err.response?.data?.message || err.message || "An error occurred";
+      err.response?.data?.message || err.message;
     return rejectWithValue(errorMessage);
   }
 });
@@ -120,33 +111,18 @@ export const createProcedure = createAsyncThunk<
   { state: RootState; rejectWithValue: string }
 >(
   "procedure/createProcedure",
-  async (formData, { getState, dispatch, rejectWithValue }) => {
+  async (formData, { dispatch, rejectWithValue }) => {
     try {
-      const state = getState();
-      const token = state.user.user?.token;
-      const userId = state.user.user?.id;
-
-      if (!token) {
-        return rejectWithValue(
-          "Authentication token missing. Please sign in again.",
-        );
-      }
-
-      if (!userId) {
-        return rejectWithValue("User ID is missing. Please sign in again.");
-      }
 
       const payload = {
         name: formData.name,
         description: formData.description || "",
         category: formData.category,
-        price: Number(formData.price),
-        userId: userId,
+        price: Number(formData.price)
       };
 
       const response = await procedureApiService.createProcedure(
         payload,
-        token,
       );
 
       if (response.status !== "success") {
@@ -170,34 +146,19 @@ export const updateProcedure = createAsyncThunk<
   { state: RootState; rejectWithValue: string }
 >(
   "procedure/updateProcedure",
-  async (formData, { getState, dispatch, rejectWithValue }) => {
+  async (formData, { dispatch, rejectWithValue }) => {
     try {
-      const state = getState();
-      const token = state.user.user?.token;
-      const userId = state.user.user?.id;
-
-      if (!token) {
-        return rejectWithValue(
-          "Authentication token missing. Please sign in again.",
-        );
-      }
-
-      if (!userId) {
-        return rejectWithValue("User ID is missing. Please sign in again.");
-      }
 
       const payload = {
         id: formData.id,
         name: formData.name,
         description: formData.description || "",
         category: formData.category,
-        price: Number(formData.price),
-        userId: userId,
+        price: Number(formData.price)
       };
 
       const response = await procedureApiService.updateProcedure(
-        payload,
-        token,
+        payload
       );
 
       if (response.status !== "success") {
@@ -221,30 +182,15 @@ export const toggleProcedureStatus = createAsyncThunk<
   { state: RootState; rejectWithValue: string }
 >(
   "procedure/toggleStatus",
-  async (formData, { getState, dispatch, rejectWithValue }) => {
+  async (formData, { dispatch, rejectWithValue }) => {
     try {
-      const state = getState();
-      const token = state.user.user?.token;
-      const userId = state.user.user?.id;
-
-      if (!token) {
-        return rejectWithValue(
-          "Authentication token missing. Please sign in again.",
-        );
-      }
-
-      if (!userId) {
-        return rejectWithValue("User ID is missing. Please sign in again.");
-      }
 
       const payload = {
         id: formData.id,
-        userId: userId
       };
 
       const response = await procedureApiService.toggleStatus(
         payload,
-        token,
       );
 
       if (response.status !== "success") {
