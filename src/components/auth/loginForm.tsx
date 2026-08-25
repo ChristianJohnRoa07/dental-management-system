@@ -110,46 +110,27 @@ export function LoginForm() {
     dispatch(setIsLoading(true));
 
     try {
-      const resultAction = await dispatch(loginUserDispatch(values));
+      await dispatch(loginUserDispatch(values)).unwrap();
 
-      if (loginUserDispatch.fulfilled.match(resultAction)) {
-        
-        const userResult = await dispatch(fetchCurrentUser());
+      await dispatch(fetchCurrentUser()).unwrap();
 
-        if (fetchCurrentUser.fulfilled.match(userResult)) {
+      dispatch(setIsLoading(false));
+      dispatch(setIsRedirecting(true));
 
-          dispatch(setIsLoading(false));
-          dispatch(setIsRedirecting(true));
-
-          router.replace(UI_ROUTES.DASHBOARD);
-          
-        } else {
-          
-          dispatch(setIsLoading(false));
-          dispatch(setIsRedirecting(false));
-
-          const userError = userResult.payload as string;
-          toast.error("Session Error", {
-            description: userError || "Failed to load user profile.",
-          });
-        }
-
-      } else if (loginUserDispatch.rejected.match(resultAction)) {
-        dispatch(setIsLoading(false));
-        dispatch(setIsRedirecting(false));
-
-        const rawError = resultAction.payload as string;
-        const formattedError =
-          rawError?.replace(/^AUTH_ERROR:\s*/, "") ||
-          "Invalid username or password.";
-
-        toast.error("Authentication Failed", {
-          description: formattedError,
-        });
-      }
-    } catch {
+      router.refresh();
+      router.replace(UI_ROUTES.DASHBOARD);
+    } catch (err: any) {
       dispatch(setIsLoading(false));
       dispatch(setIsRedirecting(false));
+
+      const rawError = typeof err === "string" ? err : err?.message;
+      const formattedError =
+        rawError?.replace(/^AUTH_ERROR:\s*/, "") ||
+        "Invalid username or password.";
+
+      toast.error("Authentication Failed", {
+        description: formattedError,
+      });
     }
   }
 
