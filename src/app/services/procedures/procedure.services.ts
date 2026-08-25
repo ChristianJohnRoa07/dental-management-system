@@ -3,13 +3,7 @@ import db from "@/lib/db";
 import { ERROR_CODES, ERROR_MESSAGES, DYNAMIC_ERRORS } from "@/lib/constants";
 
 export class ProcedureService {
-  static async getAll(data: {
-    userId: string
-  }) {
-    const { userId } = data;
-
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
-
+  static async getAll() {
     return await db.procedure.findMany({
       orderBy: { name: 'asc' },
       include: {
@@ -41,8 +35,6 @@ export class ProcedureService {
   }) {
     const { name, userId, description, price, category } = data;
 
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
-
     if (!name || name.trim() === '') throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
 
     return await db.procedure.create({
@@ -66,8 +58,6 @@ export class ProcedureService {
     userId: string
   }) {
     const { id, name, userId, description, category, price } = data;
-
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
     if (!name || name.trim() === '') throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
 
@@ -99,8 +89,6 @@ export class ProcedureService {
     userId: string
   }) {
     const { id, userId } = data;
-
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
     if (!id) throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
 

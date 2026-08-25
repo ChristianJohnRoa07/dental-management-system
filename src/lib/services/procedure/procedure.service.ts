@@ -21,7 +21,6 @@ export interface CreateProcedurePayload {
   name: string;
   description: string;
   price: number;
-  userId: string;
 }
 
 export interface UpdateProcedurePayload {
@@ -29,45 +28,32 @@ export interface UpdateProcedurePayload {
   name: string;
   description: string;
   price: number;
-  userId: string;
 }
 
 export interface ToggleProcedureStatusPayload{
   id: string;
-  userId: string;
 }
 
 export const procedureApiService = {
-  getProcedures: async (token?: string): Promise<Response> => {
-    return apiClient.get("/procedures", {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
+  getProcedures: async (): Promise<Response> => {
+    return apiClient.get("/procedures");
   },
   
   createProcedure: async (
-    payload: CreateProcedurePayload,
-    token?: string
+    payload: CreateProcedurePayload
   ): Promise<Response> => {
-    return apiClient.post("/procedures", payload, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
+    return apiClient.post("/procedures", payload);
   },
 
   updateProcedure: async (
-    payload: UpdateProcedurePayload,
-    token?: string
+    payload: UpdateProcedurePayload
   ): Promise<Response> => {
-    return apiClient.put("/procedures", payload, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
+    return apiClient.put("/procedures", payload);
   },
 
   toggleStatus: async (
-    payload: ToggleProcedureStatusPayload,
-    token?: string
+    payload: ToggleProcedureStatusPayload
   ): Promise<Response> => {
-    return apiClient.patch("/procedures", payload, {
-      headers: token ? { Authorization: `Bearer ${token}` } : {},
-    });
+    return apiClient.patch("/procedures", payload);
   },
 };

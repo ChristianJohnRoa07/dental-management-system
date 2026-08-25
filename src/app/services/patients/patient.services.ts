@@ -3,14 +3,7 @@ import db from "@/lib/db";
 import { ERROR_CODES, ERROR_MESSAGES, DYNAMIC_ERRORS } from "@/lib/constants";
 
 export class PatientService {
-  static async getAll(data: {
-    userId: string
-  }) {
-
-    const { userId } = data;
-
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
-
+  static async getAll() {
     return await db.patient.findMany({
       orderBy: { firstName: 'asc' },
     });
@@ -18,12 +11,9 @@ export class PatientService {
   }
 
   static async getPatientDetails(data: {
-    userId: string,
     patientId: string,
   }) {
-    const { patientId, userId } = data;
-
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
+    const { patientId } = data;
 
     if (!patientId || patientId.trim() === '') {
       throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);
@@ -59,8 +49,6 @@ export class PatientService {
 
     const { firstName, lastName, email, mobileNumber, userId } = data;
 
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
-
     if (
       !firstName || firstName.trim() === '' ||
       !lastName || lastName.trim() === '' ||
@@ -93,8 +81,6 @@ export class PatientService {
   }) {
 
     const { id, firstName, lastName, email, mobileNumber, userId } = data;
-
-    if (!userId) throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
 
     if (
       !firstName || firstName.trim() === '' ||
@@ -134,10 +120,6 @@ export class PatientService {
     userId: string;
   }) {
     const { patientId, url, userId } = data;
-
-    if (!userId) {
-      throw new Error(`${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`);
-    }
 
     if (!patientId || patientId.trim() === '' || !url || url.trim() === '') {
       throw new Error(`${ERROR_CODES.VALIDATION_ERROR}: ${ERROR_MESSAGES.VALIDATION_ERROR}`);

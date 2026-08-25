@@ -179,7 +179,7 @@ export class UserService {
       );
     }
 
-    const token = await new jose.SignJWT({
+    const accessToken = await new jose.SignJWT({
       id: user.id,
       role: user.role,
       username: user.username,
@@ -194,39 +194,43 @@ export class UserService {
 
     return {
       ...authSessionUser,
-      token,
+      accessToken,
     };
   }
 
-  static async logout(data: { token: string }) {
-    const { token } = data;
+  static async logout(data: { accessToken: string }) {
+    const { accessToken } = data;
 
-    if (!token) {
+    if (!accessToken) {
       throw new Error(
-        `${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`,
+        `${ERROR_CODES.TOKEN_NOT_FOUND}: ${ERROR_MESSAGES.TOKEN_NOT_FOUND}`
       );
     }
 
-    const payload = decodeJwt(token);
+    try {
+      const payload = decodeJwt(accessToken);
 
-    if (!payload.exp) {
-      throw new Error(
-        `${ERROR_CODES.VALIDATION_ERROR}: Invalid token structure.`,
-      );
+      if (!payload.exp) {
+        throw new Error(
+          `${ERROR_CODES.VALIDATION_ERROR}: Invalid token structure.`
+        );
+      }
+
+      const expiresAt = new Date(payload.exp * 1000);
+
+      await db.tokenBlacklist.upsert({
+        where: { token: accessToken },
+        update: {},
+        create: {
+          token: accessToken,
+          expiresAt: expiresAt,
+        },
+      });
+
+      return { status: "success", message: "Logged out successfully." };
+    } catch (error: any) {
+      throw new Error(`Logout failed: ${error.message}`);
     }
-
-    const expiresAt = new Date(payload.exp * 1000);
-
-    await db.tokenBlacklist.upsert({
-      where: { token: token },
-      update: {},
-      create: {
-        token: token,
-        expiresAt: expiresAt,
-      },
-    });
-
-    return { status: "success", message: "Logged out successfully." };
   }
 
   static async forgotPasswordEmailSend(data: {
