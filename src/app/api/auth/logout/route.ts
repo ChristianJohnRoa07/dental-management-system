@@ -1,21 +1,27 @@
 import { NextResponse } from 'next/server';
 import { UserService } from '@/app/services/users/user.services'; 
-import { removeEncryptedUserCookie } from '@/lib/hooks/api/authCookies';
+import { getEncryptedUserCookie, removeEncryptedUserCookie } from '@/lib/hooks/api/authCookies';
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
-    await removeEncryptedUserCookie();
+    const userSession = await getEncryptedUserCookie();
 
-    const authHeader = request.headers.get('authorization');
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ status: 'error', message: 'Missing token' }, { status: 400 });
+    if (userSession?.accessToken) {
+      await UserService.logout({ accessToken: userSession.accessToken });
     }
 
-    const token = authHeader.split(' ')[1];
-    
-    const result = await UserService.logout({ token });
-    return NextResponse.json(result, { status: 200 });
+    await removeEncryptedUserCookie();
+
+    return NextResponse.json(
+      { status: "success", message: "Logged out successfully." },
+      { status: 200 }
+    );
   } catch (error: any) {
-    return NextResponse.json({ status: 'error', message: error.message }, { status: 500 });
+    await removeEncryptedUserCookie();
+
+    return NextResponse.json(
+      { status: 'error', message: error.message || 'Logout failed' },
+      { status: 500 }
+    );
   }
 }
