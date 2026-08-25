@@ -20,7 +20,7 @@ export const POST = checkSession(
     const body = await req.json();
     const newProcedure = await ProcedureService.create({
       ...body,
-      userId: user.userId,
+      userId: user.id,
     });
 
     return NextResponse.json(
@@ -37,7 +37,7 @@ export const PUT = checkSession(
     const body = await req.json();
     const updatedProcedure = await ProcedureService.update({
       ...body,
-      userId: user.userId,
+      userId: user.id,
     });
 
     return NextResponse.json({ status: "success", data: updatedProcedure });
@@ -51,7 +51,7 @@ export const PATCH = checkSession(
     const body = await req.json();
     const updatedProcedure = await ProcedureService.toggleActiveStatus({
       id: body.id,
-      userId: user.userId,
+      userId: user.id,
     });
 
     return NextResponse.json({ status: "success", data: updatedProcedure });
